@@ -1,20 +1,44 @@
+import axios from "axios";
 import { useState } from "react";
-import { Container, Col, Card, Form, Button, Alert } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Container, Col, Card, Form, Button, Alert, Spinner } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom"; // Adicionando o useNavigate
 
 export default function Login() {
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false); // Estado de loading
+    const navigate = useNavigate(); // Inicializando o hook de navegação
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        
         if (!email || !senha) {
             setError("Por favor, preencha todos os campos.");
             return;
         }
-        setError("");
-        console.log("Login realizado com sucesso.");
+
+        // Iniciar o loading
+        setLoading(true);
+        setError(""); // Limpar erros anteriores
+
+        axios.post("http://localhost:5171/usuario/login", {
+            email,
+            senha
+        }).then((response) => {
+            // Sucesso no login
+            console.log(response.data);
+            
+            // Redirecionar após login bem-sucedido
+            navigate("/dashboard"); // Ajuste a rota conforme necessário
+        }).catch((error) => {
+            // Erro no login
+            setError("E-mail ou senha incorretos.");
+            console.error(error);
+        }).finally(() => {
+            // Finalizar o loading
+            setLoading(false);
+        });
     };
 
     return (
@@ -46,7 +70,18 @@ export default function Login() {
                             />
                         </Form.Group>
 
-                        <Button type="submit" className="w-100" variant="success">Entrar</Button>
+                        <Button 
+                            type="submit" 
+                            className="w-100" 
+                            variant="success"
+                            disabled={loading} // Desabilitar o botão enquanto estiver carregando
+                        >
+                            {loading ? (
+                                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                            ) : (
+                                "Entrar"
+                            )}
+                        </Button>
                     </Form>
 
                     <p className="mt-3 text-center">
@@ -56,7 +91,7 @@ export default function Login() {
             </Col>
             <Col md={6} className="d-flex flex-column justify-content-center align-items-center bg-primary text-white text-center p-5">
                 <img 
-                    src=""
+                    src="" // Adicione a imagem que você deseja exibir
                     alt="Login"
                     className="img-fluid rounded mb-3"
                     style={{ maxWidth: "80%" }}
