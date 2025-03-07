@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { Container, Col, Card, Form, Button, Alert, Spinner } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom"; // Adicionando o useNavigate
+import Cookies from "js-cookie"; // Importando o js-cookie
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -29,6 +30,9 @@ export default function Login() {
             // Sucesso no login
             console.log(response.data);
             
+            // Salvar o token no cookie
+            Cookies.set("token", response.data.token, { expires: 7 }); // Token expira em 7 dias, você pode ajustar
+
             // Redirecionar após login bem-sucedido
             navigate("/dashboard"); // Ajuste a rota conforme necessário
         }).catch((error) => {
