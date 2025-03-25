@@ -14,7 +14,9 @@ export default function Dashboard() {
   const fetchCuidadores = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:5171/cuidador/listar");
+      const response = await axios.get("http://localhost:5171/cuidador/listar", {
+        withCredentials: true
+      });
       if (response.status === 200) {
         setCuidadores(response.data);
       } else {
@@ -30,15 +32,12 @@ export default function Dashboard() {
 
   return (
     <div>
-      {/* Top Bar */}
       <div className="top-bar bg-primary text-white p-2 d-flex justify-content-between align-items-center fixed-top">
         <div className="d-flex align-items-center">
           <img src="/logo.jpg" alt="Logo" height="40" className="me-2" />
           <span className="fs-4">zElo</span>
         </div>
       </div>
-
-      {/* Sidebar */}
       <div className="sidebar bg-primary text-white p-3 position-fixed" style={{ top: 55, width: 250, height: "100vh" }}>
         <h4>Menu</h4>
         <ul className="nav flex-column">
@@ -64,11 +63,14 @@ export default function Dashboard() {
                   <div className="card-body">
                     <h4 className="card-title text-primary fw-bold">{cuidador.User?.nome}</h4>
                     <p className="text-muted"><strong>Endereço:</strong> {cuidador.User?.endereco}</p>
-                    <hr />
+                    <hr/>
                     <p><strong>Especialidade:</strong> {cuidador.especialidade}</p>
                     <p><strong>Disponibilidade:</strong> {cuidador.disponibilidade}</p>
                     <p><strong>Valor/Hora:</strong> <span className="badge bg-success">R$ {cuidador.valorHora}</span></p>
                     <p><strong>Valor/Período:</strong> <span className="badge bg-info">R$ {cuidador.valorPeriodo}</span></p>
+                    <a role="button" className="btn btn-primary" href={`/agendamentos/marcar`} 
+                      onClick={() => localStorage.setItem("cuidadorId", cuidador.id)}>Agendar</a>
+                    <a role="button" className="btn btn-secondary" href="{`/cuidador/perfil`}" style={{marginLeft: "10px"}}>Ver perfil</a>
                   </div>
                 </div>
               </div>

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Container, Col, Card, Form, Button, Alert, Spinner } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import Mascara from "./utils/mascaras.jsx";
 
 export default function Cadastro() {
     const [nome, setNome] = useState("");
@@ -68,7 +69,7 @@ export default function Cadastro() {
     return (
         <Container fluid className="d-flex vh-100 g-0">
             <Col md={6} className="d-flex flex-column justify-content-center align-items-center bg-primary text-white text-center p-5">
-                <img 
+                <img
                     src="https://via.placeholder.com/300"
                     alt="Cuidado de idosos"
                     className="img-fluid rounded mb-3"
@@ -94,7 +95,7 @@ export default function Cadastro() {
                         <Form onSubmit={handleSubmit}>
                             <Form.Group className="mb-3">
                                 <Form.Label>Nome</Form.Label>
-                                <Form.Control 
+                                <Form.Control
                                     type="text"
                                     value={nome}
                                     onChange={(e) => setNome(e.target.value)}
@@ -104,17 +105,18 @@ export default function Cadastro() {
 
                             <Form.Group className="mb-3">
                                 <Form.Label>CPF</Form.Label>
-                                <Form.Control 
-                                    type="text"
+                                <Mascara
+                                    type="cpf"
                                     value={cpf}
                                     onChange={(e) => setCpf(e.target.value)}
                                     placeholder="Digite seu CPF"
+                                    className="form-control"
                                 />
                             </Form.Group>
 
                             <Form.Group className="mb-3">
                                 <Form.Label>Endereço</Form.Label>
-                                <Form.Control 
+                                <Form.Control
                                     type="text"
                                     value={endereco}
                                     onChange={(e) => setEndereco(e.target.value)}
@@ -124,17 +126,18 @@ export default function Cadastro() {
 
                             <Form.Group className="mb-3">
                                 <Form.Label>Telefone</Form.Label>
-                                <Form.Control 
-                                    type="text"
+                                <Mascara
+                                    type="telefone"
                                     value={telefone}
                                     onChange={(e) => setTelefone(e.target.value)}
                                     placeholder="Digite seu telefone"
+                                    className="form-control"
                                 />
                             </Form.Group>
 
                             <Form.Group className="mb-3">
                                 <Form.Label>E-mail</Form.Label>
-                                <Form.Control 
+                                <Form.Control
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
@@ -144,7 +147,7 @@ export default function Cadastro() {
 
                             <Form.Group className="mb-3">
                                 <Form.Label>Senha</Form.Label>
-                                <Form.Control 
+                                <Form.Control
                                     type="password"
                                     value={senha}
                                     onChange={(e) => setSenha(e.target.value)}

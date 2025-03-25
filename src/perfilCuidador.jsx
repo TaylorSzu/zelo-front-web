@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
-import Cookies from "js-cookie"; // Importando o js-cookie
+import Cookies from "js-cookie";
+import Mascara from "./utils/mascaras.jsx";
 
 export default function PerfilCuidador() {
+  const [userId, setUserId] = useState(null);
   const [nome, setNome] = useState("");
   const [cpf, setCpf] = useState("");
   const [endereco, setEndereco] = useState("");
@@ -40,6 +42,11 @@ export default function PerfilCuidador() {
 
       if (response.status === 200) {
         const userData = response.data;
+        if (userData.tipoUsuario != "Cuidador") {
+          window.location.href = "/paciente";
+          return;
+        }
+        setUserId(userData.id)
         setNome(userData.nome);
         setCpf(userData.cpf);
         setEndereco(userData.endereco);
@@ -69,7 +76,7 @@ export default function PerfilCuidador() {
     } finally {
       setLoading(false);
     }
-  };
+  }; 
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -83,11 +90,7 @@ export default function PerfilCuidador() {
       }
 
       const response = await axios.post("http://localhost:5171/cuidador/cadastrar", {
-        nome: nome,
-        cpf: cpf,
-        endereco: endereco,
-        telefone: telefone,
-        email: email,
+        usuarioId: userId,
         disponibilidade: disponibilidade,
         valorHora: valorHora,
         valorPeriodo: valorPeriodo,
@@ -137,9 +140,9 @@ export default function PerfilCuidador() {
             <div className="card shadow p-4 mb-4">
               <h4 className="card-title text-primary">Dados Pessoais</h4>
               <div className="mb-3"><label className="form-label">Nome</label><input type="text" className="form-control" value={nome} disabled /></div>
-              <div className="mb-3"><label className="form-label">CPF</label><input type="text" className="form-control" value={cpf} disabled /></div>
+              <div className="mb-3"><label className="form-label">CPF</label><Mascara type="cpf" value={cpf} onChange={(e) => setCpf(e.target.value)} className="form-control" /></div>
               <div className="mb-3"><label className="form-label">Endereço</label><input type="text" className="form-control" value={endereco} disabled /></div>
-              <div className="mb-3"><label className="form-label">Telefone</label><input type="text" className="form-control" value={telefone} disabled /></div>
+              <div className="mb-3"><label className="form-label">Telefone</label><Mascara type="telefone" value={telefone} onChange={(e) => setTelefone(e.target.value)} className="form-control" /></div>
               <div className="mb-3"><label className="form-label">Email</label><input type="email" className="form-control" value={email} disabled /></div>
               <div className="mb-3"><label className="form-label">Status</label><input type="text" className="form-control" value={status} disabled /></div>
             </div>
@@ -149,8 +152,22 @@ export default function PerfilCuidador() {
             <div className="card shadow p-4 mb-4">
               <h4 className="card-title text-primary">Informações Profissionais</h4>
               <div className="mb-3"><label className="form-label">Disponibilidade</label><input type="text" className="form-control" value={disponibilidade} disabled /></div>
-              <div className="mb-3"><label className="form-label">Valor por Hora</label><input type="number" className="form-control" value={valorHora} disabled /></div>
-              <div className="mb-3"><label className="form-label">Valor por Período</label><input type="number" className="form-control" value={valorPeriodo} disabled /></div>
+              <div className="mb-3"><label className="form-label">Valor por Hora</label>
+              <Mascara
+                type="dinheiro"
+                value={valorHora}
+                onChange={(e) => setValorHora(e.target.value)}
+                className="form-control"
+              />
+              </div>
+              <div className="mb-3"><label className="form-label">Valor por Período</label>
+                <Mascara
+                  type="dinheiro"
+                  value={valorPeriodo}
+                  onChange={(e) => setValorPeriodo(e.target.value)}
+                  className="form-control"
+                />
+              </div>
               <div className="mb-3"><label className="form-label">Especialidade</label><input type="text" className="form-control" value={especialidade} disabled /></div>
               <div className="mb-3"><label className="form-label">Status de Verificação</label><input type="text" className="form-control" value={statusVerificacao} disabled /></div>
             </div>
@@ -171,7 +188,7 @@ export default function PerfilCuidador() {
               <div className="mb-3"><label className="form-label">Valor por Período</label><input type="number" className="form-control" value={valorPeriodo} onChange={(e) => setValorPeriodo(e.target.value)} required /></div>
               <button type="submit" className="btn btn-primary" style={{ marginRight: "10px" }}>Cadastrar</button>
             </form>
-          </div>
+          </div>  
         </div>
       )}
 

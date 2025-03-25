@@ -5,6 +5,8 @@ import PacienteDashboard from "../dashboardPaciente.jsx" ;
 import PainelCuidador from "../dashboardCuidador.jsx";
 import PerfilCuidador from "../perfilCuidador.jsx";
 import Agendamentos from "../agendamento.jsx";
+import MarcaAgendamento from "../marcaAgendamento.jsx";
+import PerfilContratante from "../perfilContratante.jsx";
 
 export default function AppRoutes() {
     return (
@@ -15,7 +17,9 @@ export default function AppRoutes() {
                 <Route path="/paciente" element={<PacienteDashboard />} />
                 <Route path="/cuidador" element={<PainelCuidador />} />
                 <Route path="/cuidador/perfil" element={<PerfilCuidador />} />
+                <Route path="/paciente/perfil" element={<PerfilContratante />} />
                 <Route path="/agendamentos" element={<Agendamentos />} />
+                <Route path="/agendamentos/marcar" element={<MarcaAgendamento />} />
             </Routes>
         </Router>
     );
