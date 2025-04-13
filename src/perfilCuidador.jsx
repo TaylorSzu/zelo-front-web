@@ -14,7 +14,6 @@ export default function PerfilCuidador() {
   const [status, setStatus] = useState("");
   const [disponibilidade, setDisponibilidade] = useState("");
   const [valorHora, setValorHora] = useState("");
-  const [valorPeriodo, setValorPeriodo] = useState("");
   const [especialidade, setEspecialidade] = useState("");
   const [statusVerificacao, setStatusVerificacao] = useState("");
   const [error, setError] = useState("");
@@ -61,7 +60,6 @@ export default function PerfilCuidador() {
           // Se houver cuidadores, preenche os dados do cuidador
           setDisponibilidade(cuidadores[0].disponibilidade);
           setValorHora(cuidadores[0].valorHora);
-          setValorPeriodo(cuidadores[0].valorPeriodo);
           setEspecialidade(cuidadores[0].especialidade);
           setStatusVerificacao(cuidadores[0].statusVerificacao);
         } else {
@@ -93,7 +91,6 @@ export default function PerfilCuidador() {
         usuarioId: userId,
         disponibilidade: disponibilidade,
         valorHora: valorHora,
-        valorPeriodo: valorPeriodo,
         especialidade: especialidade,
         statusVerificacao: statusVerificacao,
       }, {
@@ -160,14 +157,6 @@ export default function PerfilCuidador() {
                 className="form-control"
               />
               </div>
-              <div className="mb-3"><label className="form-label">Valor por Período</label>
-                <Mascara
-                  type="dinheiro"
-                  value={valorPeriodo}
-                  onChange={(e) => setValorPeriodo(e.target.value)}
-                  className="form-control"
-                />
-              </div>
               <div className="mb-3"><label className="form-label">Especialidade</label><input type="text" className="form-control" value={especialidade} disabled /></div>
               <div className="mb-3"><label className="form-label">Status de Verificação</label><input type="text" className="form-control" value={statusVerificacao} disabled /></div>
             </div>
@@ -185,7 +174,6 @@ export default function PerfilCuidador() {
               <div className="mb-3"><label className="form-label">Especialidade</label><input type="text" className="form-control" value={especialidade} onChange={(e) => setEspecialidade(e.target.value)} required /></div>
               <div className="mb-3"><label className="form-label">Disponibilidade</label><input type="text" className="form-control" value={disponibilidade} onChange={(e) => setDisponibilidade(e.target.value)} required /></div>
               <div className="mb-3"><label className="form-label">Valor por Hora</label><input type="number" className="form-control" value={valorHora} onChange={(e) => setValorHora(e.target.value)} required /></div>
-              <div className="mb-3"><label className="form-label">Valor por Período</label><input type="number" className="form-control" value={valorPeriodo} onChange={(e) => setValorPeriodo(e.target.value)} required /></div>
               <button type="submit" className="btn btn-primary" style={{ marginRight: "10px" }}>Cadastrar</button>
             </form>
           </div>  

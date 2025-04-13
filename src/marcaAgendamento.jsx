@@ -55,7 +55,6 @@ export default function Dashboard() {
             <p><strong>Especialidade:</strong> {cuidador?.especialidade || "Não informado"}</p>
             <p><strong>Disponibilidade:</strong> {cuidador?.disponibilidade || "Não informado"}</p>
             <p><strong>Valor/Hora:</strong> <span className="badge bg-success">R$ {cuidador?.valorHora || "0,00"}</span></p>
-            <p><strong>Valor/Período:</strong> <span className="badge bg-info">R$ {cuidador?.valorPeriodo || "0,00"}</span></p>
           </div>
         ) : (
           <p>Carregando informações do cuidador...</p>
@@ -63,11 +62,7 @@ export default function Dashboard() {
 
         <form className="card p-4 shadow-lg">
           <div className="mb-3">
-            <label className="form-label">Tipo de Agendamento</label>
-            <select className="form-control" value={tipoAgendamento} onChange={(e) => setTipoAgendamento(e.target.value)}>
-              <option value="hora">Por Hora</option>
-              <option value="periodo">Por Período</option>
-            </select>
+            <h6>Dados do Agendamento</h6>
           </div>
           <div className="mb-3">
             <label className="form-label">Data do Agendamento</label>

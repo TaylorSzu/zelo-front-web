@@ -66,8 +66,7 @@ export default function Dashboard() {
                     <hr/>
                     <p><strong>Especialidade:</strong> {cuidador.especialidade}</p>
                     <p><strong>Disponibilidade:</strong> {cuidador.disponibilidade}</p>
-                    <p><strong>Valor/Hora:</strong> <span className="badge bg-success">R$ {cuidador.valorHora}</span></p>
-                    <p><strong>Valor/Período:</strong> <span className="badge bg-info">R$ {cuidador.valorPeriodo}</span></p>
+                    <p><strong>Valor/Hora de Serviço:</strong> <span className="badge bg-success">R$ {cuidador.valorHora}</span></p>
                     <a role="button" className="btn btn-primary" href={`/agendamentos/marcar`} 
                       onClick={() => localStorage.setItem("cuidadorId", cuidador.id)}>Agendar</a>
                     <a role="button" className="btn btn-secondary" href="{`/cuidador/perfil`}" style={{marginLeft: "10px"}}>Ver perfil</a>
