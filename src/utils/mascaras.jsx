@@ -51,4 +51,7 @@ const Mascara = ({ type, value, onChange, placeholder, className }) => {
   );
 };
 
+export function removerMascara(valor) {
+  return valor.replace(/[^\d]+/g, "");
+}
 export default Mascara;

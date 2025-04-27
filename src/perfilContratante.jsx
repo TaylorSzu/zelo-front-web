@@ -3,298 +3,207 @@ import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import Cookies from "js-cookie";
+import SidebarContratante from "./utils/sideBarContratanate";
 import Mascara from "./utils/mascaras.jsx";
+import ConfirmarSenha from "./utils/confirmarSenha.jsx";
 
 export default function PerfilPaciente() {
-    const [nome, setNome] = useState("");
-    const [cpf, setCpf] = useState("");
-    const [endereco, setEndereco] = useState("");
-    const [telefone, setTelefone] = useState("");
-    const [email, setEmail] = useState("");
-    const [necessidades, setNecessidades] = useState("");
-    const [metodoPagamento, setMetodoPagamento] = useState("");
-    const [foto, setFoto] = useState(null);
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [isEditing, setIsEditing] = useState(false);
-    const navigate = useNavigate();
+  const [nome, setNome] = useState("");
+  const [cpf, setCpf] = useState("");
+  const [endereco, setEndereco] = useState("");
+  const [telefone, setTelefone] = useState("");
+  const [email, setEmail] = useState("");
+  const [necessidades, setNecessidades] = useState("");
+  const [foto, setFoto] = useState();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [mostrarConfirmacao, setMostrarConfirmacao] = useState(false);
 
-    useEffect(() => {
-        handleLoad();
-    }, []);
+  const navigate = useNavigate();
 
-    const handleLoad = async () => {
-        try {
-            setLoading(true);
-            const token = Cookies.get("token");
+  useEffect(() => {
+    handleLoad();
+  }, []);
 
-            if (!token) {
-                setError("Token de autenticação não encontrado");
-                return;
-            }
+  const handleLoad = async () => {
+    try {
+      setLoading(true);
+      const token = Cookies.get("token");
 
-            const response = await axios.get("http://localhost:5171/usuario/encontrar", {
-                withCredentials: true,
-            });
+      if (!token) {
+        setError("Token de autenticação não encontrado");
+        return;
+      }
 
-            if (response.status === 200) {
-                const userData = response.data;
-                setNome(userData.nome);
-                setCpf(userData.cpf);
-                setEndereco(userData.endereco);
-                setTelefone(userData.telefone);
-                setEmail(userData.email);
+      const response = await axios.get(
+        "http://localhost:5171/usuario/encontrar",
+        { withCredentials: true }
+      );
 
-                if (userData.tipoUsuario === "cuidador") {
-                    navigate("/cuidador/perfil");
-                    return;
-                }
+      if (response.status === 200) {
+        const userData = response.data;
+        setNome(userData.nome);
+        setCpf(userData.cpf);
+        setEndereco(userData.endereco);
+        setTelefone(userData.telefone);
+        setEmail(userData.email);
+        setNecessidades(userData.Contratantes[0]?.necessidades || "");
+        setFoto(userData.foto || null);
+      } else {
+        setError("Erro ao recuperar os dados.");
+      }
+    } catch (error) {
+      setError("Erro ao carregar perfil. Tente novamente.");
+      console.error("Erro na requisição:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-                const paciente = userData.Paciente || {};
-                setNecessidades(paciente.necessidades || "");
-                setMetodoPagamento(paciente.metodoPagamento || "");
-                setFoto(userData.foto || null);
-            } else {
-                setError("Erro ao recuperar os dados.");
-            }
-        } catch (error) {
-            setError("Erro ao carregar perfil. Tente novamente.");
-            console.error("Erro na requisição:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFoto(URL.createObjectURL(file));
+    }
+  };
 
-    const handleEdit = () => {
-        setIsEditing(true);
-    };
+  const abrirConfirmacao = () => {
+    setMostrarConfirmacao(true);
+  };
 
-    const handleSave = async () => {
-        try {
-            setLoading(true);
-            const token = Cookies.get("token");
+  const fecharConfirmacao = () => {
+    setMostrarConfirmacao(false);
+  };
 
-            if (!token) {
-                setError("Token de autenticação não encontrado");
-                return;
-            }
+  const confirmarSenha = () => {
+    console.log("Senha confirmada!");
+    fecharConfirmacao();
+    // Aqui você pode seguir com a ação de deletar ou atualizar
+  };
 
-            const response = await axios.put(
-                "http://localhost:5171/usuario/atualizar",
-                {
-                    nome,
-                    cpf,
-                    endereco,
-                    telefone,
-                    email,
-                    necessidades,
-                    metodoPagamento,
-                    foto,
-                },
-                { withCredentials: true }
-            );
-
-            if (response.status === 200) {
-                setIsEditing(false);
-                handleLoad();
-            } else {
-                setError("Erro ao salvar as alterações.");
-            }
-        } catch (error) {
-            setError("Erro ao salvar as alterações. Tente novamente.");
-            console.error("Erro na requisição:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleDelete = async () => {
-        const confirmDelete = window.confirm("Tem certeza que deseja excluir sua conta?");
-        if (confirmDelete) {
-            try {
-                setLoading(true);
-                const token = Cookies.get("token");
-
-                if (!token) {
-                    setError("Token de autenticação não encontrado");
-                    return;
-                }
-
-                const response = await axios.delete("http://localhost:5171/usuario/deletar", {
-                    withCredentials: true,
-                });
-
-                if (response.status === 200) {
-                    navigate("/login");
-                } else {
-                    setError("Erro ao excluir a conta.");
-                }
-            } catch (error) {
-                setError("Erro ao excluir a conta. Tente novamente.");
-                console.error("Erro na requisição:", error);
-            } finally {
-                setLoading(false);
-            }
-        }
-    };
-
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setFoto(URL.createObjectURL(file));
-        }
-    };
-
-    return (
-        <div className="d-flex">
-            <div className="top-bar bg-primary text-white p-2 d-flex justify-content-between align-items-center fixed-top w-100">
-                <div className="d-flex align-items-center">
-                    <img src="/logo.jpg" alt="Logo" height="40" className="me-2" />
-                    <span className="fs-4">zElo</span>
+  return (
+    <SidebarContratante>
+      <div
+        className="container-fluid d-flex flex-column align-items-center"
+        style={{
+          minHeight: "100%",
+          backgroundColor: "#f8f9fa",
+          padding: "30px",
+        }}
+      >
+        <div
+          className="card shadow-lg p-4"
+          style={{
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          <div className="card-header bg-primary text-white text-center">
+            <h3>Perfil do Paciente</h3>
+          </div>
+          <div className="card-body">
+            {loading && <p>Carregando...</p>}
+            {error && <p className="text-danger">{error}</p>}
+            {!loading && !error && (
+              <div>
+                {/* Imagem de perfil */}
+                <div className="mb-4 text-center">
+                  <h5>Imagem de Perfil</h5>
+                  <div
+                    className="position-relative mx-auto"
+                    style={{ width: "150px", height: "150px" }}
+                  >
+                    <div
+                      className="rounded-circle overflow-hidden border border-2 position-relative"
+                      style={{
+                        width: "150px",
+                        height: "150px",
+                        backgroundColor: "#dee2e6",
+                      }}
+                    >
+                      <img
+                        src={foto || "../src/assets/perfil.png"}
+                        alt="Foto de perfil"
+                        className="w-100 h-100"
+                        style={{ objectFit: "cover", borderRadius: "50%" }}
+                      />
+                      <label
+                        htmlFor="fileInput"
+                        className="position-absolute top-0 start-0 d-flex align-items-center justify-content-center text-white fw-bold"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          borderRadius: "50%",
+                          backgroundColor: "rgba(0, 0, 0, 0.5)",
+                          cursor: "pointer",
+                          opacity: 0,
+                          transition: "opacity 0.3s",
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.opacity = 1)}
+                        onMouseLeave={(e) => (e.currentTarget.style.opacity = 0)}
+                      >
+                        Alterar
+                        <input
+                          type="file"
+                          id="fileInput"
+                          onChange={handleFileChange}
+                          style={{ display: "none" }}
+                        />
+                      </label>
+                    </div>
+                  </div>
                 </div>
-            </div>
 
-            <div className="sidebar bg-primary text-white p-3 position-fixed" style={{ top: '55px', width: '250px', height: 'calc(100vh - 55px)' }}>
-                <h4>Menu</h4>
-                <ul className="nav flex-column">
-                    <li className="nav-item"><a href="#" className="nav-link text-white">Meus Agendamentos</a></li>
-                    <li className="nav-item"><a href="#" className="nav-link text-white">Meus Pagamentos</a></li>
-                    <li className="nav-item"><a href="#" className="nav-link text-white">Perfil</a></li>
-                    <li className="nav-item"><a href="#" className="nav-link text-white">Suporte</a></li>
-                </ul>
-            </div>
-
-            <div className="container-fluid" style={{ marginTop: '100px', marginLeft: '270px' }}>
+                {/* Campos de texto */}
                 <div className="row">
-                    <div className="col-md-6">
-                        <div className="card shadow p-4 mb-4">
-                            <h2>Perfil do Paciente</h2>
-                            {loading && <p>Carregando...</p>}
-                            {error && <p className="text-danger">{error}</p>}
-                            {!loading && !error && (
-                                <div>
-                                    <div className="mb-3">
-                                        <h5>Foto do Perfil</h5>
-                                        <div className="card" style={{ width: "18rem" }}>
-                                            <img
-                                                src={foto || "/default-avatar.png"}
-                                                className="card-img-top"
-                                                alt="Foto de perfil"
-                                                style={{ height: "200px", objectFit: "cover" }}
-                                            />
-                                            {isEditing && (
-                                                <div className="card-body">
-                                                    <input
-                                                        type="file"
-                                                        className="form-control"
-                                                        onChange={handleFileChange}
-                                                    />
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label><strong>Nome:</strong></label>
-                                        <input
-                                            type="text"
-                                            value={nome}
-                                            onChange={(e) => setNome(e.target.value)}
-                                            disabled={!isEditing}
-                                            className="form-control"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label><strong>CPF:</strong></label>
-                                        <Mascara
-                                            type="cpf"
-                                            value={cpf}
-                                            onChange={(e) => setCpf(e.target.value)}
-                                            placeholder="000.000.000-00"
-                                            className="form-control"
-                                            disabled={!isEditing}
-                                        />
-                                    </div>
-                                    <div>
-                                        <label><strong>Endereço:</strong></label>
-                                        <input
-                                            type="text"
-                                            value={endereco}
-                                            onChange={(e) => setEndereco(e.target.value)}
-                                            disabled={!isEditing}
-                                            className="form-control"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label><strong>Telefone:</strong></label>
-                                        <Mascara
-                                            type="telefone"
-                                            value={telefone}
-                                            onChange={(e) => setTelefone(e.target.value)}
-                                            placeholder="(00) 00000-0000"
-                                            className="form-control"
-                                            disabled={!isEditing}
-                                        />
-                                    </div>
-                                    <div>
-                                        <label><strong>Email:</strong></label>
-                                        <input
-                                            type="email"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            disabled={!isEditing}
-                                            className="form-control"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label><strong>Necessidades:</strong></label>
-                                        <input
-                                            type="text"
-                                            value={necessidades}
-                                            onChange={(e) => setNecessidades(e.target.value)}
-                                            disabled={!isEditing}
-                                            className="form-control"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label><strong>Método de Pagamento:</strong></label>
-                                        <input
-                                            type="text"
-                                            value={metodoPagamento}
-                                            onChange={(e) => setMetodoPagamento(e.target.value)}
-                                            disabled={!isEditing}
-                                            className="form-control"
-                                        />
-                                    </div>
-                                    <div className="mt-3">
-                                        {isEditing ? (
-                                            <button onClick={handleSave} className="btn btn-success">Salvar</button>
-                                        ) : (
-                                            <button onClick={handleEdit} className="btn btn-primary">Editar</button>
-                                        )}
-                                        <button onClick={handleDelete} className="btn btn-danger ms-3">Deletar Conta</button>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                    <div className="col-md-6">
-                        <div className="card shadow p-4 mb-4">
-                            <h2>Informações Adicionais</h2>
-                            <div>
-                                <label><strong>Plano de Saúde:</strong></label>
-                                <input
-                                    type="text"
-                                    placeholder="Plano de saúde"
-                                    className="form-control"
-                                />
-                            </div>
-                            <div className="mt-3">
-                                <button className="btn btn-primary">Salvar Informações</button>
-                            </div>
-                        </div>
-                    </div>
+                  <div className="col-md-6 mb-3">
+                    <label><strong>Nome:</strong></label>
+                    <input type="text" value={nome} className="form-control" />
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <label><strong>CPF:</strong></label>
+                    <Mascara type="cpf" value={cpf} onChange={(e) => setCpf(e.target.value)} placeholder="Digite seu CPF" className="form-control"/>
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <label><strong>Endereço:</strong></label>
+                    <input type="text" value={endereco} className="form-control" />
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <label><strong>Telefone:</strong></label>
+                    <Mascara type="telefone" value={telefone} onChange={(e) => setTelefone(e.target.value)}  placeholder="Digite seu telefone" className="form-control"/>
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <label><strong>Email:</strong></label>
+                    <input type="email" value={email} disabled className="form-control" style={{ backgroundColor : "white" }} />
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <label><strong>Necessidades:</strong></label>
+                    <input type="text" value={necessidades} className="form-control" />
+                  </div>
                 </div>
-            </div>
+
+                {/* Botões */}
+                <div className="text-center mt-4">
+                  <button className="btn btn-danger" onClick={abrirConfirmacao}>
+                    Deletar Conta
+                  </button>
+                  <button className="btn btn-primary ms-2" onClick={abrirConfirmacao}>
+                    Salvar Alterações
+                  </button>
+                </div>
+
+                {/* Confirmação de Senha */}
+                {mostrarConfirmacao && (
+                  <ConfirmarSenha
+                    onConfirmar={confirmarSenha}
+                    onCancelar={fecharConfirmacao}
+                  />
+                )}
+              </div>
+            )}
+          </div>
         </div>
-    );
+      </div>
+    </SidebarContratante>
+  );
 }

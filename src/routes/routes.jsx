@@ -7,6 +7,7 @@ import PerfilCuidador from "../perfilCuidador.jsx";
 import Agendamentos from "../agendamento.jsx";
 import MarcaAgendamento from "../marcaAgendamento.jsx";
 import PerfilContratante from "../perfilContratante.jsx";
+import SidebarContratante from "../utils/sideBarContratanate.jsx";
 
 export default function AppRoutes() {
     return (

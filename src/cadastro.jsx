@@ -3,6 +3,7 @@ import { Container, Col, Card, Form, Button, Alert, Spinner } from "react-bootst
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Mascara from "./utils/mascaras.jsx";
+import { removerMascara } from "./utils/mascaras.jsx";
 
 export default function Cadastro() {
     const [nome, setNome] = useState("");
@@ -29,9 +30,9 @@ export default function Cadastro() {
         try {
             const response = await axios.post("http://localhost:5171/usuario/registrar", {
                 nome,
-                cpf,
+                cpf: removerMascara(cpf),
                 endereco,
-                telefone,
+                telefone: removerMascara(telefone),
                 email,
                 senha,
                 tipoUsuario,
