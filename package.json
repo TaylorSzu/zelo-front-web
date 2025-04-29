@@ -16,6 +16,7 @@
     "@react-buddy/ide-toolbox": "^2.4.0",
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
     "date-fns": "^4.1.0",
     "inputmask": "^5.0.9",
     "js-cookie": "^3.0.5",
