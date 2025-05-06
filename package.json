@@ -10,7 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@fullcalendar/daygrid": "^6.1.15",
+    "@fullcalendar/bootstrap5": "^6.1.17",
+    "@fullcalendar/core": "^6.1.17",
+    "@fullcalendar/daygrid": "^6.1.17",
     "@fullcalendar/react": "^6.1.15",
     "@hookform/resolvers": "^4.0.0",
     "@react-buddy/ide-toolbox": "^2.4.0",

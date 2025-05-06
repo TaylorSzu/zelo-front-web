@@ -1,97 +1,115 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
+import bootstrap5Plugin from "@fullcalendar/bootstrap5";
+import ptBrLocale from "@fullcalendar/core/locales/pt-br";
 import { format, parseISO } from "date-fns";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "@fullcalendar/daygrid";
+import SidebarContratante from "./utils/sideBarContratanate";
 
 const AgendamentosDashboard = () => {
-  const [agendamentos, setAgendamentos] = useState([]);
+  const [eventos, setEventos] = useState([]);
+  const [eventoSelecionado, setEventoSelecionado] = useState(null);
 
   useEffect(() => {
-    // Simulação de agendamentos
-    setAgendamentos([
-      { id: 1, contratante_nome: "João Silva", cuidador_nome: "Maria Oliveira", data_hora_inicio: "2025-02-20T09:00:00", data_hora_fim: "2025-02-20T12:00:00", status: "confirmado", created_at: "2025-02-18T08:30:00", updated_at: "2025-02-18T09:00:00" },
-      { id: 2, contratante_nome: "Ana Souza", cuidador_nome: "Carlos Silva", data_hora_inicio: "2025-02-21T10:00:00", data_hora_fim: "2025-02-21T14:00:00", status: "pendente", created_at: "2025-02-19T11:15:00", updated_at: "2025-02-19T11:30:00" }
-    ]);
+    async function buscarAgendamentos() {
+      try {
+        const resposta = await fetch("http://localhost:5171/agendamento/listar/contratante");
+        const dados = await resposta.json();
+
+        const eventosFormatados = dados.map((agendamento) => {
+          const nome = agendamento?.Contratante?.User?.nome || "Nome não disponível";
+          const endereco = agendamento?.Contratante?.User?.endereco || "Endereço não disponível";
+          const necessidades = agendamento?.Contratante?.necessidades || "Não informado";
+
+          return {
+            title: `${nome} (${agendamento.status})`,
+            start: agendamento.dataHoraInicio,
+            end: agendamento.dataHoraFim,
+            extendedProps: {
+              endereco,
+              necessidades,
+              status: agendamento.status,
+              nome,
+            },
+          };
+        });
+
+        setEventos(eventosFormatados);
+      } catch (erro) {
+        console.error("Erro ao buscar agendamentos:", erro);
+      }
+    }
+
+    buscarAgendamentos();
   }, []);
 
   return (
     <div className="d-flex">
-      {/* Sidebar */}
-      <div className="sidebar bg-primary text-white p-3 vh-100 position-fixed" style={{ width: '250px', marginTop: '55px' }}>
-        <h4>Menu</h4>
-        <ul className="nav flex-column">
-          <li className="nav-item"><a href="#" className="nav-link text-white">Dashboard</a></li>
-          <li className="nav-item"><a href="#" className="nav-link text-white">Meus Agendamentos</a></li>
-          <li className="nav-item"><a href="#" className="nav-link text-white">Pagamentos</a></li>
-          <li className="nav-item"><a href="#" className="nav-link text-white">Suporte</a></li>
-          <li className="nav-item"><a href="#" className="nav-link text-white">Configurações</a></li>
-        </ul>
-      </div>
+      <SidebarContratante />
 
-      {/* Top Bar */}
-      <div className="top-bar bg-primary text-white p-3 d-flex justify-content-between fixed-top w-100">
-        <div className="d-flex align-items-center">
-          <img src="logo.jpg" alt="Logo" height="40" />
-          <span className="fs-4 ms-2">zElo</span>
-        </div>
-      </div>
+      <div className="container-fluid mt-4" style={{ marginLeft: "-65%" }}>
+        <h2 className="mb-4">Meus Agendamentos</h2>
 
-      {/* Conteúdo Principal */}
-      <div className="content flex-grow-1 p-4" style={{ marginLeft: '250px', marginTop: '30px', overflowX: 'auto', minWidth: 'calc(90vw - 250px)' }}>
-        <div className="container mt-5">
-          <h2>Agendamentos</h2>
-
-          <div className="row">
-            <div className="col-md-8">
-              <div className="card p-3">
-                <h5>Calendário de Agendamentos</h5>
-                <FullCalendar
-                  plugins={[dayGridPlugin]}
-                  initialView="dayGridMonth"
-                  events={agendamentos.map((a) => ({
-                    title: `Agendamento ${a.id}`,
-                    start: a.data_hora_inicio,
-                    end: a.data_hora_fim
-                  }))}
-                />
-              </div>
-            </div>
+        <div className="row" style={ {marginRight: "5%"}}>
+          <div className="col-md-8 mb-4">
+            <FullCalendar
+              plugins={[dayGridPlugin, bootstrap5Plugin]}
+              initialView="dayGridMonth"
+              events={eventos}
+              locale={ptBrLocale}
+              themeSystem="bootstrap5"
+              height="auto"
+              eventContent={(info) => (
+                <>
+                  <b>{info.timeText}</b>
+                  <i> {info.event.title}</i>
+                </>
+              )}
+              eventClick={(info) => {
+                setEventoSelecionado({
+                  nome: info.event.extendedProps.nome,
+                  inicio: format(parseISO(info.event.startStr), "dd/MM/yyyy HH:mm"),
+                  fim: format(parseISO(info.event.endStr), "dd/MM/yyyy HH:mm"),
+                  endereco: info.event.extendedProps.endereco,
+                  necessidades: info.event.extendedProps.necessidades,
+                  status: info.event.extendedProps.status,
+                });
+              }}
+            />
           </div>
 
-          {/* Detalhes dos Agendamentos */}
-          <div className="card p-3 mt-3">
-            <h5>Detalhes dos Agendamentos</h5>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Contratante</th>
-                  <th>Cuidador</th>
-                  <th>Início</th>
-                  <th>Fim</th>
-                  <th>Status</th>
-                  <th>Data de Criação</th>
-                  <th>Data de Atualização</th>
-                </tr>
-              </thead>
-              <tbody>
-                {agendamentos.map((a) => (
-                  <tr key={a.id}>
-                    <td>{a.contratante_nome}</td>
-                    <td>{a.cuidador_nome}</td>
-                    <td>{format(parseISO(a.data_hora_inicio), "dd/MM/yyyy HH:mm")}</td>
-                    <td>{format(parseISO(a.data_hora_fim), "dd/MM/yyyy HH:mm")}</td>
-                    <td>
-                      <span className={`badge bg-${a.status === "confirmado" ? "success" : a.status === "pendente" ? "warning" : "danger"}`}>
-                        {a.status}
-                      </span>
-                    </td>
-                    <td>{format(parseISO(a.created_at), "dd/MM/yyyy HH:mm")}</td>
-                    <td>{format(parseISO(a.updated_at), "dd/MM/yyyy HH:mm")}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="col-md-4">
+            <div className="card shadow-sm h-100">
+              <div className="card-body">
+                <h5 className="card-title">Detalhes do Agendamento</h5>
+                {eventoSelecionado ? (
+                  <ul className="list-group list-group-flush">
+                    <li className="list-group-item">
+                      <strong>Nome:</strong> {eventoSelecionado.nome}
+                    </li>
+                    <li className="list-group-item">
+                      <strong>Status:</strong> {eventoSelecionado.status}
+                    </li>
+                    <li className="list-group-item">
+                      <strong>Início:</strong> {eventoSelecionado.inicio}
+                    </li>
+                    <li className="list-group-item">
+                      <strong>Fim:</strong> {eventoSelecionado.fim}
+                    </li>
+                    <li className="list-group-item">
+                      <strong>Endereço:</strong> {eventoSelecionado.endereco}
+                    </li>
+                    <li className="list-group-item">
+                      <strong>Necessidades:</strong> {eventoSelecionado.necessidades}
+                    </li>
+                  </ul>
+                ) : (
+                  <p className="text-muted">Clique em um agendamento no calendário para ver detalhes.</p>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
