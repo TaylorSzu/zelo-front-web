@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import Cookies from "js-cookie";
-import SidebarContratante from "./utils/sideBarContratanate";
+import SidebarContratante from "./utils/sideBarContratante.jsx";
 import Mascara from "./utils/mascaras.jsx";
 import ConfirmarSenha from "./utils/confirmarSenha.jsx";
 
@@ -139,8 +139,12 @@ export default function PerfilPaciente() {
                           opacity: 0,
                           transition: "opacity 0.3s",
                         }}
-                        onMouseEnter={(e) => (e.currentTarget.style.opacity = 1)}
-                        onMouseLeave={(e) => (e.currentTarget.style.opacity = 0)}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.opacity = 1)
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.opacity = 0)
+                        }
                       >
                         Alterar
                         <input
@@ -157,28 +161,66 @@ export default function PerfilPaciente() {
                 {/* Campos de texto */}
                 <div className="row">
                   <div className="col-md-6 mb-3">
-                    <label><strong>Nome:</strong></label>
+                    <label>
+                      <strong>Nome:</strong>
+                    </label>
                     <input type="text" value={nome} className="form-control" />
                   </div>
                   <div className="col-md-6 mb-3">
-                    <label><strong>CPF:</strong></label>
-                    <Mascara type="cpf" value={cpf} onChange={(e) => setCpf(e.target.value)} placeholder="Digite seu CPF" className="form-control"/>
+                    <label>
+                      <strong>CPF:</strong>
+                    </label>
+                    <Mascara
+                      type="cpf"
+                      value={cpf}
+                      onChange={(e) => setCpf(e.target.value)}
+                      placeholder="Digite seu CPF"
+                      className="form-control"
+                    />
                   </div>
                   <div className="col-md-6 mb-3">
-                    <label><strong>Endereço:</strong></label>
-                    <input type="text" value={endereco} className="form-control" />
+                    <label>
+                      <strong>Endereço:</strong>
+                    </label>
+                    <input
+                      type="text"
+                      value={endereco}
+                      className="form-control"
+                    />
                   </div>
                   <div className="col-md-6 mb-3">
-                    <label><strong>Telefone:</strong></label>
-                    <Mascara type="telefone" value={telefone} onChange={(e) => setTelefone(e.target.value)}  placeholder="Digite seu telefone" className="form-control"/>
+                    <label>
+                      <strong>Telefone:</strong>
+                    </label>
+                    <Mascara
+                      type="telefone"
+                      value={telefone}
+                      onChange={(e) => setTelefone(e.target.value)}
+                      placeholder="Digite seu telefone"
+                      className="form-control"
+                    />
                   </div>
                   <div className="col-md-6 mb-3">
-                    <label><strong>Email:</strong></label>
-                    <input type="email" value={email} disabled className="form-control" style={{ backgroundColor : "white" }} />
+                    <label>
+                      <strong>Email:</strong>
+                    </label>
+                    <input
+                      type="email"
+                      value={email}
+                      disabled
+                      className="form-control"
+                      style={{ backgroundColor: "white" }}
+                    />
                   </div>
                   <div className="col-md-6 mb-3">
-                    <label><strong>Necessidades:</strong></label>
-                    <input type="text" value={necessidades} className="form-control" />
+                    <label>
+                      <strong>Necessidades:</strong>
+                    </label>
+                    <input
+                      type="text"
+                      value={necessidades}
+                      className="form-control"
+                    />
                   </div>
                 </div>
 
@@ -187,7 +229,10 @@ export default function PerfilPaciente() {
                   <button className="btn btn-danger" onClick={abrirConfirmacao}>
                     Deletar Conta
                   </button>
-                  <button className="btn btn-primary ms-2" onClick={abrirConfirmacao}>
+                  <button
+                    className="btn btn-primary ms-2"
+                    onClick={abrirConfirmacao}
+                  >
                     Salvar Alterações
                   </button>
                 </div>

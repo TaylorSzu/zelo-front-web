@@ -1,6 +1,13 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { FaUser, FaCog, FaCalendarAlt, FaMoneyBillWave, FaUserFriends, FaBars } from 'react-icons/fa';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  FaUser,
+  FaCog,
+  FaCalendarAlt,
+  FaMoneyBillWave,
+  FaUserFriends,
+  FaBars,
+} from "react-icons/fa";
 
 const SidebarContratante = (props) => {
   const [collapsed, setCollapsed] = useState(false);
@@ -13,9 +20,20 @@ const SidebarContratante = (props) => {
     <div className="container-fluid">
       <div className="row">
         {/* Sidebar */}
-        <div className={`col-auto bg-primary text-white d-flex flex-column p-0 ${collapsed ? 'min-vh-100' : 'min-vh-100'}`} style={{ width: collapsed ? '70px' : '220px', transition: '0.3s' }}>
-          <div className="d-flex justify-content-start align-items-center py-3" style={{ marginLeft: '11px' }}>
-            <button className="btn btn-link text-white aling-items-center" onClick={toggleSidebar}>
+        <div
+          className={`col-auto bg-primary text-white d-flex flex-column p-0 ${
+            collapsed ? "min-vh-100" : "min-vh-100"
+          }`}
+          style={{ width: collapsed ? "70px" : "220px", transition: "0.3s" }}
+        >
+          <div
+            className="d-flex justify-content-start align-items-center py-3"
+            style={{ marginLeft: "11px" }}
+          >
+            <button
+              className="btn btn-link text-white aling-items-center"
+              onClick={toggleSidebar}
+            >
               <FaBars />
               {!collapsed && <span className="ms-2">Menu - zello</span>}
             </button>
@@ -29,31 +47,33 @@ const SidebarContratante = (props) => {
             </li>
             <li>
               <Link to="/configuracoes" className="nav-link text-white">
-                <FaCog /> {!collapsed && <span className="ms-2">Configurações</span>}
+                <FaCog />{" "}
+                {!collapsed && <span className="ms-2">Configurações</span>}
               </Link>
             </li>
             <li>
               <Link to="/agendamentos" className="nav-link text-white">
-                <FaCalendarAlt /> {!collapsed && <span className="ms-2">Agendamentos</span>}
+                <FaCalendarAlt />{" "}
+                {!collapsed && <span className="ms-2">Agendamentos</span>}
               </Link>
             </li>
             <li>
               <Link to="/pagamentos" className="nav-link text-white">
-                <FaMoneyBillWave /> {!collapsed && <span className="ms-2">Pagamentos</span>}
+                <FaMoneyBillWave />{" "}
+                {!collapsed && <span className="ms-2">Pagamentos</span>}
               </Link>
             </li>
             <li>
               <Link to="/meus-idosos" className="nav-link text-white">
-                <FaUserFriends /> {!collapsed && <span className="ms-2">Meus Idosos</span>}
+                <FaUserFriends />{" "}
+                {!collapsed && <span className="ms-2">Meus Idosos</span>}
               </Link>
             </li>
           </ul>
         </div>
 
         {/* Conteúdo principal */}
-        <div className="col p-4">
-          {props.children}
-        </div>
+        <div className="col p-4">{props.children}</div>
       </div>
     </div>
   );

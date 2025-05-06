@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
-import SidebarContratante from "./utils/sideBarContratanate.jsx";
+import SidebarContratante from "./utils/sideBarContratante.jsx";
 
 export default function Dashboard() {
   const [date, setDate] = useState("");
@@ -13,9 +13,12 @@ export default function Dashboard() {
     const fetchCuidadorInfo = async () => {
       const id = localStorage.getItem("cuidadorId");
       try {
-        const response = await axios.get(`http://localhost:5171/cuidador/encontrar/${id}`, {
-          withCredentials: true,
-        });
+        const response = await axios.get(
+          `http://localhost:5171/cuidador/encontrar/${id}`,
+          {
+            withCredentials: true,
+          }
+        );
         if (response.status === 200) {
           setCuidador(response.data);
         }
@@ -46,9 +49,13 @@ export default function Dashboard() {
     };
 
     try {
-      const response = await axios.post("http://localhost:5171/agendamento/registrar", agendamento, {
-        withCredentials: true,
-      });
+      const response = await axios.post(
+        "http://localhost:5171/agendamento/registrar",
+        agendamento,
+        {
+          withCredentials: true,
+        }
+      );
 
       if (response.status === 201 || response.status === 200) {
         setMensagem("Agendamento realizado com sucesso!");
@@ -67,7 +74,11 @@ export default function Dashboard() {
         <h2 className="mb-4">Agendar Cuidador</h2>
 
         {mensagem && (
-          <div className={`alert ${mensagem.includes("sucesso") ? "alert-success" : "alert-danger"}`}>
+          <div
+            className={`alert ${
+              mensagem.includes("sucesso") ? "alert-success" : "alert-danger"
+            }`}
+          >
             {mensagem}
           </div>
         )}
@@ -87,24 +98,43 @@ export default function Dashboard() {
                     objectFit: "cover",
                     border: "2px solid #0d6efd",
                     pointerEvents: "none",
-                    userSelect: "none"
+                    userSelect: "none",
                   }}
                 />
               </div>
 
               {/* Coluna das informações */}
               <div className="col-md-8">
-                <h1 className="text-primary fw-bold">{cuidador?.User?.nome || "Nome não informado"}</h1>
-                <p><strong>Especialidade:</strong> {cuidador?.especialidade || "Não informado"}</p>
-                <p><strong>Disponibilidade:</strong> {cuidador?.disponibilidade || "Não informado"}</p>
-                <p><strong>Valor Diária:</strong> <span className="badge bg-info">R$ {cuidador?.valorHora || "0,00"}</span></p>
+                <h1 className="text-primary fw-bold">
+                  {cuidador?.User?.nome || "Nome não informado"}
+                </h1>
+                <p>
+                  <strong>Especialidade:</strong>{" "}
+                  {cuidador?.especialidade || "Não informado"}
+                </p>
+                <p>
+                  <strong>Disponibilidade:</strong>{" "}
+                  {cuidador?.disponibilidade || "Não informado"}
+                </p>
+                <p>
+                  <strong>Valor Diária:</strong>{" "}
+                  <span className="badge bg-info">
+                    R$ {cuidador?.valorHora || "0,00"}
+                  </span>
+                </p>
 
                 <div className="mb-1">
-                  <p><strong>Avaliação:</strong></p>
+                  <p>
+                    <strong>Avaliação:</strong>
+                  </p>
                   {[...Array(5)].map((_, index) => (
                     <i
                       key={index}
-                      className={index < (cuidador?.avaliacao || 4) ? "bi bi-star-fill text-warning" : "bi bi-star text-warning"}
+                      className={
+                        index < (cuidador?.avaliacao || 4)
+                          ? "bi bi-star-fill text-warning"
+                          : "bi bi-star text-warning"
+                      }
                     ></i>
                   ))}
                 </div>
@@ -112,20 +142,33 @@ export default function Dashboard() {
             </div>
           </div>
         ) : (
-          <div className="alert alert-info">Carregando informações do cuidador...</div>
+          <div className="alert alert-info">
+            Carregando informações do cuidador...
+          </div>
         )}
-
 
         <form className="card shadow p-4" onSubmit={handleAgendar}>
           <div className="row mb-3">
             <div className="col-md-6">
               <label className="form-label">Data</label>
-              <input type="date" className="form-control" value={date} onChange={(e) => setDate(e.target.value)} required />
+              <input
+                type="date"
+                className="form-control"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                required
+              />
             </div>
 
             <div className="col-md-6">
               <label className="form-label">Hora</label>
-              <input type="time" className="form-control" value={time} onChange={(e) => setTime(e.target.value)} required />
+              <input
+                type="time"
+                className="form-control"
+                value={time}
+                onChange={(e) => setTime(e.target.value)}
+                required
+              />
             </div>
           </div>
 
