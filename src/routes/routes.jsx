@@ -15,7 +15,6 @@ export default function AppRoutes() {
     <Router>
       <Routes>
       <Route path="*" element={<Navigate to="/home"/>} />
-  
         <Route path="/home" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/cadastro" element={<Cadastro />} />
