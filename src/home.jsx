@@ -7,7 +7,7 @@ export default function Home() {
       <nav className="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
         <div className="container">
           <a className="navbar-brand fw-bold text-primary" href="#">
-            Zelo
+            zEllo
           </a>
           <button
             className="navbar-toggler"

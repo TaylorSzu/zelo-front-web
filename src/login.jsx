@@ -33,8 +33,8 @@ export default function Login() {
             // Salvar o token no cookie
             Cookies.set("token", response.data.token, { expires: 7 }); // Token expira em 7 dias, você pode ajustar
 
+            navigate("/paciente");
             // Redirecionar após login bem-sucedido
-            navigate("/dashboard"); // Ajuste a rota conforme necessário
         }).catch((error) => {
             // Erro no login
             setError("E-mail ou senha incorretos.");
