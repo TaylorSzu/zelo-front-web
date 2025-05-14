@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import Cookies from "js-cookie";
-import SidebarContratante from "./utils/sideBarContratante.jsx";
+import SidebarContratante from "./utils/sidebarContratante.jsx";
 import Mascara from "./utils/mascaras.jsx";
 import ConfirmarSenha from "./utils/confirmarSenha.jsx";
 

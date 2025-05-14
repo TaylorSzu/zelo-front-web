@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import Home from "../home.jsx";
 import Cadastro from "../cadastro.jsx";
 import Login from "../login.jsx";
@@ -8,13 +13,13 @@ import PerfilCuidador from "../perfilCuidador.jsx";
 import Agendamentos from "../agendamento.jsx";
 import MarcaAgendamento from "../marcaAgendamento.jsx";
 import PerfilContratante from "../perfilContratante.jsx";
-import SidebarContratante from "../utils/sideBarContratante.jsx";
+import SidebarContratante from "../utils/sidebarContratante.jsx";
 
 export default function AppRoutes() {
   return (
     <Router>
       <Routes>
-      <Route path="*" element={<Navigate to="/home"/>} />
+        <Route path="*" element={<Navigate to="/home" />} />
         <Route path="/home" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/cadastro" element={<Cadastro />} />

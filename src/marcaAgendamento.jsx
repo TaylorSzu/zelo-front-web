@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
-import SidebarContratante from "./utils/sideBarContratante.jsx";
+import SidebarContratante from "./utils/sidebarContratante.jsx";
 
 export default function Dashboard() {
   const [date, setDate] = useState("");

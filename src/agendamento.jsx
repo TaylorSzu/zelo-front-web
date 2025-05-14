@@ -6,7 +6,7 @@ import ptBrLocale from "@fullcalendar/core/locales/pt-br";
 import { format, parseISO } from "date-fns";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "@fullcalendar/daygrid";
-import SidebarContratante from "./utils/sideBarContratante";
+import SidebarContratante from "./utils/sidebarContratante";
 
 const AgendamentosDashboard = () => {
   const [eventos, setEventos] = useState([]);
