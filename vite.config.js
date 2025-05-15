@@ -11,6 +11,7 @@ export default defineConfig({
       '/usuario': {
         target: 'http://localhost:5171',
         changeOrigin: true,
+      },
     hmr: {
       protocol: 'wss',
       host: 'zelloapp.com.br',
