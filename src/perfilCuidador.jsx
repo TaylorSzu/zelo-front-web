@@ -38,7 +38,7 @@ export default function PerfilCuidador() {
       }
 
       const response = await axios.get(
-        "http://zelloapp.com.br/usuario/encontrar",
+        "https://zelloapp.com.br/usuario/encontrar",
         { withCredentials: true }
       );
 

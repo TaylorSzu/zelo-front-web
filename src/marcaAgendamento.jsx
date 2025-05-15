@@ -14,7 +14,7 @@ export default function Dashboard() {
       const id = localStorage.getItem("cuidadorId");
       try {
         const response = await axios.get(
-          `http://zelloapp.com.br/cuidador/encontrar/${id}`,
+          `https://zelloapp.com.br/cuidador/encontrar/${id}`,
           {
             withCredentials: true,
           }

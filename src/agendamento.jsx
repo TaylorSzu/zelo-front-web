@@ -16,7 +16,7 @@ const AgendamentosDashboard = () => {
     async function buscarAgendamentos() {
       try {
         const resposta = await fetch(
-          "http://zelloapp.com.br/agendamento/listar/contratante"
+          "https://zelloapp.com.br/agendamento/listar/contratante"
         );
         const dados = await resposta.json();
 
