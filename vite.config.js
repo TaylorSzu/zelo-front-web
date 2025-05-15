@@ -7,7 +7,10 @@ export default defineConfig({
   server: {
     host: '127.0.0.1',
     port: 5173,
-    
+    proxy: {
+      '/usuario': {
+        target: 'http://localhost:5171',
+        changeOrigin: true,
     hmr: {
       protocol: 'wss',
       host: 'zelloapp.com.br',
