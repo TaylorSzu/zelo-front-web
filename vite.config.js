@@ -7,10 +7,6 @@ export default defineConfig({
   server: {
     host: '127.0.0.1',
     port: 5173,
-     https: {
-      key: fs.readFileSync('./certs/localhost-key.pem'),
-      cert: fs.readFileSync('./certs/localhost-cert.pem'),
-    },
 
     hmr: {
       protocol: 'wss',
