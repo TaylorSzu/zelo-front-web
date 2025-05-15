@@ -14,7 +14,7 @@ export default defineConfig({
         changeOrigin: true,
       },
     hmr: {
-      protocol: 'wss',
+      protocol: 'ws',
       host: 'zelloapp.com.br',
       port: 5173,
     }
