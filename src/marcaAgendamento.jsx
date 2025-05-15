@@ -14,7 +14,7 @@ export default function Dashboard() {
       const id = localStorage.getItem("cuidadorId");
       try {
         const response = await axios.get(
-          `http://localhost:5171/cuidador/encontrar/${id}`,
+          `http://zelloapp.com.br/cuidador/encontrar/${id}`,
           {
             withCredentials: true,
           }
@@ -50,7 +50,7 @@ export default function Dashboard() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5171/agendamento/registrar",
+        "http://zelloapp.com.br/agendamento/registrar",
         agendamento,
         {
           withCredentials: true,
