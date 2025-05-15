@@ -7,8 +7,10 @@ export default defineConfig({
   server: {
     host: '127.0.0.1',
     port: 5173,
+    https: true,
+
     hmr: {
-      protocol: 'ws',
+      protocol: 'wss',
       host: 'zelloapp.com.br',
       port: 5173,
     }
