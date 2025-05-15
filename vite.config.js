@@ -5,6 +5,12 @@ import react from '@vitejs/plugin-react-swc'
 export default defineConfig({
   plugins: [react()],
   server: {
-    allowedHosts: ['zelloapp.com.br', 'localhost'],
+    host: 'zelloapp.com.br',
+    port: 5173,
+    hmr: {
+      protocol: 'ws',
+      host: 'zelloapp.com.br',
+      port: 5173,
+    }
   }
 })
