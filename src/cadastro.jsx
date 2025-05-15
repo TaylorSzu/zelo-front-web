@@ -28,7 +28,7 @@ export default function Cadastro() {
         }
 
         try {
-            const response = await axios.post("https://zelloapp.com.br/usuario/registrar", {
+            const response = await axios.post("https://127.0.0.1/usuario/registrar", {
                 nome,
                 cpf: removerMascara(cpf),
                 endereco,

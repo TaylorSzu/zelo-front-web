@@ -17,7 +17,7 @@ export default function Dashboard() {
     try {
       setLoading(true);
       const response = await axios.get(
-        "https://zelloapp.com.br/cuidador/listar",
+        "https://127.0.0.1/cuidador/listar",
         {
           withCredentials: true,
         }

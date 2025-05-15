@@ -31,7 +31,7 @@ export default function Login() {
     setError("");
 
     axios
-      .post("https://zelloapp.com.br/usuario/login", { email, senha })
+      .post("https://127.0.0.1/usuario/login", { email, senha })
       .then((response) => {
         const { token, usuario } = response.data;
 

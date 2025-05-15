@@ -36,7 +36,7 @@ export default function PerfilPaciente() {
       }
 
       const response = await axios.get(
-        "https://zelloapp.com.br/usuario/encontrar",
+        "https://127.0.0.1/usuario/encontrar",
         { withCredentials: true }
       );
 
