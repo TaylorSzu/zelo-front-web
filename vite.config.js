@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react-swc'
 export default defineConfig({
   plugins: [react()],
   server: {
-    host: '0.0.0.0',
+    host: 'zelloapp.com.br',
     port: 5173,
     proxy: {
       '/usuario': {
