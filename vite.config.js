@@ -10,8 +10,8 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 5173,
     https: {
-      key: fs.readFileSync(path.resolve(__dirname, 'certs', 'localhost-key.pem')),
-      cert: fs.readFileSync(path.resolve(__dirname, 'certs', 'localhost.pem')),
+      key: fs.readFileSync(path.resolve(__dirname, 'certs', 'zelloapp.pem')),
+      cert: fs.readFileSync(path.resolve(__dirname, 'certs', 'zelloapp.pem')),
     },
     proxy: {
       '/usuario': {
