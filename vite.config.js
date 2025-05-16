@@ -11,10 +11,10 @@ export default defineConfig({
     allowedHosts: ['zelloapp.com.br', 'localhost'],
     host: '0.0.0.0',
     port: 5173,
-    https: {
-      key: fs.readFileSync(path.resolve(__dirname, 'certs', 'zelloapp-cert.pem')),
-      cert: fs.readFileSync(path.resolve(__dirname, 'certs', 'zelloapp-cert.pem')),
-    },
+    // https: {
+    //   key: fs.readFileSync(path.resolve(__dirname, 'certs', 'zelloapp-cert.pem')),
+    //   cert: fs.readFileSync(path.resolve(__dirname, 'certs', 'zelloapp-cert.pem')),
+    // },
     proxy: {
       '/usuario': {
         target: 'http://localhost:5171',
