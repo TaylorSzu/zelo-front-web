@@ -9,7 +9,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     allowedHosts: ['zelloapp.com.br'],
-    host: 'zelloapp.com.br',
+    host: '0.0.0.0',
     port: 5173,
     // https: {
     //   key: fs.readFileSync(path.resolve(__dirname, 'certs', 'zelloapp.pem')),
