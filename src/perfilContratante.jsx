@@ -99,18 +99,19 @@ export default function PerfilPaciente() {
   const confirmarSenha = async (senhaDigitada) => {
     try {
       const response = await axios.delete(
-        `http://localhost:5171/usuario/deletar/${senhaDigitada}`,
+        `http://localhost:5171/usuario/excluir/${senhaDigitada}`,
         {
           withCredentials: true,
         }
       );
 
       if (response.status === 200) {
-        alert("Conta deletada com sucesso!");
+        toast.success("Perfil atualizado com sucesso!");
+        await new Promise((r) => setTimeout(r, 5000 ));
         Cookies.remove("token");
         navigate("/login");
       } else {
-        alert("Não foi possível deletar a conta.");
+        toast.error("Não foi possível deletar a conta.");
       }
     } catch (error) {
       console.error("Erro ao deletar conta:", error);
@@ -165,6 +166,7 @@ export default function PerfilPaciente() {
       );
 
       if (response.status === 200 && response2.status === 200) {
+        sessionStorage.removeItem("idContratante");
         toast.success("Perfil atualizado com sucesso!");
         await new Promise((r) => setTimeout(r, 500));
         await handleLoad();
