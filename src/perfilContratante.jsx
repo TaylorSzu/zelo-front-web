@@ -5,9 +5,11 @@ import axios from "axios";
 axios.defaults.withCredentials = true;
 import Cookies from "js-cookie";
 import SidebarContratante from "./utils/sidebarContratante.jsx";
-import Mascara from "./utils/mascaras.jsx";
+import Mascara, { removerMascara } from "./utils/mascaras.jsx";
 import CadastrarContratante from "./utils/cadastrarContratante.jsx";
 import ConfirmarSenha from "./utils/confirmarSenha.jsx";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function PerfilPaciente() {
   const [id, setId] = useState(null);
@@ -18,6 +20,7 @@ export default function PerfilPaciente() {
   const [email, setEmail] = useState("");
   const [necessidades, setNecessidades] = useState("");
   const [foto, setFoto] = useState(null);
+  const [senha, setSenha] = useState("");
   const [tipoUsuario, setTipoUsuario] = useState("Paciente");
   const [status, setStatus] = useState("Ativo");
   const [loading, setLoading] = useState(false);
@@ -57,10 +60,13 @@ export default function PerfilPaciente() {
         setFoto(userData.foto || null);
         setTipoUsuario(userData.tipoUsuario || "Paciente");
         setStatus(userData.status || "Ativo");
+        setSenha(userData.senha);
 
         if (!userData.Contratantes || userData.Contratantes.length === 0) {
           setPrecisaCadastrarContratante(true);
         } else {
+          const idContratante = userData.Contratantes[0].id;
+          sessionStorage.setItem("idContratante", idContratante);
           setNecessidades(userData.Contratantes[0].necessidades || "");
           setPrecisaCadastrarContratante(false);
         }
@@ -133,38 +139,41 @@ export default function PerfilPaciente() {
       const usuario = {
         id,
         nome,
-        cpf,
+        cpf: removerMascara(cpf),
         endereco,
-        telefone,
+        telefone: removerMascara(telefone),
+        email,
+        senha,
         tipoUsuario,
         status,
       };
 
-      const contratante = {
-        id,
-        necessidades,
-      };
+      const idContratante = sessionStorage.getItem("idContratante");
 
       const response = await axios.put(
-        "http://localhost:5171/usuario/atualizar",
+        "http://localhost:5171/usuario/alterar",
         usuario,
         { withCredentials: true }
       );
 
+      console.log("Resposta da API:", idContratante, necessidades);
+
       const response2 = await axios.put(
-        "http://localhost:5171/contratante/atualizar",
-        contratante,
+        `http://localhost:5171/contratante/alterar/${idContratante}`,
+        { necessidades: necessidades },
         { withCredentials: true }
       );
 
       if (response.status === 200 && response2.status === 200) {
-        alert("Perfil atualizado com sucesso!");
+        toast.success("Perfil atualizado com sucesso!");
+        await new Promise((r) => setTimeout(r, 500));
+        await handleLoad();
       } else {
-        alert("Erro ao atualizar perfil.");
+        toast.error("Erro ao atualizar perfil. Verifique os dados e tente novamente.");
       }
     } catch (error) {
       console.error("Erro ao atualizar perfil:", error);
-      alert(
+      toast.error(
         error.response?.data?.mensagem ||
         "Erro ao atualizar perfil. Tente novamente."
       );
@@ -309,6 +318,7 @@ export default function PerfilPaciente() {
                   </div>
 
                   <input type="hidden" value={id || ""} />
+                  <input type="hidden" value={senha} />
                   <input type="hidden" value={tipoUsuario} />
                   <input type="hidden" value={status} />
                 </div>
@@ -324,7 +334,7 @@ export default function PerfilPaciente() {
                     className="btn btn-primary"
                     onClick={handleUpdate}
                   >
-                    Salvar
+                    Salvar Alterações
                   </button>
                 </div>
               </div>
@@ -338,6 +348,19 @@ export default function PerfilPaciente() {
           onFechar={fecharConfirmacao}
         />
       )}
+
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </SidebarContratante>
   );
 }
