@@ -4,19 +4,26 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import Cookies from "js-cookie";
 import SidebarCuidador from "./utils/sidebarCuidador.jsx";
-import Mascara from "./utils/mascaras.jsx";
+import Mascara, { removerMascara, removerMascaraDinheiro } from "./utils/mascaras.jsx";
 import ConfirmarSenha from "./utils/confirmarSenha.jsx";
 import CadastrarCuidador from "./utils/cadastrarCuidador.jsx";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function PerfilCuidador() {
+  const [id, setId] = useState(null);
   const [nome, setNome] = useState("");
   const [cpf, setCpf] = useState("");
   const [endereco, setEndereco] = useState("");
   const [telefone, setTelefone] = useState("");
   const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [tipoUsuario, setTipoUsuario] = useState("Paciente");
+  const [status, setStatus] = useState("Ativo");
   const [disponibilidade, setDisponibilidade] = useState("");
   const [valorHora, setValorHora] = useState("");
   const [especialidade, setEspecialidade] = useState("");
+  const [statusVerificacao, setStatusVerificacao] = useState(false);
   const [foto, setFoto] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -50,16 +57,27 @@ export default function PerfilCuidador() {
         if (!userData.Cuidadores || userData.Cuidadores.length === 0) {
           setPrecisaCadastrar(true);
         } else {
+          setId(userData.id);
           setNome(userData.nome);
           setCpf(userData.cpf);
           setEndereco(userData.endereco);
           setTelefone(userData.telefone);
           setEmail(userData.email);
+          setSenha(userData.senha);
+          setTipoUsuario(userData.tipoUsuario || "Cuidador");
+          setStatus(userData.status || "Ativo");
           setDisponibilidade(userData.Cuidadores[0]?.disponibilidade || "");
-          setValorHora(userData.Cuidadores[0]?.valorHora || "");
+          const valorDoBanco = parseFloat(userData.Cuidadores[0]?.valorHora);
+          const valorFormatado = valorDoBanco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+          setValorHora(valorFormatado);
           setEspecialidade(userData.Cuidadores[0]?.especialidade || "");
+          setStatusVerificacao(userData.statusVerificacao || false);
           setFoto(userData.foto || null);
+          const idCuidador = userData.Cuidadores[0].id;
+          sessionStorage.setItem("idCuidador", idCuidador);
           setPrecisaCadastrar(false);
+
+          console.log("valor:", userData.Cuidadores[0].valorHora);
         }
       } else {
         setError("Erro ao recuperar os dados.");
@@ -67,6 +85,71 @@ export default function PerfilCuidador() {
     } catch (error) {
       setError("Erro ao carregar perfil. Tente novamente.");
       console.error("Erro na requisição:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdate = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const token = Cookies.get("token");
+      const idCuidador = sessionStorage.getItem("idCuidador");
+
+      if (!token) {
+        setError("Token de autenticação não encontrado");
+        setLoading(false);
+        return;
+      }
+
+      const usuario = {
+        id,
+        nome,
+        cpf: removerMascara(cpf),
+        endereco,
+        telefone: removerMascara(telefone),
+        email,
+        senha,
+        tipoUsuario,
+        status,
+      };
+
+      const cuidador = {
+        id: idCuidador,
+        disponibilidade,
+        valorHora: removerMascaraDinheiro(valorHora),
+        especialidade,
+        statusVerificacao,
+      }
+
+      const response = await axios.put(
+        "http://localhost:5171/usuario/alterar",
+        usuario,
+        { withCredentials: true }
+      );
+
+      const response2 = await axios.put(
+        `http://localhost:5171/cuidador/alterar/${idCuidador}`,
+        cuidador,
+        { withCredentials: true }
+      );
+
+      if (response.status === 200 && response2.status === 200) {
+        sessionStorage.removeItem("idContratante");
+        toast.success("Perfil atualizado com sucesso!");
+        await new Promise((r) => setTimeout(r, 500));
+        await handleLoad();
+      } else {
+        toast.error("Erro ao atualizar perfil. Verifique os dados e tente novamente.");
+      }
+    } catch (error) {
+      console.error("Erro ao atualizar perfil:", error);
+      toast.error(
+        error.response?.data?.mensagem ||
+        "Erro ao atualizar perfil. Tente novamente."
+      );
     } finally {
       setLoading(false);
     }
@@ -182,7 +265,12 @@ export default function PerfilCuidador() {
                 <div className="row">
                   <div className="col-md-6 mb-3">
                     <label><strong>Nome:</strong></label>
-                    <input type="text" value={nome} className="form-control" />
+                    <input 
+                      type="text" 
+                      value={nome} 
+                      onChange={(e) => setNome(e.target.value)}
+                      className="form-control" 
+                    />
                   </div>
                   <div className="col-md-6 mb-3">
                     <label><strong>CPF:</strong></label>
@@ -199,6 +287,7 @@ export default function PerfilCuidador() {
                     <input
                       type="text"
                       value={endereco}
+                      onChange={(e) => setEndereco(e.target.value)}
                       className="form-control"
                     />
                   </div>
@@ -236,7 +325,7 @@ export default function PerfilCuidador() {
                     <Mascara
                       type="dinheiro"
                       value={valorHora}
-                      onChange={(e) => setValorHora(e.target.value)}
+                      onChange={(e) => setValorHora((e.target.value))}
                       placeholder="Infome o seu valor por diaria"
                       className="form-control"
                     />
@@ -250,6 +339,11 @@ export default function PerfilCuidador() {
                       className="form-control"
                     />
                   </div>
+                  <input type="hidden" value={id || ""} />
+                  <input type="hidden" value={senha} />
+                  <input type="hidden" value={tipoUsuario} />
+                  <input type="hidden" value={status} />
+                  <input type="hidden" value={statusVerificacao} />
                 </div>
 
                 {/* Botões */}
@@ -262,7 +356,7 @@ export default function PerfilCuidador() {
                   </button>
                   <button
                     className="btn btn-primary ms-2"
-                    onClick={abrirConfirmacao}
+                    onClick={handleUpdate}
                   >
                     Salvar Alterações
                   </button>
@@ -280,6 +374,18 @@ export default function PerfilCuidador() {
           </div>
         </div>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </SidebarCuidador>
   );
 }
