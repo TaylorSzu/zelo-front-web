@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import SidebBarCuidador from "./utils/sidebarCuidador.jsx";
 
 const PainelCuidador = () => {
     const [agendamentos, setAgendamentos] = useState([]);
@@ -8,27 +9,10 @@ const PainelCuidador = () => {
 
     return (
         <div>
-            {/* Top Bar */}
-            <div className="top-bar bg-primary text-white p-2 d-flex justify-content-between align-items-center fixed-top">
-                <div className="d-flex align-items-center">
-                    <img src="/logo.jpg" alt="Logo" height="40" className="me-2" />
-                    <span className="fs-4">zElo</span>
-                </div>
-                <div>
-                    {usuario && <span>Bem-vindo, {usuario.nome}</span>}
-                </div>
-            </div>
-            
-            {/* Sidebar */}
-            <div className="sidebar bg-primary text-white p-3 position-fixed" style={{ top: 55, width: 250, height: "100vh" }}>
-                <h4>Menu</h4>
-                <ul className="nav flex-column">
-                    <li className="nav-item"><a href="#" className="nav-link text-white">Meus Agendamentos</a></li>
-                    <li className="nav-item"><a href="#" className="nav-link text-white">Meus Pagamentos</a></li>
-                    <li className="nav-item"><a href="#" className="nav-link text-white">Perfil</a></li>
-                    <li className="nav-item"><a href="#" className="nav-link text-white">Suporte</a></li>
-                </ul>
-            </div>
+        {/* Sidebar */}
+        <div className="col-auto p-0">
+          <SidebBarCuidador />
+        </div>
 
             {/* Conteúdo Principal */}
             <div className="container-content" style={{ marginLeft: 260, padding: "80px 20px" }}>

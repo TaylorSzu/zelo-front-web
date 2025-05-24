@@ -40,7 +40,7 @@ const SidebarCuidador = (props) => {
 
           <ul className="nav nav-pills flex-column mb-auto px-2">
             <li className="nav-item">
-              <Link to="/perfil" className="nav-link text-white">
+              <Link to="/cuidador/perfil" className="nav-link text-white">
                 <FaUser /> {!collapsed && <span className="ms-2">Perfil</span>}
               </Link>
             </li>

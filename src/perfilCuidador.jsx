@@ -6,6 +6,7 @@ import Cookies from "js-cookie";
 import SidebarCuidador from "./utils/sidebarCuidador.jsx";
 import Mascara from "./utils/mascaras.jsx";
 import ConfirmarSenha from "./utils/confirmarSenha.jsx";
+import CadastrarCuidador from "./utils/cadastrarCuidador.jsx";
 
 export default function PerfilCuidador() {
   const [nome, setNome] = useState("");
@@ -20,6 +21,7 @@ export default function PerfilCuidador() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [mostrarConfirmacao, setMostrarConfirmacao] = useState(false);
+  const [precisaCadastrar, setPrecisaCadastrar] = useState(false);
 
   const navigate = useNavigate();
 
@@ -38,21 +40,27 @@ export default function PerfilCuidador() {
       }
 
       const response = await axios.get(
-        "https://1/usuario/encontrar",
+        "http://localhost:5171/usuario/encontrar",
         { withCredentials: true }
       );
 
       if (response.status === 200) {
         const userData = response.data;
-        setNome(userData.nome);
-        setCpf(userData.cpf);
-        setEndereco(userData.endereco);
-        setTelefone(userData.telefone);
-        setEmail(userData.email);
-        setDisponibilidade(userData.Cuidadores[0]?.disponibilidade || "");
-        setValorHora(userData.Cuidadores[0]?.valorHora || "");
-        setEspecialidade(userData.Cuidadores[0]?.especialidade || "");
-        setFoto(userData.foto || null);
+
+        if (!userData.Cuidadores || userData.Cuidadores.length === 0) {
+          setPrecisaCadastrar(true);
+        } else {
+          setNome(userData.nome);
+          setCpf(userData.cpf);
+          setEndereco(userData.endereco);
+          setTelefone(userData.telefone);
+          setEmail(userData.email);
+          setDisponibilidade(userData.Cuidadores[0]?.disponibilidade || "");
+          setValorHora(userData.Cuidadores[0]?.valorHora || "");
+          setEspecialidade(userData.Cuidadores[0]?.especialidade || "");
+          setFoto(userData.foto || null);
+          setPrecisaCadastrar(false);
+        }
       } else {
         setError("Erro ao recuperar os dados.");
       }
@@ -84,6 +92,14 @@ export default function PerfilCuidador() {
     fecharConfirmacao();
     // Aqui você pode seguir com a ação de deletar ou atualizar
   };
+
+  if (precisaCadastrar) {
+    return (
+      <SidebarCuidador>
+        <CadastrarCuidador onCadastroSucesso={handleLoad} />
+      </SidebarCuidador>
+    );
+  }
 
   return (
     <SidebarCuidador>
@@ -143,8 +159,12 @@ export default function PerfilCuidador() {
                           opacity: 0,
                           transition: "opacity 0.3s",
                         }}
-                        onMouseEnter={(e) => (e.currentTarget.style.opacity = 1)}
-                        onMouseLeave={(e) => (e.currentTarget.style.opacity = 0)}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.opacity = 1)
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.opacity = 0)
+                        }
                       >
                         Alterar
                         <input
@@ -166,40 +186,84 @@ export default function PerfilCuidador() {
                   </div>
                   <div className="col-md-6 mb-3">
                     <label><strong>CPF:</strong></label>
-                    <Mascara type="cpf" value={cpf} onChange={(e) => setCpf(e.target.value)} placeholder="Digite seu CPF" className="form-control"/>
+                    <Mascara
+                      type="cpf"
+                      value={cpf}
+                      onChange={(e) => setCpf(e.target.value)}
+                      placeholder="Digite seu CPF"
+                      className="form-control"
+                    />
                   </div>
                   <div className="col-md-6 mb-3">
                     <label><strong>Endereço:</strong></label>
-                    <input type="text" value={endereco} className="form-control" />
+                    <input
+                      type="text"
+                      value={endereco}
+                      className="form-control"
+                    />
                   </div>
                   <div className="col-md-6 mb-3">
                     <label><strong>Telefone:</strong></label>
-                    <Mascara type="telefone" value={telefone} onChange={(e) => setTelefone(e.target.value)}  placeholder="Digite seu telefone" className="form-control"/>
+                    <Mascara
+                      type="telefone"
+                      value={telefone}
+                      onChange={(e) => setTelefone(e.target.value)}
+                      placeholder="Digite seu telefone"
+                      className="form-control"
+                    />
                   </div>
                   <div className="col-md-6 mb-3">
                     <label><strong>Email:</strong></label>
-                    <input type="email" value={email} disabled className="form-control" style={{ backgroundColor : "white" }} />
+                    <input
+                      type="email"
+                      value={email}
+                      disabled
+                      className="form-control"
+                      style={{ backgroundColor: "white" }}
+                    />
                   </div>
                   <div className="col-md-6 mb-3">
                     <label><strong>Disponibilidade:</strong></label>
-                    <input type="text" value={disponibilidade} onChange={(e) => setDisponibilidade(e.target.value)} className="form-control" />
+                    <input
+                      type="text"
+                      value={disponibilidade}
+                      onChange={(e) => setDisponibilidade(e.target.value)}
+                      className="form-control"
+                    />
                   </div>
                   <div className="col-md-6 mb-3">
                     <label><strong>Valor Hora:</strong></label>
-                    <input type="text" value={valorHora} onChange={(e) => setValorHora(e.target.value)} className="form-control" />
+                    <Mascara
+                      type="dinheiro"
+                      value={valorHora}
+                      onChange={(e) => setValorHora(e.target.value)}
+                      placeholder="Infome o seu valor por diaria"
+                      className="form-control"
+                    />
                   </div>
                   <div className="col-md-6 mb-3">
                     <label><strong>Especialidade:</strong></label>
-                    <input type="text" value={especialidade} onChange={(e) => setEspecialidade(e.target.value)} className="form-control" />
+                    <input
+                      type="text"
+                      value={especialidade}
+                      onChange={(e) => setEspecialidade(e.target.value)}
+                      className="form-control"
+                    />
                   </div>
                 </div>
 
                 {/* Botões */}
                 <div className="text-center mt-4">
-                  <button className="btn btn-danger" onClick={abrirConfirmacao}>
+                  <button
+                    className="btn btn-danger"
+                    onClick={abrirConfirmacao}
+                  >
                     Deletar Conta
                   </button>
-                  <button className="btn btn-primary ms-2" onClick={abrirConfirmacao}>
+                  <button
+                    className="btn btn-primary ms-2"
+                    onClick={abrirConfirmacao}
+                  >
                     Salvar Alterações
                   </button>
                 </div>

@@ -54,4 +54,20 @@ const Mascara = ({ type, value, onChange, placeholder, className }) => {
 export function removerMascara(valor) {
   return valor.replace(/[^\d]+/g, "");
 }
+
+export function removerMascaraDinheiro(valor, tipo = "texto") {
+  if (!valor) return "";
+
+  if (tipo === "dinheiro") {
+    return valor
+      .replace(/\s/g, '')
+      .replace('R$', '')
+      .replace(/\./g, '')
+      .replace(/,/g, '.')
+      .trim();
+  }
+
+  return valor.replace(/[^\d]+/g, "");
+}
+
 export default Mascara;
