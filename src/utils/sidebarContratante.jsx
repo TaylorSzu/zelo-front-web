@@ -64,7 +64,7 @@ const SidebarContratante = (props) => {
               </Link>
             </li>
             <li>
-              <Link to="/meus-idosos" className="nav-link text-white">
+              <Link to="/idoso" className="nav-link text-white">
                 <FaUserFriends />{" "}
                 {!collapsed && <span className="ms-2">Meus Idosos</span>}
               </Link>

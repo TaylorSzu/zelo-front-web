@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import Cookies from "js-cookie";
-import SidebarCuidador from "./utils/sidebarCuidador.jsx";
-import Mascara, { removerMascara, removerMascaraDinheiro } from "./utils/mascaras.jsx";
-import ConfirmarSenha from "./utils/confirmarSenha.jsx";
-import CadastrarCuidador from "./utils/cadastrarCuidador.jsx";
+import SidebarCuidador from "../utils/sidebarCuidador.jsx";
+import Mascara, { removerMascara, removerMascaraDinheiro } from "../utils/mascaras.jsx";
+import ConfirmarSenha from "../utils/confirmarSenha.jsx";
+import CadastrarCuidador from "../cuidador/cadastrarCuidador.jsx";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 

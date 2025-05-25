@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import Mascara, { removerMascara, removerMascaraDinheiro } from "./mascaras.jsx";
+import Mascara, { removerMascara, removerMascaraDinheiro } from "../utils/mascaras.jsx";
 
 export default function CadastroCuidador({ onConfirmar, onCancelar }) {
   const [disponibilidade, setDisponibilidade] = useState("");

@@ -17,6 +17,26 @@ const Mascara = ({ type, value, onChange, placeholder, className }) => {
       break;
     case "data":
       mask = "00/00/0000";
+      extraProps.blocks = {
+        dia: {
+          mask: IMaskInput.MaskedRange,
+          from: 1,
+          to: 31,
+          maxLength: 2
+        },
+        mes: {
+          mask: IMaskInput.MaskedRange,
+          from: 1,
+          to: 12,
+          maxLength: 2
+        },
+        ano: {
+          mask: IMaskInput.MaskedRange,
+          from: 1900,
+          to: new Date().getFullYear(),
+          maxLength: 4
+        }
+      };
       break;
     case "hora":
       mask = "00:00";
@@ -68,6 +88,20 @@ export function removerMascaraDinheiro(valor, tipo = "texto") {
   }
 
   return valor.replace(/[^\d]+/g, "");
+}
+
+
+export function removerMascaraData(valor) {
+  if (!valor) return "";
+  return valor.replace(/[^\d]+/g, "");
+}
+
+export function converterFormatoData(data) {
+  if (!data) return "";
+  
+  // Converte data do formato yyyy-mm-dd para dd/mm/yyyy
+  const [ano, mes, dia] = data.split(/[-\/]/);
+  return `${dia}/${mes}/${ano}`;
 }
 
 export default Mascara;

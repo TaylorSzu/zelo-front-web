@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import SidebBarCuidador from "./utils/sidebarCuidador.jsx";
+import SidebBarCuidador from "../utils/sidebarCuidador.jsx";
 
 const PainelCuidador = () => {
     const [agendamentos, setAgendamentos] = useState([]);

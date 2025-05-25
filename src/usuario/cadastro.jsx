@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Container, Col, Card, Form, Button, Alert, Spinner } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import Mascara from "./utils/mascaras.jsx";
-import { removerMascara } from "./utils/mascaras.jsx";
+import Mascara from "../utils/mascaras.jsx";
+import { removerMascara } from "../utils/mascaras.jsx";
 
 export default function Cadastro() {
     const [nome, setNome] = useState("");

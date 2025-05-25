@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import axios from "axios";
-import SidebarContratante from "./utils/sidebarContratante.jsx";
+import SidebarContratante from "../utils/sidebarContratante.jsx";
 
 export default function Dashboard() {
   const [cuidadores, setCuidadores] = useState([]);

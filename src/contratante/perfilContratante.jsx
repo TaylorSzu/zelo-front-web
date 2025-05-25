@@ -4,10 +4,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 axios.defaults.withCredentials = true;
 import Cookies from "js-cookie";
-import SidebarContratante from "./utils/sidebarContratante.jsx";
-import Mascara, { removerMascara } from "./utils/mascaras.jsx";
-import CadastrarContratante from "./utils/cadastrarContratante.jsx";
-import ConfirmarSenha from "./utils/confirmarSenha.jsx";
+import SidebarContratante from "../utils/sidebarContratante.jsx";
+import Mascara, { removerMascara } from "../utils/mascaras.jsx";
+import CadastrarContratante from "./cadastrarContratante.jsx";
+import ConfirmarSenha from "../utils/confirmarSenha.jsx";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
