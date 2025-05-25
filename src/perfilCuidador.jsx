@@ -155,6 +155,34 @@ export default function PerfilCuidador() {
     }
   };
 
+  const confirmarSenha = async (senhaDigitada) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:5171/usuario/excluir/${senhaDigitada}`,
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success("Perfil atualizado com sucesso!");
+        await new Promise((r) => setTimeout(r, 5000 ));
+        Cookies.remove("token");
+        navigate("/login");
+      } else {
+        toast.error("Não foi possível deletar a conta.");
+      }
+    } catch (error) {
+      console.error("Erro ao deletar conta:", error);
+      alert(
+        error.response?.data?.mensagem ||
+        "Erro ao deletar conta. Verifique a senha e tente novamente."
+      );
+    } finally {
+      fecharConfirmacao();
+    }
+  };
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -168,12 +196,6 @@ export default function PerfilCuidador() {
 
   const fecharConfirmacao = () => {
     setMostrarConfirmacao(false);
-  };
-
-  const confirmarSenha = () => {
-    console.log("Senha confirmada!");
-    fecharConfirmacao();
-    // Aqui você pode seguir com a ação de deletar ou atualizar
   };
 
   if (precisaCadastrar) {

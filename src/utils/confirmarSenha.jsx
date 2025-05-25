@@ -5,7 +5,7 @@ export default function ConfirmarSenha({ onConfirmar, onCancelar }) {
 
   const handleConfirmar = () => {
     onConfirmar(senha);
-    setSenha(""); // Limpa a senha depois de confirmar
+    setSenha(""); 
   };
 
   return (
