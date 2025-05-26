@@ -20,7 +20,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!email || !senha) {
@@ -31,35 +31,51 @@ export default function Login() {
     setLoading(true);
     setError("");
 
-    axios
-      .post("http://localhost:5171/usuario/login", { email, senha })
-      .then((response) => {
-        const { token, usuario } = response.data;
+    try {
+      const loginResponse = await axios.post("http://localhost:5171/usuario/login", { email, senha });
+      const { token, usuario } = loginResponse.data;
 
-        if (!usuario || !usuario.tipoUsuario) {
-          setError("Erro ao identificar o tipo de usuário.");
-          return;
-        }
+      if (!usuario || !usuario.tipoUsuario) {
+        setError("Erro ao identificar o tipo de usuário.");
+        return;
+      }
 
-        // Salvar token no cookie
-        Cookies.set("token", token, { expires: 7 });
+      // Salvar token no cookie
+      Cookies.set("token", token, { expires: 7 });
 
-        // Redirecionar com base no tipo de usuário (usando if/else como solicitado)
-        if (usuario.tipoUsuario === "Cuidador" || usuario.tipoUsuario === "cuidador") {
+      const response2 = await axios.get(
+        "http://localhost:5171/usuario/encontrar",
+        { withCredentials: true }
+      );
+
+      const usuarioEncontrado = response2.data;
+        
+      // Verificar tipo de usuário e extrair ID específico
+      if (usuario.tipoUsuario === "Cuidador" || usuario.tipoUsuario === "cuidador") {
+        if (usuarioEncontrado.Cuidadores && usuarioEncontrado.Cuidadores.length > 0) {
+          const cuidadorId = usuarioEncontrado.Cuidadores[0].id;
+          sessionStorage.setItem("cuidadorId", cuidadorId);
           navigate("/cuidador");
-        } else if (usuario.tipoUsuario === "Paciente" || usuario.tipoUsuario === "paciente") {
+        } else {
+          setError("Dados do cuidador não encontrados.");
+        }
+      } else if (usuario.tipoUsuario === "Paciente" || usuario.tipoUsuario === "paciente") {
+        if (usuarioEncontrado.Contratantes && usuarioEncontrado.Contratantes.length > 0) {
+          const contratanteId = usuarioEncontrado.Contratantes[0].id;
+          sessionStorage.setItem("contratanteId", contratanteId);
           navigate("/paciente");
         } else {
-          setError("Tipo de usuário não reconhecido.");
+          setError("Dados do contratante não encontrados.");
         }
-      })
-      .catch((error) => {
-        setError("E-mail ou senha incorretos.");
-        console.error("Erro durante login:", error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      } else {
+        setError("Tipo de usuário não reconhecido.");
+      }
+    } catch (error) {
+      setError("E-mail ou senha incorretos.");
+      console.error("Erro durante login:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

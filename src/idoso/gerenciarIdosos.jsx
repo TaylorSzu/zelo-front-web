@@ -22,6 +22,11 @@ export default function GerenciarIdosos() {
 
     useEffect(() => {
         listarIdosos();
+        const cadastroSucesso = sessionStorage.getItem('cadastroIdosoSucesso');
+        if (cadastroSucesso) {
+            toast.success('Idoso cadastrado com sucesso!');
+            sessionStorage.removeItem('cadastroIdosoSucesso');
+        }
     }, []);
 
     const listarIdosos = async () => {
@@ -81,8 +86,19 @@ export default function GerenciarIdosos() {
                         <h3>Gerenciar Idosos</h3>
                     </div>
                     <div className="card-body">
-                        {loading && <p>Carregando...</p>}
-                        {error && <p className="text-danger">{error}</p>}
+                        {loading && (
+                            <div className="text-center">
+                                <div className="spinner-border text-primary" role="status">
+                                    <span className="visually-hidden">Carregando...</span>
+                                </div>
+                                <p className="mt-2">Carregando dados...</p>
+                            </div>
+                        )}
+                        {error && (
+                            <div className="alert alert-danger" role="alert">
+                                {error}
+                            </div>
+                        )}
                         {!loading && (
                             <div>
                                 {/* Botão de cadastrar */}
@@ -168,9 +184,6 @@ export default function GerenciarIdosos() {
             {/* Modal de Cadastro */}
             {showCadastro && (
                 <CadastroIdoso
-                    contratanteId={
-                        idosos.length > 0 ? idosos[0].contratanteId : null
-                    }
                     onConfirmar={() => {
                         setShowCadastro(false);
                         listarIdosos();

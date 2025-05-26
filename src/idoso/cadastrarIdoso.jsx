@@ -1,14 +1,17 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
-export default function CadastroIdoso({ contratanteId, onConfirmar, onCancelar }) {
+export default function CadastroIdoso({ onConfirmar, onCancelar }) {
+  const navigate = useNavigate();
   const [nome, setNome] = useState("");
   const [idade, setIdade] = useState("");
   const [dataNascimento, setDataNascimento] = useState("");
   const [observacoesMedicas, setObservacoesMedicas] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleConfirmar = async () => {
     if (!nome.trim() || !idade || !dataNascimento || !observacoesMedicas.trim()) {
@@ -17,8 +20,9 @@ export default function CadastroIdoso({ contratanteId, onConfirmar, onCancelar }
     }
 
     try {
+      setLoading(true);
       const token = Cookies.get("token");
-
+      const contratanteId = sessionStorage.getItem("contratanteId");
       await axios.post(
         "http://localhost:5171/idoso/registrar",
         {
@@ -33,23 +37,36 @@ export default function CadastroIdoso({ contratanteId, onConfirmar, onCancelar }
         }
       );
 
-      toast.success("Cadastro realizado com sucesso!");
-
       if (onConfirmar) onConfirmar();
 
+      sessionStorage.setItem('cadastroIdosoSucesso', 'true');
+      toast.success("Idoso cadastrado com sucesso!");
       setTimeout(() => {
-        window.location.reload();
-      }, 1500);
+        navigate(0);
+      }, 2000); // 2 segundos
+      
     } catch (error) {
       console.error("Erro ao cadastrar idoso:", error);
       toast.error("Erro ao cadastrar idoso. Tente novamente.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <>
-      <ToastContainer position="top-center" autoClose={1500} />
-
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <div
         className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
         style={{
@@ -112,14 +129,23 @@ export default function CadastroIdoso({ contratanteId, onConfirmar, onCancelar }
             <button
               onClick={onCancelar}
               className="btn btn-secondary w-45"
+              disabled={loading}
             >
               Cancelar
             </button>
             <button
               onClick={handleConfirmar}
               className="btn btn-success w-45"
+              disabled={loading}
             >
-              Confirmar
+              {loading ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  Cadastrando...
+                </>
+              ) : (
+                'Confirmar'
+              )}
             </button>
           </div>
         </div>
