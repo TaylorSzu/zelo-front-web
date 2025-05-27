@@ -32,8 +32,9 @@ export default function GerenciarIdosos() {
     const listarIdosos = async () => {
         try {
             setLoading(true);
+            const contratanteId = sessionStorage.getItem("contratanteId");
             const response = await axios.get(
-                "http://localhost:5171/idoso/listar",
+                `http://localhost:5171/idoso/listar/${contratanteId}`,
                 { withCredentials: true }
             );
             if (response.status === 200) {

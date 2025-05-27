@@ -65,8 +65,8 @@ export default function PerfilPaciente() {
         if (!userData.Contratantes || userData.Contratantes.length === 0) {
           setPrecisaCadastrarContratante(true);
         } else {
-          const idContratante = userData.Contratantes[0].id;
-          sessionStorage.setItem("idContratante", idContratante);
+          const contratanteId = userData.Contratantes[0].id;
+          sessionStorage.setItem("contratanteId", contratanteId);
           setNecessidades(userData.Contratantes[0].necessidades || "");
           setPrecisaCadastrarContratante(false);
         }
@@ -149,7 +149,7 @@ export default function PerfilPaciente() {
         status,
       };
 
-      const idContratante = sessionStorage.getItem("idContratante");
+      const contratanteId = sessionStorage.getItem("contratanteId");
 
       const response = await axios.put(
         "http://localhost:5171/usuario/alterar",
@@ -157,16 +157,16 @@ export default function PerfilPaciente() {
         { withCredentials: true }
       );
 
-      console.log("Resposta da API:", idContratante, necessidades);
+      console.log("Resposta da API:", contratanteId, necessidades);
 
       const response2 = await axios.put(
-        `http://localhost:5171/contratante/alterar/${idContratante}`,
+        `http://localhost:5171/contratante/alterar/${contratanteId}`,
         { necessidades: necessidades },
         { withCredentials: true }
       );
 
       if (response.status === 200 && response2.status === 200) {
-        sessionStorage.removeItem("idContratante");
+        sessionStorage.removeItem("contratanteId");
         toast.success("Perfil atualizado com sucesso!");
         await new Promise((r) => setTimeout(r, 500));
         await handleLoad();

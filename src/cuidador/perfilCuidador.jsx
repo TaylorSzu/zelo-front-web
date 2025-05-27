@@ -137,7 +137,7 @@ export default function PerfilCuidador() {
       );
 
       if (response.status === 200 && response2.status === 200) {
-        sessionStorage.removeItem("idContratante");
+        sessionStorage.removeItem("contratanteId");
         toast.success("Perfil atualizado com sucesso!");
         await new Promise((r) => setTimeout(r, 500));
         await handleLoad();

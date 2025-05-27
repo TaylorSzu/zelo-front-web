@@ -23,6 +23,7 @@ export default function CadastroIdoso({ onConfirmar, onCancelar }) {
       setLoading(true);
       const token = Cookies.get("token");
       const contratanteId = sessionStorage.getItem("contratanteId");
+      console.log("id contratante: ",contratanteId);
       await axios.post(
         "http://localhost:5171/idoso/registrar",
         {
