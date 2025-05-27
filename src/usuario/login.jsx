@@ -55,18 +55,14 @@ export default function Login() {
         if (usuarioEncontrado.Cuidadores && usuarioEncontrado.Cuidadores.length > 0) {
           const cuidadorId = usuarioEncontrado.Cuidadores[0].id;
           sessionStorage.setItem("cuidadorId", cuidadorId);
-          navigate("/cuidador");
-        } else {
-          setError("Dados do cuidador não encontrados.");
         }
+        navigate("/cuidador");
       } else if (usuario.tipoUsuario === "Paciente" || usuario.tipoUsuario === "paciente") {
         if (usuarioEncontrado.Contratantes && usuarioEncontrado.Contratantes.length > 0) {
           const contratanteId = usuarioEncontrado.Contratantes[0].id;
           sessionStorage.setItem("contratanteId", contratanteId);
-          navigate("/paciente");
-        } else {
-          setError("Dados do contratante não encontrados.");
         }
+        navigate("/paciente");
       } else {
         setError("Tipo de usuário não reconhecido.");
       }
