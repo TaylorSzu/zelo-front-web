@@ -14,7 +14,7 @@ export default function Dashboard() {
       const id = localStorage.getItem("cuidadorId");
       try {
         const response = await axios.get(
-          `https://127.0.0.1/cuidador/encontrar/${id}`,
+          `https://localhost:5171/cuidador/encontrar/${id}`,
           {
             withCredentials: true,
           }

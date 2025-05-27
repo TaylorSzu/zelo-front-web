@@ -38,7 +38,7 @@ export default function PerfilCuidador() {
       }
 
       const response = await axios.get(
-        "https://127.0.0.1/usuario/encontrar",
+        "https://localhost:5171/usuario/encontrar",
         { withCredentials: true }
       );
 
