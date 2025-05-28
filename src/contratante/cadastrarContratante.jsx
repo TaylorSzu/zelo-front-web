@@ -4,38 +4,50 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
-export default function CadastroNecessidade({ onConfirmar, onCancelar }) {
-  const [necessidade, setNecessidade] = useState("");
+export default function CadastroContratante({ onConfirmar, onCancelar }) {
+  const [idade, setIdade] = useState("");
+  const [dataNascimento, setDataNascimento] = useState("");
+  const [observacoesMedicas, setObservacoesMedicas] = useState("");
 
   const handleConfirmar = async () => {
-    if (!necessidade.trim()) {
-      toast.warning("Por favor, preencha a necessidade.");
+    if (!idade.trim() || !dataNascimento.trim() || !observacoesMedicas.trim()) {
+      toast.warning("Por favor, preencha todos os campos.");
       return;
     }
 
     try {
       const token = Cookies.get("token");
 
+      const contratante = {
+        idade: parseInt(idade),
+        dataNascimento: dataNascimento,
+        observacoesMedicas: observacoesMedicas
+      }
+
+      console.log("Contratante a ser cadastrado:", contratante);
+
       await axios.post(
         "http://localhost:5171/contratante/registrar",
-        { necessidades: necessidade },
+        contratante,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
 
-      toast.success("Necessidade cadastrada com sucesso!");
+      toast.success("Contratante cadastrado com sucesso!");
 
-      if (onConfirmar) onConfirmar(necessidade);
+      if (onConfirmar) onConfirmar(observacoesMedicas);
 
-      setNecessidade("");
+      setIdade("");
+      setDataNascimento("");
+      setObservacoesMedicas("");
 
       setTimeout(() => {
         window.location.reload(); // 🔄 Dá tempo da notificação aparecer antes de recarregar
       }, 1500);
     } catch (error) {
-      console.error("Erro ao cadastrar necessidade:", error);
-      toast.error("Erro ao cadastrar necessidade. Tente novamente.");
+      console.error("Erro ao cadastrar contratante:", error);
+      toast.error("Erro ao cadastrar contratante. Tente novamente.");
     }
   };
 
@@ -55,15 +67,37 @@ export default function CadastroNecessidade({ onConfirmar, onCancelar }) {
           className="card p-4 shadow-lg"
           style={{ width: "100%", maxWidth: "400px", borderRadius: "1rem" }}
         >
-          <h4 className="text-center mb-4">Descreva sua Necessidade</h4>
+          <h4 className="text-center mb-4">Cadastro de Contratante</h4>
 
           <div className="mb-3">
+            <label className="form-label">Idade</label>
+            <input
+              type="number"
+              className="form-control"
+              placeholder="Digite sua idade"
+              value={idade}
+              onChange={(e) => setIdade(e.target.value)}
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Data de Nascimento</label>
+            <input
+              type="date"
+              className="form-control"
+              value={dataNascimento}
+              onChange={(e) => setDataNascimento(e.target.value)}
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Observações Médicas</label>
             <textarea
               className="form-control"
               rows="4"
-              placeholder="Digite aqui a necessidade do idoso"
-              value={necessidade}
-              onChange={(e) => setNecessidade(e.target.value)}
+              placeholder="Digite aqui suas observações médicas"
+              value={observacoesMedicas}
+              onChange={(e) => setObservacoesMedicas(e.target.value)}
             />
           </div>
 

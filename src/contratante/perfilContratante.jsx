@@ -18,10 +18,12 @@ export default function PerfilPaciente() {
   const [endereco, setEndereco] = useState("");
   const [telefone, setTelefone] = useState("");
   const [email, setEmail] = useState("");
-  const [necessidades, setNecessidades] = useState("");
   const [foto, setFoto] = useState(null);
   const [senha, setSenha] = useState("");
   const [tipoUsuario, setTipoUsuario] = useState("Paciente");
+  const [idade, setIdade] = useState(0);
+  const [dataNascimento, setDataNascimento] = useState("");
+  const [observacoesMedicas, setObservacoesMedicas] = useState("");
   const [status, setStatus] = useState("Ativo");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -67,7 +69,9 @@ export default function PerfilPaciente() {
         } else {
           const contratanteId = userData.Contratantes[0].id;
           sessionStorage.setItem("contratanteId", contratanteId);
-          setNecessidades(userData.Contratantes[0].necessidades || "");
+          setIdade(userData.Contratantes[0].idade || 0);
+          setDataNascimento(userData.Contratantes[0].dataNascimento || "");
+          setObservacoesMedicas(userData.Contratantes[0].observacoesMedicas || "");
           setPrecisaCadastrarContratante(false);
         }
       } else {
@@ -107,7 +111,7 @@ export default function PerfilPaciente() {
 
       if (response.status === 200) {
         toast.success("Perfil atualizado com sucesso!");
-        await new Promise((r) => setTimeout(r, 5000 ));
+        await new Promise((r) => setTimeout(r, 5000));
         Cookies.remove("token");
         navigate("/login");
       } else {
@@ -157,11 +161,15 @@ export default function PerfilPaciente() {
         { withCredentials: true }
       );
 
-      console.log("Resposta da API:", contratanteId, necessidades);
+      const contratante = {
+        idade,
+        dataNascimento,
+        observacoesMedicas,
+      };
 
       const response2 = await axios.put(
         `http://localhost:5171/contratante/alterar/${contratanteId}`,
-        { necessidades: necessidades },
+        contratante,
         { withCredentials: true }
       );
 
@@ -310,11 +318,29 @@ export default function PerfilPaciente() {
                     />
                   </div>
                   <div className="col-md-6 mb-3">
-                    <label><strong>Necessidades:</strong></label>
+                    <label><strong>Idade:</strong></label>
                     <input
                       type="text"
-                      value={necessidades}
-                      onChange={(e) => setNecessidades(e.target.value)}
+                      value={idade}
+                      onChange={(e) => setIdade(e.target.value)}
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <label><strong>Data Nascimento:</strong></label>
+                    <input
+                      type="date"
+                      value={dataNascimento}
+                      onChange={(e) => setDataNascimento(e.target.value)}
+                      className="form-control"
+                    />
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <label><strong>Observações medicas:</strong></label>
+                    <input
+                      type="text"
+                      value={observacoesMedicas}
+                      onChange={(e) => setObservacoesMedicas(e.target.value)}
                       className="form-control"
                     />
                   </div>
