@@ -9,7 +9,8 @@ axios.defaults.withCredentials = true;
 export default function Dashboard() {
   const navigate = useNavigate();
   const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
+  const [dataHoraInicio, setDataHoraInicio] = useState("");
+  const [dataHoraFim, setDataHoraFim] = useState("");
   const [cuidador, setCuidador] = useState(null);
   const [mensagem, setMensagem] = useState("");
   const [idosos, setIdosos] = useState([]);
@@ -20,7 +21,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchIdosos = async () => {
       const contratanteId = sessionStorage.getItem("contratanteId");
-      console.log("contratante id: ",contratanteId);
+      console.log("contratante id: ", contratanteId);
       try {
         const response = await axios.get(
           `http://localhost:5171/idoso/listar/${contratanteId}`
@@ -55,31 +56,20 @@ export default function Dashboard() {
   const handleAgendar = async (e) => {
     e.preventDefault();
 
-    const cuidadorId = localStorage.getItem("cuidadorId");
-    const contratanteId = localStorage.getItem("contratanteId");
+    const cuidadorId = cuidador.id;
+    console.log("cuidador id: ", cuidadorId);
+    const contratanteId = sessionStorage.getItem("contratanteId");
 
-    const dataHoraInicio = new Date(`${date}T${time}:00`);
-    const dataHoraFim = new Date(dataHoraInicio);
-    dataHoraFim.setHours(dataHoraFim.getHours() + 12); // diária de 12 horas
-
-    if (!tipoServico) {
-      setMensagem("Por favor, selecione para quem é o serviço.");
-      return;
-    }
-
-    if (tipoServico === "idoso" && !idosoSelecionado) {
-      setMensagem("Por favor, selecione um idoso para o agendamento.");
-      return;
-    }
+    const inicio = new Date(`${date}T${dataHoraInicio}:00`);
+    const fim = new Date(inicio);
+    fim.setHours(fim.getHours() + 12); // diária de 12 horas
 
     const agendamento = {
-      contratanteId: parseInt(contratanteId),
+      contratanteId: tipoServico === "contratante" ? parseInt(contratanteId) : null,
       cuidadorId: parseInt(cuidadorId),
       idosoId: tipoServico === "idoso" ? parseInt(idosoSelecionado) : null,
-      dataHoraInicio: dataHoraInicio.toISOString(),
-      dataHoraFim: dataHoraFim.toISOString(),
-      valorDiaria: cuidador?.valorDiaria || 0,
-      tipoServico: tipoServico
+      dataHoraInicio: inicio.toISOString(),
+      dataHoraFim: fim.toISOString(),
     };
 
     try {
@@ -90,10 +80,6 @@ export default function Dashboard() {
 
       if (response.status === 201 || response.status === 200) {
         setMensagem("Agendamento realizado com sucesso!");
-        setDate("");
-        setTime("");
-        setTipoServico("");
-        setIdosoSelecionado("");
       }
     } catch (error) {
       console.error("Erro ao agendar cuidador:", error);
@@ -103,42 +89,38 @@ export default function Dashboard() {
 
   return (
     <SidebarContratante>
-      <div className="container" style={{ paddingTop: "40px" }}>
-        <h2 className="mb-4">Agendar Cuidador</h2>
+      <div className="container py-4">
+        <h2 className="mb-4 fw-bold text-primary">Agendar Cuidador</h2>
 
         {mensagem && (
           <div
-            className={`alert ${
-              mensagem.includes("sucesso") ? "alert-success" : "alert-danger"
-            }`}
+            className={`alert ${mensagem.includes("sucesso") ? "alert-success" : "alert-danger"
+              }`}
           >
             {mensagem}
           </div>
         )}
 
         {cuidador ? (
-          <div className="card shadow mb-4 p-4 rounded-4">
+          <div className="card shadow-sm mb-4 p-4 rounded-4">
             <div className="row align-items-center">
               <div className="col-md-4 text-center mb-3 mb-md-0">
                 <img
                   src={cuidador.User?.foto || "/src/assets/perfil.png"}
                   alt="Foto do cuidador"
-                  className="rounded-circle"
+                  className="rounded-circle border border-3 border-primary"
                   style={{
                     width: "180px",
                     height: "180px",
                     objectFit: "cover",
-                    border: "2px solid #0d6efd",
-                    pointerEvents: "none",
-                    userSelect: "none",
                   }}
                 />
               </div>
 
               <div className="col-md-8">
-                <h1 className="text-primary fw-bold">
+                <h3 className="fw-bold text-primary">
                   {cuidador?.User?.nome || "Nome não informado"}
-                </h1>
+                </h3>
                 <p>
                   <strong>Especialidade:</strong>{" "}
                   {cuidador?.especialidade || "Não informado"}
@@ -153,10 +135,8 @@ export default function Dashboard() {
                     R$ {cuidador?.valorHora || "0,00"}
                   </span>
                 </p>
-                <div className="mb-1">
-                  <p>
-                    <strong>Avaliação:</strong>
-                  </p>
+                <div>
+                  <strong>Avaliação:</strong>{" "}
                   {[...Array(5)].map((_, index) => (
                     <i
                       key={index}
@@ -177,10 +157,10 @@ export default function Dashboard() {
           </div>
         )}
 
-        <form className="card shadow p-4" onSubmit={handleAgendar}>
-          <div className="row mb-3">
-            <div className="col-md-6">
-              <label className="form-label">Data</label>
+        <form className="card shadow-sm p-4 rounded-4" onSubmit={handleAgendar}>
+          <div className="row g-3">
+            <div className="col-md-4">
+              <label className="form-label fw-semibold">Data</label>
               <input
                 type="date"
                 className="form-control"
@@ -190,72 +170,84 @@ export default function Dashboard() {
               />
             </div>
 
-            <div className="col-md-6">
-              <label className="form-label">Hora</label>
+            <div className="col-md-4">
+              <label className="form-label fw-semibold">Início do Serviço</label>
               <input
                 type="time"
                 className="form-control"
-                value={time}
-                onChange={(e) => setTime(e.target.value)}
+                value={dataHoraInicio}
+                onChange={(e) => setDataHoraInicio(e.target.value)}
                 required
               />
             </div>
 
-            <div className="col-md-12 mt-3">
-            <label className="form-label">Para quem é o serviço?</label>
-            <select
-              className="form-select mb-3"
-              value={tipoServico}
-              onChange={(e) => {
-                setTipoServico(e.target.value);
-                setIdosoSelecionado("");
-                if (e.target.value === "idoso" && !temIdosos) {
-                  setMensagem("Você precisa cadastrar um idoso primeiro.");
-                  setTimeout(() => {
-                    navigate("/idoso");
-                  }, 2000);
-                }
-              }}
-              required
-            >
-              <option value="">Selecione...</option>
-              <option value="contratante">Para mim (Contratante)</option>
-              <option value="idoso">Para um Idoso</option>
-            </select>
-          </div>
+            <div className="col-md-4">
+              <label className="form-label fw-semibold">Fim do Serviço</label>
+              <input
+                type="time"
+                className="form-control"
+                value={dataHoraFim}
+                onChange={(e) => setDataHoraFim(e.target.value)}
+                required
+              />
+            </div>
 
-          {tipoServico === "idoso" && temIdosos && (
             <div className="col-md-12">
-              <label className="form-label">Selecione o Idoso</label>
+              <label className="form-label fw-semibold">Para quem é o serviço?</label>
               <select
                 className="form-select"
-                value={idosoSelecionado}
-                onChange={(e) => setIdosoSelecionado(e.target.value)}
+                value={tipoServico}
+                onChange={(e) => {
+                  setTipoServico(e.target.value);
+                  setIdosoSelecionado("");
+                  if (e.target.value === "idoso" && !temIdosos) {
+                    setMensagem("Você precisa cadastrar um idoso primeiro.");
+                    setTimeout(() => {
+                      navigate("/idoso");
+                    }, 2000);
+                  }
+                }}
                 required
               >
-                <option value="">Selecione um idoso...</option>
-                {idosos.map((idoso) => (
-                  <option key={idoso.id} value={idoso.id}>
-                    {idoso.nome}
-                  </option>
-                ))}
+                <option value="">Selecione...</option>
+                <option value="contratante">Para mim (Contratante)</option>
+                <option value="idoso">Para um Idoso</option>
               </select>
             </div>
-          )}
+
+            {tipoServico === "idoso" && temIdosos && (
+              <div className="col-md-12">
+                <label className="form-label fw-semibold">Selecione o Idoso</label>
+                <select
+                  className="form-select"
+                  value={idosoSelecionado}
+                  onChange={(e) => setIdosoSelecionado(e.target.value)}
+                  required
+                >
+                  <option value="">Selecione um idoso...</option>
+                  {idosos.map((idoso) => (
+                    <option key={idoso.id} value={idoso.id}>
+                      {idoso.nome}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
           </div>
 
-          <div className="text-end">
+          <div className="text-end mt-4">
             <button type="submit" className="btn btn-primary">
               Confirmar Agendamento
             </button>
             <button
               type="button"
-              className="btn btn-danger ms-2"
+              className="btn btn-outline-danger ms-2"
               onClick={() => {
                 setDate("");
-                setTime("");
+                setDataHoraInicio("");
+                setDataHoraFim("");
+                setTipoServico("");
                 setIdosoSelecionado("");
-                setMensagem("");
               }}
             >
               Cancelar
@@ -263,6 +255,7 @@ export default function Dashboard() {
           </div>
         </form>
       </div>
+
     </SidebarContratante>
   );
 }
