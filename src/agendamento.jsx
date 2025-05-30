@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import bootstrap5Plugin from "@fullcalendar/bootstrap5";
-import ptBrLocale from "@fullcalendar/core/locales/pt-br";
+import { Calendar, momentLocalizer } from "react-big-calendar";
 import { format, parseISO } from "date-fns";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "@fullcalendar/daygrid";
-import SidebarContratante from "./utils/sidebarContratante";
+import ptBR from "date-fns/locale/pt-BR";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+import SidebarContratante from "./utils/sidebarContratante"
+import moment from "moment";
+import "moment/locale/pt-br";
+import axios from "axios";
+
+const localizer = momentLocalizer(moment);
 
 const AgendamentosDashboard = () => {
   const [eventos, setEventos] = useState([]);
@@ -15,32 +17,23 @@ const AgendamentosDashboard = () => {
   useEffect(() => {
     async function buscarAgendamentos() {
       try {
-        const resposta = await fetch(
-          "https://127.0.0.1/agendamento/listar/contratante"
+        const contratanteId = sessionStorage.getItem("contratanteId");
+        const resposta = await axios.get(
+          `http://localhost:5171/agendamento/listar/contratante/${contratanteId}`,
+          { withCredentials: true } 
         );
-        const dados = await resposta.json();
+        const dados = await resposta.data;
 
-        const eventosFormatados = dados.map((agendamento) => {
-          const nome =
-            agendamento?.Contratante?.User?.nome || "Nome não disponível";
-          const endereco =
-            agendamento?.Contratante?.User?.endereco ||
-            "Endereço não disponível";
-          const necessidades =
-            agendamento?.Contratante?.necessidades || "Não informado";
-
-          return {
-            title: `${nome} (${agendamento.status})`,
-            start: agendamento.dataHoraInicio,
-            end: agendamento.dataHoraFim,
-            extendedProps: {
-              endereco,
-              necessidades,
-              status: agendamento.status,
-              nome,
-            },
-          };
-        });
+        // Adaptar para formato do react-big-calendar
+        const eventosFormatados = dados.map((agendamento) => ({
+          title: agendamento.nome,
+          start: new Date(agendamento.dataHoraInicio),
+          end: new Date(agendamento.dataHoraFim),
+          status: agendamento.status,
+          especialidade: agendamento.especialidade,
+          telefone: agendamento.telefone,
+          valorHora: agendamento.valorHora,
+        }));
 
         setEventos(eventosFormatados);
       } catch (erro) {
@@ -55,36 +48,34 @@ const AgendamentosDashboard = () => {
     <div className="d-flex">
       <SidebarContratante />
 
-      <div className="container-fluid mt-4" style={{ marginLeft: "-65%" }}>
+      <div className="container-fluid mt-4">
         <h2 className="mb-4">Meus Agendamentos</h2>
 
         <div className="row" style={{ marginRight: "5%" }}>
           <div className="col-md-8 mb-4">
-            <FullCalendar
-              plugins={[dayGridPlugin, bootstrap5Plugin]}
-              initialView="dayGridMonth"
+            <Calendar
+              localizer={localizer}
               events={eventos}
-              locale={ptBrLocale}
-              themeSystem="bootstrap5"
-              height="auto"
-              eventContent={(info) => (
-                <>
-                  <b>{info.timeText}</b>
-                  <i> {info.event.title}</i>
-                </>
-              )}
-              eventClick={(info) => {
+              startAccessor="start"
+              endAccessor="end"
+              style={{ height: 500 }}
+              culture="pt-BR"
+              onSelectEvent={(event) => {
                 setEventoSelecionado({
-                  nome: info.event.extendedProps.nome,
-                  inicio: format(
-                    parseISO(info.event.startStr),
-                    "dd/MM/yyyy HH:mm"
-                  ),
-                  fim: format(parseISO(info.event.endStr), "dd/MM/yyyy HH:mm"),
-                  endereco: info.event.extendedProps.endereco,
-                  necessidades: info.event.extendedProps.necessidades,
-                  status: info.event.extendedProps.status,
+                  nome: event.title,
+                  especialidade: event.especialidade,
+                  telefone: event.telefone,
+                  valorHora: event.valorHora,
+                  status: event.status,
+                  inicio: format(event.start, "dd/MM/yyyy HH:mm"),
+                  fim: format(event.end, "dd/MM/yyyy HH:mm"),
                 });
+              }}
+              eventPropGetter={(event) => {
+                let backgroundColor = "#6c757d"; // padrão cinza
+                if (event.status === "confirmado") backgroundColor = "#198754";
+                else if (event.status === "pendente") backgroundColor = "#ffc107";
+                return { style: { backgroundColor, color: "black" } };
               }}
             />
           </div>
@@ -99,20 +90,33 @@ const AgendamentosDashboard = () => {
                       <strong>Nome:</strong> {eventoSelecionado.nome}
                     </li>
                     <li className="list-group-item">
-                      <strong>Status:</strong> {eventoSelecionado.status}
+                      <strong>Especialidade:</strong> {eventoSelecionado.especialidade}
+                    </li>
+                    <li className="list-group-item">
+                      <strong>Telefone:</strong> {eventoSelecionado.telefone}
+                    </li>
+                    <li className="list-group-item">
+                      <strong>Valor Hora:</strong> R$ {eventoSelecionado.valorHora}
+                    </li>
+                    <li className="list-group-item">
+                      <strong>Status:</strong>{" "}
+                      <span
+                        className={`badge ${
+                          eventoSelecionado.status === "confirmado"
+                            ? "bg-success"
+                            : eventoSelecionado.status === "pendente"
+                            ? "bg-warning text-dark"
+                            : "bg-secondary"
+                        }`}
+                      >
+                        {eventoSelecionado.status}
+                      </span>
                     </li>
                     <li className="list-group-item">
                       <strong>Início:</strong> {eventoSelecionado.inicio}
                     </li>
                     <li className="list-group-item">
                       <strong>Fim:</strong> {eventoSelecionado.fim}
-                    </li>
-                    <li className="list-group-item">
-                      <strong>Endereço:</strong> {eventoSelecionado.endereco}
-                    </li>
-                    <li className="list-group-item">
-                      <strong>Necessidades:</strong>{" "}
-                      {eventoSelecionado.necessidades}
                     </li>
                   </ul>
                 ) : (
