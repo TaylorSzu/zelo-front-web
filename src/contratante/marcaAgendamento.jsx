@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
-import SidebarContratante from "./utils/sidebarContratante.jsx";
+import SidebarContratante from "../utils/sidebarContratante.jsx";
 
 axios.defaults.withCredentials = true;
 

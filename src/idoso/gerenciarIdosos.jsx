@@ -71,22 +71,20 @@ export default function GerenciarIdosos() {
 
     return (
         <SidebarContratante>
-            <div
-                className="container-fluid d-flex flex-column align-items-center"
-                style={{
-                    minHeight: "100%",
-                    backgroundColor: "#f8f9fa",
-                    padding: "30px",
-                }}
-            >
-                <div
-                    className="card shadow-lg p-4"
-                    style={{ width: "100%", height: "100%" }}
-                >
-                    <div className="card-header bg-primary text-white text-center">
-                        <h3>Gerenciar Idosos</h3>
+            <div className="container-fluid" style={{ minHeight: "100vh", padding: "40px" }}>
+                <div className="card shadow-lg rounded-4 border-0">
+                    <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center rounded-top-4">
+                        <h3 className="m-0">Gerenciar Idosos</h3>
+                        <button
+                            className="btn btn-light"
+                            onClick={() => setShowCadastro(true)}
+                            style={{ color: '#0d6efd' }}
+                        >
+                            <i className="bi bi-person-plus"></i> Adicionar idoso
+                        </button>
                     </div>
-                    <div className="card-body">
+
+                    <div className="card-body ">
                         {loading && (
                             <div className="text-center">
                                 <div className="spinner-border text-primary" role="status">
@@ -95,92 +93,57 @@ export default function GerenciarIdosos() {
                                 <p className="mt-2">Carregando dados...</p>
                             </div>
                         )}
+
                         {error && (
                             <div className="alert alert-danger" role="alert">
                                 {error}
                             </div>
                         )}
-                        {!loading && (
-                            <div>
-                                {/* Botão de cadastrar */}
-                                <div className="mt-3 d-flex justify-content-start">
-                                    <button
-                                        className="btn btn-primary"
-                                        onClick={() => setShowCadastro(true)}
-                                    >
-                                        <i className="bi bi-person-plus m-2"></i>
-                                        Adicionar idoso
-                                    </button>
-                                </div>
 
-                                <div className="row mt-4">
-                                    {idosos.map((idoso) => (
-                                        <div
-                                            className="col-md-4 mb-4"
-                                            key={idoso.id}
-                                        >
-                                            <div className="card shadow">
-                                                <div className="card-body">
-                                                    <h5 className="card-title">
-                                                        {idoso.nome}
-                                                    </h5>
-                                                    <p className="card-text">
-                                                        <strong>Idade:</strong>{" "}
-                                                        {idoso.idade} anos
-                                                        <br />
-                                                        <strong>
-                                                            Data de
-                                                            Nascimento:
-                                                        </strong>{" "}
-                                                        {converterFormatoData(
-                                                            idoso.dataNascimento
-                                                        )}
-                                                        <br />
-                                                        <strong>
-                                                            Observações
-                                                            Médicas:
-                                                        </strong>{" "}
-                                                        {
-                                                            idoso.observacoesMedicas
-                                                        }
-                                                    </p>
-                                                    <div className="d-flex justify-content-end gap-2">
-                                                        <button
-                                                            className="btn btn-secondary"
-                                                            onClick={() => {
-                                                                setIdosoSelecionado(
-                                                                    idoso.id
-                                                                );
-                                                                setShowEditar(
-                                                                    true
-                                                                );
-                                                            }}
-                                                        >
-                                                            <i className="bi bi-pencil"></i>{" "}
-                                                            Editar
-                                                        </button>
-                                                        <button
-                                                            className="btn btn-danger"
-                                                            onClick={() =>
-                                                                handleExcluir(
-                                                                    idoso.id
-                                                                )
-                                                            }
-                                                        >
-                                                            <i className="bi bi-trash"></i>{" "}
-                                                            Excluir
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
+                        {!loading && idosos.length === 0 && (
+                            <div className="text-center text-muted">
+                                <i className="bi bi-person-x fs-1"></i>
+                                <p className="mt-2">Nenhum idoso cadastrado ainda.</p>
                             </div>
                         )}
+
+                        <div className="row">
+                            {idosos.map((idoso) => (
+                                <div className="col-md-4 mt-4 mb-4" key={idoso.id}>
+                                    <div className="card shadow-sm h-100 rounded-4 border-secondary">
+                                        <div className="card-body d-flex flex-column">
+                                            <h5 className="card-title text-primary fw-bold">{idoso.nome}</h5>
+                                            <p className="card-text mb-3">
+                                                <strong>Idade:</strong> {idoso.idade} anos <br />
+                                                <strong>Data de Nascimento:</strong> {converterFormatoData(idoso.dataNascimento)} <br />
+                                                <strong>Observações Médicas:</strong> {idoso.observacoesMedicas || "Nenhuma"}
+                                            </p>
+                                            <div className="mt-auto d-flex justify-content-between">
+                                                <button
+                                                    className="btn btn-secondary w-50 me-2"
+                                                    onClick={() => {
+                                                        setIdosoSelecionado(idoso.id);
+                                                        setShowEditar(true);
+                                                    }}
+                                                >
+                                                    <i className="bi bi-pencil"></i> Editar
+                                                </button>
+                                                <button
+                                                    className="btn btn-danger w-50"
+                                                    onClick={() => handleExcluir(idoso.id)}
+                                                >
+                                                    <i className="bi bi-trash"></i> Excluir
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>
+
 
             {/* Modal de Cadastro */}
             {showCadastro && (

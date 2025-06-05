@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
+  FaSearch,
   FaUser,
   FaCog,
   FaCalendarAlt,
   FaMoneyBillWave,
   FaUserFriends,
   FaBars,
+  FaHeadset,
+  FaSignOutAlt
 } from "react-icons/fa";
 
 const SidebarContratante = (props) => {
@@ -14,6 +17,11 @@ const SidebarContratante = (props) => {
 
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/login";
   };
 
   return (
@@ -40,16 +48,19 @@ const SidebarContratante = (props) => {
           </button>
         </div>
 
-        <ul className="nav nav-pills flex-column mb-auto px-2">
+        {/* Menu com flex column e grow */}
+        <ul 
+          className="nav nav-pills flex-column px-2"
+          style={{ flexGrow: 1 }}
+        >
+          <li className="nav-item">
+            <Link to="/paciente" className="nav-link text-white">
+              <FaSearch /> {!collapsed && <span className="ms-2">Procurar Cuidador</span>}
+            </Link>
+          </li>
           <li className="nav-item">
             <Link to="/paciente/perfil" className="nav-link text-white">
               <FaUser /> {!collapsed && <span className="ms-2">Perfil</span>}
-            </Link>
-          </li>
-          <li>
-            <Link to="/configuracoes" className="nav-link text-white">
-              <FaCog />
-              {!collapsed && <span className="ms-2">Configurações</span>}
             </Link>
           </li>
           <li>
@@ -59,16 +70,39 @@ const SidebarContratante = (props) => {
             </Link>
           </li>
           <li>
-            <Link to="/pagamentos" className="nav-link text-white">
+            <Link to="/idoso" className="nav-link text-white">
+              <FaUserFriends />
+              {!collapsed && <span className="ms-2">Meus Idosos</span>}
+            </Link>
+          </li>
+          <li>
+            <Link className="nav-link text-white">
               <FaMoneyBillWave />
               {!collapsed && <span className="ms-2">Pagamentos</span>}
             </Link>
           </li>
           <li>
-            <Link to="/idoso" className="nav-link text-white">
-              <FaUserFriends />
-              {!collapsed && <span className="ms-2">Meus Idosos</span>}
+            <Link className="nav-link text-white">
+              <FaCog />
+              {!collapsed && <span className="ms-2">Configurações</span>}
             </Link>
+          </li>
+          <li>
+            <Link to="/paciente/suporte" className="nav-link text-white">
+              <FaHeadset />
+              {!collapsed && <span className="ms-2">Suporte</span>}
+            </Link>
+          </li>
+          {/* Espaço flex para empurrar o logout para baixo */}
+          <li style={{ marginTop: "auto" }}>
+            <button
+              onClick={handleLogout}
+              className="nav-link btn btn-link text-white text-start p-3"
+              style={{ cursor: "pointer" }}
+            >
+              <FaSignOutAlt />
+              {!collapsed && <span className="ms-2">Sair</span>}
+            </button>
           </li>
         </ul>
       </div>

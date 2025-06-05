@@ -143,14 +143,6 @@ export default function Dashboard() {
                               <i className="bi bi-calendar-check me-2"></i>{" "}
                               Agendar
                             </a>
-                            <a
-                              role="button"
-                              className="btn btn-secondary"
-                              href={`/cuidador/perfil`}
-                            >
-                              <i className="bi bi-person-lines-fill me-2"></i>{" "}
-                              Ver perfil
-                            </a>
                           </div>
                         </div>
                       </div>

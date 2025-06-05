@@ -119,7 +119,7 @@ export default function PerfilCuidador() {
       const cuidador = {
         id: idCuidador,
         disponibilidade,
-        valorHora: removerMascaraDinheiro(valorHora),
+        valorHora: parseFloat(removerMascaraDinheiro(valorHora, 'dinheiro')),
         especialidade,
         statusVerificacao,
       }
@@ -166,7 +166,7 @@ export default function PerfilCuidador() {
 
       if (response.status === 200) {
         toast.success("Perfil atualizado com sucesso!");
-        await new Promise((r) => setTimeout(r, 5000 ));
+        await new Promise((r) => setTimeout(r, 5000));
         Cookies.remove("token");
         navigate("/login");
       } else {
@@ -208,90 +208,66 @@ export default function PerfilCuidador() {
 
   return (
     <SidebarCuidador>
-      <div
-        className="container-fluid d-flex flex-column align-items-center"
-        style={{
-          minHeight: "100%",
-          backgroundColor: "#f8f9fa",
-          padding: "30px",
-        }}
-      >
-        <div
-          className="card shadow-lg p-4"
-          style={{
-            width: "100%",
-            height: "100%",
-          }}
-        >
-          <div className="card-header bg-primary text-white text-center">
+      <div className="container py-5 d-flex justify-content-center ">
+        <div className="card" style={{ width: '100%', maxWidth: '7680px' }}>
+          <div className="card-header bg-primary text-white text-center ">
             <h3>Perfil do Cuidador</h3>
           </div>
           <div className="card-body">
             {loading && <p>Carregando...</p>}
             {error && <p className="text-danger">{error}</p>}
             {!loading && !error && (
-              <div>
-                {/* Imagem de perfil */}
-                <div className="mb-4 text-center">
-                  <h5>Imagem de Perfil</h5>
+              <>
+                <div className="mb-4 text-center position-relative" style={{ width: '150px', height: '150px', margin: '0 auto' }}>
                   <div
-                    className="position-relative mx-auto"
-                    style={{ width: "150px", height: "150px" }}
+                    className="rounded-circle overflow-hidden border border-3 border-primary"
+                    style={{ width: '150px', height: '150px', position: 'relative' }}
                   >
-                    <div
-                      className="rounded-circle overflow-hidden border border-2 position-relative"
+                    <img
+                      src={foto || "../src/assets/perfil.png"}
+                      alt="Foto de perfil"
+                      className="w-100 h-100"
+                      style={{ objectFit: 'cover' }}
+                    />
+                    <label
+                      htmlFor="fileInput"
+                      className="d-flex align-items-center justify-content-center text-white fw-bold"
                       style={{
-                        width: "150px",
-                        height: "150px",
-                        backgroundColor: "#dee2e6",
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        borderRadius: '50%',
+                        opacity: 0,
+                        cursor: 'pointer',
+                        transition: 'opacity 0.3s',
                       }}
+                      onMouseEnter={(e) => (e.currentTarget.style.opacity = 1)}
+                      onMouseLeave={(e) => (e.currentTarget.style.opacity = 0)}
                     >
-                      <img
-                        src={foto || "../src/assets/perfil.png"}
-                        alt="Foto de perfil"
-                        className="w-100 h-100"
-                        style={{ objectFit: "cover", borderRadius: "50%" }}
+                      Alterar
+                      <input
+                        type="file"
+                        id="fileInput"
+                        onChange={handleFileChange}
+                        style={{ display: 'none' }}
                       />
-                      <label
-                        htmlFor="fileInput"
-                        className="position-absolute top-0 start-0 d-flex align-items-center justify-content-center text-white fw-bold"
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          borderRadius: "50%",
-                          backgroundColor: "rgba(0, 0, 0, 0.5)",
-                          cursor: "pointer",
-                          opacity: 0,
-                          transition: "opacity 0.3s",
-                        }}
-                        onMouseEnter={(e) =>
-                          (e.currentTarget.style.opacity = 1)
-                        }
-                        onMouseLeave={(e) =>
-                          (e.currentTarget.style.opacity = 0)
-                        }
-                      >
-                        Alterar
-                        <input
-                          type="file"
-                          id="fileInput"
-                          onChange={handleFileChange}
-                          style={{ display: "none" }}
-                        />
-                      </label>
-                    </div>
+                    </label>
                   </div>
                 </div>
+                
 
                 {/* Campos de texto */}
                 <div className="row">
                   <div className="col-md-6 mb-3">
                     <label><strong>Nome:</strong></label>
-                    <input 
-                      type="text" 
-                      value={nome} 
+                    <input
+                      type="text"
+                      value={nome}
                       onChange={(e) => setNome(e.target.value)}
-                      className="form-control" 
+                      className="form-control"
                     />
                   </div>
                   <div className="col-md-6 mb-3">
@@ -343,7 +319,7 @@ export default function PerfilCuidador() {
                     />
                   </div>
                   <div className="col-md-6 mb-3">
-                    <label><strong>Valor Hora:</strong></label>
+                    <label><strong>Valor Diaria:</strong></label>
                     <Mascara
                       type="dinheiro"
                       value={valorHora}
@@ -367,20 +343,12 @@ export default function PerfilCuidador() {
                   <input type="hidden" value={status} />
                   <input type="hidden" value={statusVerificacao} />
                 </div>
-
-                {/* Botões */}
-                <div className="text-center mt-4">
-                  <button
-                    className="btn btn-danger"
-                    onClick={abrirConfirmacao}
-                  >
-                    Deletar Conta
+                <div className="d-flex justify-content-between">
+                  <button className="btn btn-danger" onClick={abrirConfirmacao}>
+                     <i className="bi bi-trash-fill me-1"></i>Deletar Conta
                   </button>
-                  <button
-                    className="btn btn-primary ms-2"
-                    onClick={handleUpdate}
-                  >
-                    Salvar Alterações
+                  <button className="btn btn-success" onClick={handleUpdate}>
+                    <i className="bi bi-check-circle-fill me-1"></i>Salvar Alterações
                   </button>
                 </div>
 
@@ -391,7 +359,7 @@ export default function PerfilCuidador() {
                     onCancelar={fecharConfirmacao}
                   />
                 )}
-              </div>
+              </>
             )}
           </div>
         </div>
