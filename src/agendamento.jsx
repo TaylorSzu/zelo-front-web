@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
-import { format, parseISO } from "date-fns";
-import ptBR from "date-fns/locale/pt-BR";
+import { format } from "date-fns";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import SidebarContratante from "./utils/sidebarContratante"
+import SidebarContratante from "./utils/sidebarContratante";
 import moment from "moment";
 import "moment/locale/pt-br";
 import axios from "axios";
+
+moment.locale("pt-br");
 
 const localizer = momentLocalizer(moment);
 
@@ -20,11 +21,10 @@ const AgendamentosDashboard = () => {
         const contratanteId = sessionStorage.getItem("contratanteId");
         const resposta = await axios.get(
           `http://localhost:5171/agendamento/listar/contratante/${contratanteId}`,
-          { withCredentials: true } 
+          { withCredentials: true }
         );
         const dados = await resposta.data;
 
-        // Adaptar para formato do react-big-calendar
         const eventosFormatados = dados.map((agendamento) => ({
           title: agendamento.nome,
           start: new Date(agendamento.dataHoraInicio),
@@ -60,6 +60,96 @@ const AgendamentosDashboard = () => {
               endAccessor="end"
               style={{ height: 500 }}
               culture="pt-BR"
+              messages={{
+                today: "Hoje",
+                previous: "Voltar",
+                next: "Próximo",
+                month: "Mês",
+                week: "Semana",
+                day: "Dia",
+                agenda: "Agenda",
+                date: "Data",
+                time: "Hora",
+                event: "Evento",
+                noEventsInRange: "Nenhum agendamento neste período",
+              }}
+              formats={{
+                weekdayFormat: (date) =>
+                  ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"][
+                    date.getDay()
+                  ],
+
+                dayFormat: (date, culture, localizer) =>
+                  localizer.format(date, "d", culture),
+
+                timeGutterFormat: (date, culture, localizer) =>
+                  localizer.format(date, "HH:mm", culture),
+
+                dayRangeHeaderFormat: ({ start, end }) => {
+                  const meses = [
+                    "janeiro",
+                    "fevereiro",
+                    "março",
+                    "abril",
+                    "maio",
+                    "junho",
+                    "julho",
+                    "agosto",
+                    "setembro",
+                    "outubro",
+                    "novembro",
+                    "dezembro",
+                  ];
+
+                  const diaInicio = start.getDate();
+                  const diaFim = end.getDate();
+                  const mesInicio = meses[start.getMonth()];
+                  const mesFim = meses[end.getMonth()];
+                  const anoInicio = start.getFullYear();
+                  const anoFim = end.getFullYear();
+
+                  if (anoInicio !== anoFim) {
+                    return `${diaInicio} de ${mesInicio} de ${anoInicio} - ${diaFim} de ${mesFim} de ${anoFim}`;
+                  } else if (mesInicio !== mesFim) {
+                    return `${diaInicio} de ${mesInicio} - ${diaFim} de ${mesFim} de ${anoInicio}`;
+                  } else {
+                    return `${diaInicio} - ${diaFim} de ${mesInicio} de ${anoInicio}`;
+                  }
+                },
+
+                monthHeaderFormat: (date) => {
+                  const meses = [
+                    "Janeiro",
+                    "Fevereiro",
+                    "Março",
+                    "Abril",
+                    "Maio",
+                    "Junho",
+                    "Julho",
+                    "Agosto",
+                    "Setembro",
+                    "Outubro",
+                    "Novembro",
+                    "Dezembro",
+                  ];
+                  return `${meses[date.getMonth()]} de ${date.getFullYear()}`;
+                },
+
+                dayHeaderFormat: (date) => {
+                  const diasSemana = [
+                    "Domingo",
+                    "Segunda-feira",
+                    "Terça-feira",
+                    "Quarta-feira",
+                    "Quinta-feira",
+                    "Sexta-feira",
+                    "Sábado",
+                  ];
+                  const dia = date.getDate().toString().padStart(2, "0");
+                  const mes = (date.getMonth() + 1).toString().padStart(2, "0");
+                  return `${diasSemana[date.getDay()]} - ${dia}/${mes}`;
+                },
+              }}
               onSelectEvent={(event) => {
                 setEventoSelecionado({
                   nome: event.title,
@@ -72,9 +162,10 @@ const AgendamentosDashboard = () => {
                 });
               }}
               eventPropGetter={(event) => {
-                let backgroundColor = "#6c757d"; // padrão cinza
+                let backgroundColor = "#6c757d";
                 if (event.status === "confirmado") backgroundColor = "#198754";
-                else if (event.status === "pendente") backgroundColor = "#ffc107";
+                else if (event.status === "pendente")
+                  backgroundColor = "#ffc107";
                 return { style: { backgroundColor, color: "black" } };
               }}
             />
@@ -90,13 +181,15 @@ const AgendamentosDashboard = () => {
                       <strong>Nome:</strong> {eventoSelecionado.nome}
                     </li>
                     <li className="list-group-item">
-                      <strong>Especialidade:</strong> {eventoSelecionado.especialidade}
+                      <strong>Especialidade:</strong>{" "}
+                      {eventoSelecionado.especialidade}
                     </li>
                     <li className="list-group-item">
                       <strong>Telefone:</strong> {eventoSelecionado.telefone}
                     </li>
                     <li className="list-group-item">
-                      <strong>Valor Hora:</strong> R$ {eventoSelecionado.valorHora}
+                      <strong>Valor Hora:</strong> R${" "}
+                      {eventoSelecionado.valorHora}
                     </li>
                     <li className="list-group-item">
                       <strong>Status:</strong>{" "}

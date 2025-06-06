@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import axios from "axios";
-import SidebarContratante from "../utils/sidebarContratante.jsx";
+import SidebarContratante from "../utils/sidebarContratante";
 
 export default function Dashboard() {
   const [cuidadores, setCuidadores] = useState([]);
@@ -16,12 +16,9 @@ export default function Dashboard() {
   const fetchCuidadores = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(
-        "http://localhost:5171/cuidador/listar",
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.get("https://127.0.0.1/cuidador/listar", {
+        withCredentials: true,
+      });
       if (response.status === 200) {
         setCuidadores(response.data);
       } else {
