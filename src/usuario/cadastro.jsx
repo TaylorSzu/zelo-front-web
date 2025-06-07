@@ -31,22 +31,33 @@ export default function Cadastro() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!nome || !cpf || !endereco || !telefone || !email || !senha || !tipoUsuario) {
+    if (
+      !nome ||
+      !cpf ||
+      !endereco ||
+      !telefone ||
+      !email ||
+      !senha ||
+      !tipoUsuario
+    ) {
       setError("Por favor, preencha todos os campos.");
       return;
     }
 
     try {
-      const response = await axios.post("http://localhost:5171/usuario/registrar", {
-        nome,
-        cpf: removerMascara(cpf),
-        endereco,
-        telefone: removerMascara(telefone),
-        email,
-        senha,
-        tipoUsuario,
-        status: "Ativo"
-      });
+      const response = await axios.post(
+        "http://localhost:5171/usuario/registrar",
+        {
+          nome,
+          cpf: removerMascara(cpf),
+          endereco,
+          telefone: removerMascara(telefone),
+          email,
+          senha,
+          tipoUsuario,
+          status: "Ativo",
+        }
+      );
 
       setError("");
       setSuccess(true);
@@ -83,13 +94,15 @@ export default function Cadastro() {
           className="d-flex flex-column justify-content-center align-items-center bg-primary text-white text-center p-4 order-1 order-md-2"
         >
           <img
-            src="img/ICON.png"
+            src="img/ICON1.png"
             alt="Cuidado de idosos"
             className="img-fluid rounded mb-3"
             style={{ maxWidth: "80%", height: "auto" }}
           />
           <h4>Cuidando com carinho e dedicação</h4>
-          <p>Oferecemos o melhor serviço para garantir o bem-estar dos idosos.</p>
+          <p>
+            Oferecemos o melhor serviço para garantir o bem-estar dos idosos.
+          </p>
         </Col>
 
         {/* Coluna do formulário */}
@@ -105,7 +118,9 @@ export default function Cadastro() {
             <h3 className="text-center text-primary">Cadastro</h3>
 
             {error && <Alert variant="danger">{error}</Alert>}
-            {success && <Alert variant="success">Cadastro realizado com sucesso!</Alert>}
+            {success && (
+              <Alert variant="success">Cadastro realizado com sucesso!</Alert>
+            )}
 
             {loading ? (
               <div className="text-center">

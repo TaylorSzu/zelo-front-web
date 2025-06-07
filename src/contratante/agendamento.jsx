@@ -75,7 +75,10 @@ const AgendamentosDashboard = () => {
     <div className="d-flex">
       <SidebarContratante />
 
-      <div className="container-fluid p-4 bg-white" style={{ minHeight: "100vh" }}>
+      <div
+        className="container-fluid p-4 bg-white"
+        style={{ minHeight: "100vh" }}
+      >
         <h2 className="mb-5 mt-3 text-center text-primary fw-bold">
           Meus Agendamentos
         </h2>
@@ -108,8 +111,10 @@ const AgendamentosDashboard = () => {
               eventPropGetter={(event) => {
                 let backgroundColor = "#6c757d";
                 if (event.status === "confirmado") backgroundColor = "#198754";
-                else if (event.status === "pendente") backgroundColor = "#ffc107";
-                else if (event.status === "cancelado") backgroundColor = "#DC3545";
+                else if (event.status === "pendente")
+                  backgroundColor = "#ffc107";
+                else if (event.status === "cancelado")
+                  backgroundColor = "#DC3545";
                 return {
                   style: {
                     backgroundColor,
@@ -133,6 +138,83 @@ const AgendamentosDashboard = () => {
                 event: "Evento",
                 noEventsInRange: "Não há eventos neste período.",
                 showMore: (total) => `+ Ver mais (${total})`,
+              }}
+              formats={{
+                weekdayFormat: (date) =>
+                  ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"][
+                    date.getDay()
+                  ],
+                dayFormat: (date, culture, localizer) =>
+                  localizer.format(date, "D", culture), // dia do mês
+                timeGutterFormat: (date, culture, localizer) =>
+                  localizer.format(date, "HH:mm", culture),
+
+                // Título da visualização "Semana"
+
+                dayRangeHeaderFormat: ({ start, end }) => {
+                  const meses = [
+                    "Janeiro",
+                    "Fevereiro",
+                    "Março",
+                    "Abril",
+                    "Maio",
+                    "Junho",
+                    "Julho",
+                    "Agosto",
+                    "Setembro",
+                    "Outubro",
+                    "Novembro",
+                    "Dezembro",
+                  ];
+
+                  const diaInicio = start.getDate();
+                  const diaFim = end.getDate();
+                  const mesInicio = meses[start.getMonth()];
+                  const mesFim = meses[end.getMonth()];
+                  const anoInicio = start.getFullYear();
+                  const anoFim = end.getFullYear();
+
+                  if (anoInicio !== anoFim) {
+                    return `${diaInicio} de ${mesInicio} de ${anoInicio} - ${diaFim} de ${mesFim} de ${anoFim}`;
+                  } else if (mesInicio !== mesFim) {
+                    return `${diaInicio} de ${mesInicio} - ${diaFim} de ${mesFim} de ${anoInicio}`;
+                  } else {
+                    return `${diaInicio} - ${diaFim} de ${mesInicio} de ${anoInicio}`;
+                  }
+                },
+
+                // Cabeçalho do mês (ex: "Junho de 2025")
+                monthHeaderFormat: (date) => {
+                  const meses = [
+                    "Janeiro",
+                    "Fevereiro",
+                    "Março",
+                    "Abril",
+                    "Maio",
+                    "Junho",
+                    "Julho",
+                    "Agosto",
+                    "Setembro",
+                    "Outubro",
+                    "Novembro",
+                    "Dezembro",
+                  ];
+                  return `${meses[date.getMonth()]} de ${date.getFullYear()}`;
+                },
+                dayHeaderFormat: (date) => {
+                  const diasSemana = [
+                    "Domingo",
+                    "Segunda-feira",
+                    "Terça-feira",
+                    "Quarta-feira",
+                    "Quinta-feira",
+                    "Sexta-feira",
+                    "Sábado",
+                  ];
+                  const dia = date.getDate().toString().padStart(2, "0");
+                  const mes = (date.getMonth() + 1).toString().padStart(2, "0");
+                  return `${diasSemana[date.getDay()]} - ${dia}/${mes}`;
+                },
               }}
             />
           </div>
@@ -166,7 +248,8 @@ const AgendamentosDashboard = () => {
                       className="bi bi-heart-pulse-fill text-danger"
                       style={{ fontSize: "1.2rem" }}
                     ></i>
-                    <strong>Especialidade:</strong> {eventoSelecionado.especialidade}
+                    <strong>Especialidade:</strong>{" "}
+                    {eventoSelecionado.especialidade}
                   </li>
                   <li className="list-group-item d-flex align-items-center gap-2">
                     <i
@@ -181,7 +264,8 @@ const AgendamentosDashboard = () => {
                       className="bi bi-currency-dollar text-warning"
                       style={{ fontSize: "1.2rem" }}
                     ></i>
-                    <strong>Valor Hora:</strong> R$ {eventoSelecionado.valorHora}
+                    <strong>Valor Hora:</strong> R${" "}
+                    {eventoSelecionado.valorHora}
                   </li>
                   <li className="list-group-item d-flex align-items-center gap-2">
                     <i
@@ -218,9 +302,7 @@ const AgendamentosDashboard = () => {
                     ></i>
                     <strong>Início:</strong> {eventoSelecionado.inicio}
                   </li>
-                  <li
-                    className="list-group-item d-flex align-items-center gap-2 mb-5"
-                  >
+                  <li className="list-group-item d-flex align-items-center gap-2 mb-5">
                     <i
                       className="bi bi-calendar-x-fill text-secondary"
                       style={{ fontSize: "1.2rem" }}

@@ -78,43 +78,51 @@ export default function Home() {
                     key={num}
                     className={`carousel-item ${index === 0 ? "active" : ""}`}
                   >
-                    <div
-                      className="d-block w-100 text-white position-relative"
-                      style={{
-                        backgroundImage: `url("/img/CR${num}.png")`,
-                        height: "57vh",
-                        backgroundSize: "contain",
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "center",
-                      }}
-                    >
+                    <div className="position-relative w-100">
+                      {/* Imagem */}
+                      <img
+                        src={`/img/CR${num}.png`}
+                        alt={`Slide ${num}`}
+                        className="img-fluid w-100"
+                        style={{
+                          maxHeight: "57vh",
+                          objectFit: "contain",
+                        }}
+                      />
+
+                      {/* Camada escura sobre a imagem */}
                       <div
                         className="position-absolute top-0 start-0 w-100 h-100"
                         style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
                       ></div>
-                      <div className="position-relative h-100 d-flex flex-column justify-content-center align-items-center text-center px-3">
-                        {/* <h5 className="display-6 fw-bold">
-                          {
-                            [
-                              "1. Cadastre-se",
-                              "2. Encontre ou Ofereça",
-                              "3. Conecte-se com segurança",
-                              "4. Agende facilmente",
-                              "5. Receba pagamentos",
-                            ][index]
-                          }
-                        </h5> */}
-                        {/* <p className="lead">
-                          {
-                            [
-                              "Crie sua conta como cuidador ou contratante com poucos cliques.",
-                              "Cuidadores divulgam serviços. Contratantes buscam por perfis.",
-                              "Avaliações e verificação garantem confiança para todos.",
-                              "Escolha data e hora conforme sua disponibilidade.",
-                              "Transações seguras e simples direto pelo app.",
-                            ][index]
-                          }
-                        </p> */}
+
+                      {/* Conteúdo do slide */}
+                      <div className="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center text-white px-3 text-center">
+                        {/* Exemplo de conteúdo comentado, reative se quiser */}
+                        {/* <div>
+            <h5 className="display-6 fw-bold">
+              {
+                [
+                  "1. Cadastre-se",
+                  "2. Encontre ou Ofereça",
+                  "3. Conecte-se com segurança",
+                  "4. Agende facilmente",
+                  "5. Receba pagamentos",
+                ][index]
+              }
+            </h5>
+            <p className="lead">
+              {
+                [
+                  "Crie sua conta como cuidador ou contratante com poucos cliques.",
+                  "Cuidadores divulgam serviços. Contratantes buscam por perfis.",
+                  "Avaliações e verificação garantem confiança para todos.",
+                  "Escolha data e hora conforme sua disponibilidade.",
+                  "Transações seguras e simples direto pelo app.",
+                ][index]
+              }
+            </p>
+          </div> */}
                       </div>
                     </div>
                   </div>

@@ -8,22 +8,42 @@ import {
   FaMoneyBillWave,
   FaUserFriends,
   FaBars,
-  FaHeadset,
-  FaSignOutAlt
+  FaSignOutAlt,
+  FaTimes,
 } from "react-icons/fa";
 
 const SidebarContratante = ({ children }) => {
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-  const toggleSidebar = () => {
-    setCollapsed(!collapsed);
+  const handleNavigation = (path) => {
+    setMobileOpen(false); // fecha menu móvel ao navegar
+    navigate(path);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    window.location.href = "/login";
-  };
+  // Fecha menu móvel ao redimensionar para desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setMobileOpen(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Controla overflow do body para evitar rolagem quando menu móvel aberto
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto"; // limpa no unmount
+    };
+  }, [mobileOpen]);
 
   return (
     <>
@@ -68,64 +88,123 @@ const SidebarContratante = ({ children }) => {
             </button>
           </div>
 
-        {/* Menu com flex column e grow */}
-        <ul 
-          className="nav nav-pills flex-column px-2"
-          style={{ flexGrow: 1 }}
-        >
-          <li className="nav-item">
-            <Link to="/paciente" className="nav-link text-white">
-              <FaSearch /> {!collapsed && <span className="ms-2">Procurar Cuidador</span>}
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/paciente/perfil" className="nav-link text-white">
-              <FaUser /> {!collapsed && <span className="ms-2">Perfil</span>}
-            </Link>
-          </li>
-          <li>
-            <Link to="/agendamentos" className="nav-link text-white">
-              <FaCalendarAlt />
-              {!collapsed && <span className="ms-2">Agendamentos</span>}
-            </Link>
-          </li>
-          <li>
-            <Link to="/idoso" className="nav-link text-white">
-              <FaUserFriends />
-              {!collapsed && <span className="ms-2">Meus Idosos</span>}
-            </Link>
-          </li>
-          <li>
-            <Link className="nav-link text-white">
-              <FaMoneyBillWave />
-              {!collapsed && <span className="ms-2">Pagamentos</span>}
-            </Link>
-          </li>
-          <li>
-            <Link className="nav-link text-white">
-              <FaCog />
-              {!collapsed && <span className="ms-2">Configurações</span>}
-            </Link>
-          </li>
-          <li>
-            <Link to="/paciente/suporte" className="nav-link text-white">
-              <FaHeadset />
-              {!collapsed && <span className="ms-2">Suporte</span>}
-            </Link>
-          </li>
-          {/* Espaço flex para empurrar o logout para baixo */}
-          <li style={{ marginTop: "auto" }}>
+          <ul className="nav flex-column p-3">
+            <li className="nav-item">
+              <button
+                className="nav-link text-white bg-transparent border-0 text-start"
+                onClick={() => handleNavigation("/paciente/perfil")}
+              >
+                <FaUser /> <span className="ms-2">Perfil</span>
+              </button>
+            </li>
+            <li className="nav-item">
+              <button
+                className="nav-link text-white bg-transparent border-0 text-start"
+                onClick={() => handleNavigation("/agendamentos")}
+              >
+                <FaCalendarAlt /> <span className="ms-2">Agendamentos</span>
+              </button>
+            </li>
+            <li className="nav-item">
+              <button
+                className="nav-link text-white bg-transparent border-0 text-start"
+                onClick={() => handleNavigation("/pagamentos")}
+              >
+                <FaMoneyBillWave /> <span className="ms-2">Pagamentos</span>
+              </button>
+            </li>
+            <li className="nav-item">
+              <button
+                className="nav-link text-white bg-transparent border-0 text-start"
+                onClick={() => handleNavigation("/configuracoes")}
+              >
+                <FaCog /> <span className="ms-2">Configurações</span>
+              </button>
+            </li>
+            <li className="nav-item">
+              <button
+                className="nav-link text-white bg-transparent border-0 text-start"
+                onClick={() => handleNavigation("/idoso")}
+              >
+                <FaUserFriends /> <span className="ms-2">Meus Idosos</span>
+              </button>
+            </li>
+            <li className="nav-item">
+              <button
+                className="nav-link text-white bg-transparent border-0 text-start"
+                onClick={() => handleNavigation("/usuario/logout")}
+              >
+                <FaSignOutAlt /> <span className="ms-2">Sair</span>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      )}
+
+      {/* Layout principal (desktop) */}
+      <div className="container-fluid">
+        <div className="row">
+          {/* Sidebar DESKTOP */}
+          <nav
+            className="d-none d-md-flex flex-column bg-primary text-white p-0 min-vh-100"
+            style={{
+              width: collapsed ? "70px" : "220px",
+              transition: "width 0.3s",
+            }}
+            role="navigation"
+            aria-label="Menu lateral desktop"
+          >
+            {/* Botão colapsar - só no desktop */}
             <button
-              onClick={handleLogout}
-              className="nav-link btn btn-link text-white text-start p-3"
-              style={{ cursor: "pointer" }}
+              className="btn btn-link text-white p-3 border-bottom text-start w-100 d-none d-md-flex"
+              onClick={() => setCollapsed(!collapsed)}
+              style={{ fontSize: "1.2rem" }}
+              aria-expanded={!collapsed}
+              aria-label={collapsed ? "Expandir menu" : "Colapsar menu"}
             >
-              <FaSignOutAlt />
-              {!collapsed && <span className="ms-2">Sair</span>}
+              <FaBars />
+              {!collapsed && <span className="ms-2">Menu - Zello</span>}
             </button>
-          </li>
-        </ul>
-      </div>
+
+            <ul className="nav nav-pills flex-column px-2 mt-3">
+              <li className="nav-item">
+                <Link to="/paciente/perfil" className="nav-link text-white">
+                  <FaUser />
+                  {!collapsed && <span className="ms-2">Perfil</span>}
+                </Link>
+              </li>
+              <li>
+                <Link to="/agendamentos" className="nav-link text-white">
+                  <FaCalendarAlt />
+                  {!collapsed && <span className="ms-2">Agendamentos</span>}
+                </Link>
+              </li>
+              <li>
+                <Link to="/pagamentos" className="nav-link text-white">
+                  <FaMoneyBillWave />
+                  {!collapsed && <span className="ms-2">Pagamentos</span>}
+                </Link>
+              </li>
+              <li>
+                <Link to="/configuracoes" className="nav-link text-white">
+                  <FaCog />
+                  {!collapsed && <span className="ms-2">Configurações</span>}
+                </Link>
+              </li>
+              <li>
+                <Link to="/idoso" className="nav-link text-white">
+                  <FaUserFriends />
+                  {!collapsed && <span className="ms-2">Meus Idosos</span>}
+                </Link>
+              </li>
+              <li>
+                <Link to="/usuario/logout" className="nav-link text-white">
+                  <FaSignOutAlt />
+                  {!collapsed && <span className="ms-2">Sair</span>}
+                </Link>
+              </li>
+            </ul>
+          </nav>
 
           {/* Conteúdo principal */}
           <main className="col p-4">{children}</main>
