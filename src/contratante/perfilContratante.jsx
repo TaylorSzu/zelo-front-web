@@ -198,75 +198,56 @@ export default function PerfilPaciente() {
 
   return (
     <SidebarContratante>
-      <div
-        className="container-fluid d-flex flex-column align-items-center"
-        style={{
-          minHeight: "100%",
-          backgroundColor: "#f8f9fa",
-          padding: "30px",
-        }}
-      >
-        <div
-          className="card shadow-lg p-4"
-          style={{
-            width: "100%",
-            height: "100%",
-          }}
-        >
-          <div className="card-header bg-primary text-white text-center">
+      <div className="container py-5 d-flex justify-content-center">
+        <div className="card rounded-4" style={{ width: '100%', maxWidth: '7680px' }}>
+          <div className="card-header bg-primary text-white text-center rounded-top-4" >
             <h3>Perfil do Paciente</h3>
           </div>
           <div className="card-body">
             {loading && <p>Carregando...</p>}
             {error && <p className="text-danger">{error}</p>}
             {!loading && !error && (
-              <div>
-                <div className="mb-4 text-center">
-                  <h5>Imagem de Perfil</h5>
+              <>
+                <div className="mb-4 text-center position-relative" style={{ width: '150px', height: '150px', margin: '0 auto' }}>
                   <div
-                    className="position-relative mx-auto"
-                    style={{ width: "150px", height: "150px" }}
+                    className="rounded-circle overflow-hidden border border-3 border-primary"
+                    style={{ width: '150px', height: '150px', position: 'relative' }}
                   >
-                    <div
-                      className="rounded-circle overflow-hidden border border-2 position-relative"
+                    <img
+                      src={foto || "../src/assets/perfil.png"}
+                      alt="Foto de perfil"
+                      className="w-100 h-100"
+                      style={{ objectFit: 'cover' }}
+                    />
+                    <label
+                      htmlFor="fileInput"
+                      className="d-flex align-items-center justify-content-center text-white fw-bold"
                       style={{
-                        width: "150px",
-                        height: "150px",
-                        backgroundColor: "#dee2e6",
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        borderRadius: '50%',
+                        opacity: 0,
+                        cursor: 'pointer',
+                        transition: 'opacity 0.3s',
                       }}
+                      onMouseEnter={(e) => (e.currentTarget.style.opacity = 1)}
+                      onMouseLeave={(e) => (e.currentTarget.style.opacity = 0)}
                     >
-                      <img
-                        src={foto || "../src/assets/perfil.png"}
-                        alt="Foto de perfil"
-                        className="w-100 h-100"
-                        style={{ objectFit: "cover", borderRadius: "50%" }}
+                      Alterar
+                      <input
+                        type="file"
+                        id="fileInput"
+                        onChange={handleFileChange}
+                        style={{ display: 'none' }}
                       />
-                      <label
-                        htmlFor="fileInput"
-                        className="position-absolute top-0 start-0 d-flex align-items-center justify-content-center text-white fw-bold"
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          borderRadius: "50%",
-                          backgroundColor: "rgba(0, 0, 0, 0.5)",
-                          cursor: "pointer",
-                          opacity: 0,
-                          transition: "opacity 0.3s",
-                        }}
-                        onMouseEnter={(e) => (e.currentTarget.style.opacity = 1)}
-                        onMouseLeave={(e) => (e.currentTarget.style.opacity = 0)}
-                      >
-                        Alterar
-                        <input
-                          type="file"
-                          id="fileInput"
-                          onChange={handleFileChange}
-                          style={{ display: "none" }}
-                        />
-                      </label>
-                    </div>
+                    </label>
                   </div>
                 </div>
+
 
                 <div className="row">
                   <div className="col-md-6 mb-3">
@@ -314,20 +295,20 @@ export default function PerfilPaciente() {
                       value={email}
                       disabled
                       className="form-control"
-                      style={{ backgroundColor: "white" }}
+                      style={{ backgroundColor: 'white' }}
                     />
                   </div>
-                  <div className="col-md-6 mb-3">
+                  <div className="col-md-3 mb-3">
                     <label><strong>Idade:</strong></label>
                     <input
-                      type="text"
+                      type="number"
                       value={idade}
                       onChange={(e) => setIdade(e.target.value)}
                       className="form-control"
                     />
                   </div>
-                  <div className="col-md-6 mb-3">
-                    <label><strong>Data Nascimento:</strong></label>
+                  <div className="col-md-3 mb-3">
+                    <label><strong>Data de Nascimento:</strong></label>
                     <input
                       type="date"
                       value={dataNascimento}
@@ -335,60 +316,38 @@ export default function PerfilPaciente() {
                       className="form-control"
                     />
                   </div>
-                  <div className="col-md-6 mb-3">
-                    <label><strong>Observações medicas:</strong></label>
-                    <input
-                      type="text"
+                  <div className="col-12 mb-3">
+                    <label><strong>Observações Médicas:</strong></label>
+                    <textarea
                       value={observacoesMedicas}
                       onChange={(e) => setObservacoesMedicas(e.target.value)}
                       className="form-control"
+                      rows={3}
                     />
                   </div>
-
-                  <input type="hidden" value={id || ""} />
-                  <input type="hidden" value={senha} />
-                  <input type="hidden" value={tipoUsuario} />
-                  <input type="hidden" value={status} />
                 </div>
 
-                <div className="d-flex align-items-center justify-content-center">
-                  <button
-                    className="btn btn-danger m-3"
-                    onClick={abrirConfirmacao}
-                  >
-                    Deletar Conta
+                <div className="d-flex justify-content-between">
+                  <button className="btn btn-danger" onClick={abrirConfirmacao}>
+                     <i className="bi bi-trash-fill me-1"></i>Deletar Conta
                   </button>
-                  <button
-                    className="btn btn-primary"
-                    onClick={handleUpdate}
-                  >
-                    Salvar Alterações
+                  <button className="btn btn-success" onClick={handleUpdate}>
+                    <i className="bi bi-check-circle-fill me-1"></i>Salvar Alterações
                   </button>
                 </div>
-              </div>
+              </>
             )}
           </div>
         </div>
+        {mostrarConfirmacao && (
+          <ConfirmarSenha
+            onConfirm={confirmarSenha}
+            onClose={fecharConfirmacao}
+          />
+        )}
+        <ToastContainer />
       </div>
-      {mostrarConfirmacao && (
-        <ConfirmarSenha
-          onConfirmar={confirmarSenha}
-          onFechar={fecharConfirmacao}
-        />
-      )}
-
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
     </SidebarContratante>
+
   );
 }

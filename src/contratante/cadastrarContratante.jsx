@@ -21,7 +21,7 @@ export default function CadastroContratante({ onConfirmar, onCancelar }) {
       const contratante = {
         idade: parseInt(idade),
         dataNascimento: dataNascimento,
-        observacoesMedicas: observacoesMedicas
+        obeservacoesMedicas: observacoesMedicas
       }
 
       console.log("Contratante a ser cadastrado:", contratante);

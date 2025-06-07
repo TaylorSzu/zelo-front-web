@@ -71,6 +71,17 @@ const Mascara = ({ type, value, onChange, placeholder, className }) => {
   );
 };
 
+export function formatarTelefone(telefone) {
+  const apenasNumeros = telefone.replace(/\D/g, '');
+  if (apenasNumeros.length === 11) {
+    return `(${apenasNumeros.slice(0, 2)}) ${apenasNumeros.slice(2, 7)}-${apenasNumeros.slice(7)}`;
+  }
+  if (apenasNumeros.length === 10) {
+    return `(${apenasNumeros.slice(0, 2)}) ${apenasNumeros.slice(2, 6)}-${apenasNumeros.slice(6)}`;
+  }
+  return telefone;
+}
+
 export function removerMascara(valor) {
   return valor.replace(/[^\d]+/g, "");
 }

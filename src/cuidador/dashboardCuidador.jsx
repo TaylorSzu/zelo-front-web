@@ -48,6 +48,14 @@ const PainelCuidador = () => {
       </div>
     </div>
   );
+  return (
+    <div>
+      {/* Sidebar */}
+      <div className="col-auto p-0">
+        <SidebBarCuidador />
+      </div>
+    </div>
+  );
 };
 
 export default PainelCuidador;

@@ -155,6 +155,7 @@ export default function EditarIdoso({ id, onConfirmar, onCancelar }) {
               className="btn btn-secondary w-45"
               disabled={loading}
             >
+              <i className="bi bi-x-circle-fill me-2"></i>
               Cancelar
             </button>
             <button
@@ -162,6 +163,7 @@ export default function EditarIdoso({ id, onConfirmar, onCancelar }) {
               className="btn btn-primary w-45"
               disabled={loading}
             >
+              <i class="bi bi-check-circle me-2"></i>
               {loading ? (
                 <>
                   <span

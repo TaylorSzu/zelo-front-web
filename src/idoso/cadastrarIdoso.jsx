@@ -132,6 +132,8 @@ export default function CadastroIdoso({ onConfirmar, onCancelar }) {
               className="btn btn-secondary w-45"
               disabled={loading}
             >
+              <i className="bi bi-x-circle-fill me-2"></i>
+
               Cancelar
             </button>
             <button
@@ -139,13 +141,14 @@ export default function CadastroIdoso({ onConfirmar, onCancelar }) {
               className="btn btn-success w-45"
               disabled={loading}
             >
+              <i class="bi bi-check-circle me-2"></i>
               {loading ? (
                 <>
                   <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                   Cadastrando...
                 </>
               ) : (
-                'Confirmar'
+                 'Confirmar'
               )}
             </button>
           </div>
