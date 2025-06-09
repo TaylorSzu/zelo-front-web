@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "nodemailer": "^6.9.4",
     "@fullcalendar/bootstrap5": "^6.1.17",
     "@fullcalendar/core": "^6.1.17",
     "@fullcalendar/daygrid": "^6.1.17",

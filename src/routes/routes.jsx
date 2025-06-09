@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import Home from "../usuario/home.jsx";
 import Cadastro from "../usuario/cadastro.jsx";
 import Login from "../usuario/login.jsx";
@@ -9,7 +14,7 @@ import PainelCuidador from "../cuidador/dashboardCuidador.jsx";
 import PerfilCuidador from "../cuidador/perfilCuidador.jsx";
 import Agendamentos from "../contratante/agendamento.jsx";
 import AgendamentosCuidador from "../cuidador/agendamentosCuidador.jsx";
-import AgendamentosPendentesCuidador from "../cuidador/agendamentoPendentes.jsx"
+import AgendamentosPendentesCuidador from "../cuidador/agendamentoPendentes.jsx";
 import MarcaAgendamento from "../contratante/marcaAgendamento.jsx";
 import PerfilContratante from "../contratante/perfilContratante.jsx";
 import GerenciarIdosos from "../idoso/gerenciarIdosos.jsx";
@@ -32,11 +37,17 @@ export default function AppRoutes() {
         <Route path="/paciente/perfil" element={<PerfilContratante />} />
         <Route path="/idoso" element={<GerenciarIdosos />} />
         <Route path="/agendamentos" element={<Agendamentos />} />
-        <Route path="/agendamentos/cuidador" element={<AgendamentosCuidador/>}/>
+        <Route
+          path="/agendamentos/cuidador"
+          element={<AgendamentosCuidador />}
+        />
         <Route path="/agendamentos/marcar" element={<MarcaAgendamento />} />
-        <Route path="/agendamentos/cuidador/pendentes" element={<AgendamentosPendentesCuidador/>} />
-        <Route path="/paciente/suporte" element={<SuporteContratante/>} />
-        <Route path="/cuidador/suporte" element={<SuporteCuidador/>} />
+        <Route
+          path="/agendamentos/cuidador/pendentes"
+          element={<AgendamentosPendentesCuidador />}
+        />
+        <Route path="/paciente/suporte" element={<SuporteContratante />} />
+        <Route path="/cuidador/suporte" element={<SuporteCuidador />} />
       </Routes>
     </Router>
   );

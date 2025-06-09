@@ -32,20 +32,18 @@ export default function RecuperarSenha() {
     setMensagem("");
 
     try {
-      // Altere esta URL para o endpoint correto do seu backend
       const response = await axios.post(
         "http://localhost:5171/usuario/recuperarSenha",
-        {
-          email,
-        }
+        { email }
       );
 
+      // Mensagem padrão, mesmo se e-mail não existir (por segurança)
       setMensagem(
         "Se o e-mail estiver cadastrado, enviaremos instruções para recuperação."
       );
     } catch (err) {
-      setErro("Erro ao tentar recuperar a senha. Tente novamente mais tarde.");
       console.error("Erro na recuperação de senha:", err);
+      setErro("Erro ao tentar recuperar a senha. Tente novamente mais tarde.");
     } finally {
       setLoading(false);
     }
@@ -54,6 +52,7 @@ export default function RecuperarSenha() {
   return (
     <Container fluid>
       <Row className="g-0 flex-column flex-md-row min-vh-100">
+        {/* Lado esquerdo - imagem e texto */}
         <Col
           xs={12}
           md={6}
@@ -69,6 +68,7 @@ export default function RecuperarSenha() {
           <p className="px-2">Informe seu e-mail para redefinir a senha.</p>
         </Col>
 
+        {/* Lado direito - formulário */}
         <Col
           xs={12}
           md={6}
@@ -96,6 +96,7 @@ export default function RecuperarSenha() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Digite seu e-mail"
+                  required
                 />
               </Form.Group>
 
@@ -106,15 +107,18 @@ export default function RecuperarSenha() {
                 disabled={loading}
               >
                 {loading ? (
-                  <Spinner
-                    as="span"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                    aria-hidden="true"
-                  />
+                  <>
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                    />{" "}
+                    Enviando...
+                  </>
                 ) : (
-                  "Enviar instruções"
+                  "Enviar instruções para recuperação de senha."
                 )}
               </Button>
             </Form>

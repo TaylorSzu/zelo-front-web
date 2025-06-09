@@ -8,8 +8,8 @@ import SidebarContratante from "../utils/sidebarContratante.jsx";
 import Mascara, { removerMascara } from "../utils/mascaras.jsx";
 import CadastrarContratante from "./cadastrarContratante.jsx";
 import ConfirmarSenha from "../utils/confirmarSenha.jsx";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function PerfilPaciente() {
   const [id, setId] = useState(null);
@@ -28,7 +28,8 @@ export default function PerfilPaciente() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [mostrarConfirmacao, setMostrarConfirmacao] = useState(false);
-  const [precisaCadastrarContratante, setPrecisaCadastrarContratante] = useState(false);
+  const [precisaCadastrarContratante, setPrecisaCadastrarContratante] =
+    useState(false);
 
   const navigate = useNavigate();
 
@@ -71,7 +72,9 @@ export default function PerfilPaciente() {
           sessionStorage.setItem("contratanteId", contratanteId);
           setIdade(userData.Contratantes[0].idade || 0);
           setDataNascimento(userData.Contratantes[0].dataNascimento || "");
-          setObservacoesMedicas(userData.Contratantes[0].observacoesMedicas || "");
+          setObservacoesMedicas(
+            userData.Contratantes[0].observacoesMedicas || ""
+          );
           setPrecisaCadastrarContratante(false);
         }
       } else {
@@ -121,7 +124,7 @@ export default function PerfilPaciente() {
       console.error("Erro ao deletar conta:", error);
       alert(
         error.response?.data?.mensagem ||
-        "Erro ao deletar conta. Verifique a senha e tente novamente."
+          "Erro ao deletar conta. Verifique a senha e tente novamente."
       );
     } finally {
       fecharConfirmacao();
@@ -179,13 +182,15 @@ export default function PerfilPaciente() {
         await new Promise((r) => setTimeout(r, 500));
         await handleLoad();
       } else {
-        toast.error("Erro ao atualizar perfil. Verifique os dados e tente novamente.");
+        toast.error(
+          "Erro ao atualizar perfil. Verifique os dados e tente novamente."
+        );
       }
     } catch (error) {
       console.error("Erro ao atualizar perfil:", error);
       toast.error(
         error.response?.data?.mensagem ||
-        "Erro ao atualizar perfil. Tente novamente."
+          "Erro ao atualizar perfil. Tente novamente."
       );
     } finally {
       setLoading(false);
@@ -193,14 +198,21 @@ export default function PerfilPaciente() {
   };
 
   if (precisaCadastrarContratante) {
-    return <CadastrarContratante onCadastroConcluido={() => setPrecisaCadastrarContratante(false)} />;
+    return (
+      <CadastrarContratante
+        onCadastroConcluido={() => setPrecisaCadastrarContratante(false)}
+      />
+    );
   }
 
   return (
     <SidebarContratante>
       <div className="container py-5 d-flex justify-content-center">
-        <div className="card rounded-4" style={{ width: '100%', maxWidth: '7680px' }}>
-          <div className="card-header bg-primary text-white text-center rounded-top-4" >
+        <div
+          className="card rounded-4"
+          style={{ width: "100%", maxWidth: "7680px" }}
+        >
+          <div className="card-header bg-primary text-white text-center rounded-top-4">
             <h3>Perfil do Paciente</h3>
           </div>
           <div className="card-body">
@@ -208,31 +220,38 @@ export default function PerfilPaciente() {
             {error && <p className="text-danger">{error}</p>}
             {!loading && !error && (
               <>
-                <div className="mb-4 text-center position-relative" style={{ width: '150px', height: '150px', margin: '0 auto' }}>
+                <div
+                  className="mb-4 text-center position-relative"
+                  style={{ width: "150px", height: "150px", margin: "0 auto" }}
+                >
                   <div
                     className="rounded-circle overflow-hidden border border-3 border-primary"
-                    style={{ width: '150px', height: '150px', position: 'relative' }}
+                    style={{
+                      width: "150px",
+                      height: "150px",
+                      position: "relative",
+                    }}
                   >
                     <img
                       src={foto || "../src/assets/perfil.png"}
                       alt="Foto de perfil"
                       className="w-100 h-100"
-                      style={{ objectFit: 'cover' }}
+                      style={{ objectFit: "cover" }}
                     />
                     <label
                       htmlFor="fileInput"
                       className="d-flex align-items-center justify-content-center text-white fw-bold"
                       style={{
-                        position: 'absolute',
+                        position: "absolute",
                         top: 0,
                         left: 0,
-                        width: '100%',
-                        height: '100%',
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                        borderRadius: '50%',
+                        width: "100%",
+                        height: "100%",
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        borderRadius: "50%",
                         opacity: 0,
-                        cursor: 'pointer',
-                        transition: 'opacity 0.3s',
+                        cursor: "pointer",
+                        transition: "opacity 0.3s",
                       }}
                       onMouseEnter={(e) => (e.currentTarget.style.opacity = 1)}
                       onMouseLeave={(e) => (e.currentTarget.style.opacity = 0)}
@@ -242,16 +261,17 @@ export default function PerfilPaciente() {
                         type="file"
                         id="fileInput"
                         onChange={handleFileChange}
-                        style={{ display: 'none' }}
+                        style={{ display: "none" }}
                       />
                     </label>
                   </div>
                 </div>
 
-
                 <div className="row">
                   <div className="col-md-6 mb-3">
-                    <label><strong>Nome:</strong></label>
+                    <label>
+                      <strong>Nome:</strong>
+                    </label>
                     <input
                       type="text"
                       value={nome}
@@ -260,7 +280,9 @@ export default function PerfilPaciente() {
                     />
                   </div>
                   <div className="col-md-6 mb-3">
-                    <label><strong>CPF:</strong></label>
+                    <label>
+                      <strong>CPF:</strong>
+                    </label>
                     <Mascara
                       type="cpf"
                       value={cpf}
@@ -270,7 +292,9 @@ export default function PerfilPaciente() {
                     />
                   </div>
                   <div className="col-md-6 mb-3">
-                    <label><strong>Endereço:</strong></label>
+                    <label>
+                      <strong>Endereço:</strong>
+                    </label>
                     <input
                       type="text"
                       value={endereco}
@@ -279,7 +303,9 @@ export default function PerfilPaciente() {
                     />
                   </div>
                   <div className="col-md-6 mb-3">
-                    <label><strong>Telefone:</strong></label>
+                    <label>
+                      <strong>Telefone:</strong>
+                    </label>
                     <Mascara
                       type="telefone"
                       value={telefone}
@@ -289,17 +315,21 @@ export default function PerfilPaciente() {
                     />
                   </div>
                   <div className="col-md-6 mb-3">
-                    <label><strong>Email:</strong></label>
+                    <label>
+                      <strong>Email:</strong>
+                    </label>
                     <input
                       type="email"
                       value={email}
                       disabled
                       className="form-control"
-                      style={{ backgroundColor: 'white' }}
+                      style={{ backgroundColor: "white" }}
                     />
                   </div>
                   <div className="col-md-3 mb-3">
-                    <label><strong>Idade:</strong></label>
+                    <label>
+                      <strong>Idade:</strong>
+                    </label>
                     <input
                       type="number"
                       value={idade}
@@ -308,7 +338,9 @@ export default function PerfilPaciente() {
                     />
                   </div>
                   <div className="col-md-3 mb-3">
-                    <label><strong>Data de Nascimento:</strong></label>
+                    <label>
+                      <strong>Data de Nascimento:</strong>
+                    </label>
                     <input
                       type="date"
                       value={dataNascimento}
@@ -317,7 +349,9 @@ export default function PerfilPaciente() {
                     />
                   </div>
                   <div className="col-12 mb-3">
-                    <label><strong>Observações Médicas:</strong></label>
+                    <label>
+                      <strong>Observações Médicas:</strong>
+                    </label>
                     <textarea
                       value={observacoesMedicas}
                       onChange={(e) => setObservacoesMedicas(e.target.value)}
@@ -329,10 +363,11 @@ export default function PerfilPaciente() {
 
                 <div className="d-flex justify-content-between">
                   <button className="btn btn-danger" onClick={abrirConfirmacao}>
-                     <i className="bi bi-trash-fill me-1"></i>Deletar Conta
+                    <i className="bi bi-trash-fill me-1"></i>Deletar Conta
                   </button>
                   <button className="btn btn-success" onClick={handleUpdate}>
-                    <i className="bi bi-check-circle-fill me-1"></i>Salvar Alterações
+                    <i className="bi bi-check-circle-fill me-1"></i>Salvar
+                    Alterações
                   </button>
                 </div>
               </>
@@ -348,6 +383,5 @@ export default function PerfilPaciente() {
         <ToastContainer />
       </div>
     </SidebarContratante>
-
   );
 }

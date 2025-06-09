@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import SidebBarCuidador from "../utils/sidebarCuidador.jsx";
+import SidebarCuidador from "../utils/sidebarCuidador.jsx";
 
 const PainelCuidador = () => {
   const [agendamentos, setAgendamentos] = useState([]);
@@ -11,7 +11,7 @@ const PainelCuidador = () => {
     <div>
       {/* Sidebar */}
       <div className="col p-0">
-        <SidebBarCuidador />
+        <SidebarCuidador />
       </div>
 
       {/* Conteúdo Principal */}
@@ -52,7 +52,7 @@ const PainelCuidador = () => {
     <div>
       {/* Sidebar */}
       <div className="col-auto p-0">
-        <SidebBarCuidador />
+        <SidebarCuidador />
       </div>
     </div>
   );

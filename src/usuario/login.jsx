@@ -13,10 +13,12 @@ import {
 } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // ÍCONES AQUI
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // VISIBILIDADE DA SENHA
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -84,7 +86,7 @@ export default function Login() {
   return (
     <Container fluid>
       <Row className="g-0 flex-column flex-md-row min-vh-100">
-        {/* Coluna da imagem - em cima em telas pequenas */}
+        {/* Coluna da imagem */}
         <Col
           xs={12}
           md={6}
@@ -102,7 +104,7 @@ export default function Login() {
           </p>
         </Col>
 
-        {/* Coluna do formulário - embaixo em telas pequenas */}
+        {/* Coluna do formulário */}
         <Col
           xs={12}
           md={6}
@@ -134,12 +136,27 @@ export default function Login() {
 
               <Form.Group className="mb-3">
                 <Form.Label>Senha</Form.Label>
-                <Form.Control
-                  type="password"
-                  value={senha}
-                  onChange={(e) => setSenha(e.target.value)}
-                  placeholder="Digite sua senha"
-                />
+                <div className="position-relative">
+                  <Form.Control
+                    type={showPassword ? "text" : "password"}
+                    value={senha}
+                    onChange={(e) => setSenha(e.target.value)}
+                    placeholder="Digite sua senha"
+                  />
+                  <span
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{
+                      position: "absolute",
+                      top: "50%",
+                      right: "10px",
+                      transform: "translateY(-50%)",
+                      cursor: "pointer",
+                      color: "#6c757d",
+                    }}
+                  >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </span>
+                </div>
               </Form.Group>
 
               <div className="d-flex gap-2 mt-3">
@@ -168,17 +185,7 @@ export default function Login() {
                   onClick={() => navigate("/home")}
                   disabled={loading}
                 >
-                  {loading ? (
-                    <Spinner
-                      as="span"
-                      animation="border"
-                      size="sm"
-                      role="status"
-                      aria-hidden="true"
-                    />
-                  ) : (
-                    "Voltar"
-                  )}
+                  Voltar
                 </Button>
               </div>
             </Form>

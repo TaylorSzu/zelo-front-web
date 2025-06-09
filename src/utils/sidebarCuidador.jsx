@@ -49,7 +49,7 @@ const SidebarCuidador = ({ children }) => {
           className="position-fixed top-0 start-0 w-100 h-100 bg-primary text-white"
           style={{ zIndex: 1050 }}
         >
-          <div className="d-flex justify-content-between align-items-center p-3 border-bottom">
+          <div className="d-flex justify-content-between align-items-center p-4 border-bottom">
             <span className="fw-bold fs-5 mg-5">Menu - Zello</span>
             <button
               className="btn btn-outline-light btn-sm"
