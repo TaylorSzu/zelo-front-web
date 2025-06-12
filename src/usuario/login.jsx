@@ -96,7 +96,7 @@ export default function Login() {
             src="img/ICON1.png"
             alt="Login"
             className="img-fluid rounded mb-3 shadow-sm"
-            style={{ maxWidth: "80%", height: "auto" }}
+            style={{ maxWidth: "80%", height: "100px" }}
           />
           <h4 className="fw-bold">Bem-vindo de volta!</h4>
           <p className="px-2">

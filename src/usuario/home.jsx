@@ -1,21 +1,57 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "../styles/globals.css";
 
 export default function Home() {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const textos = [
+    {
+      titulo: "Cadastre-se na Zello",
+      texto: "Ofereça ou contrate serviços de forma ágil.",
+    },
+    {
+      titulo: "Conecte-se com Facilidade",
+      texto:
+        "Use filtros para encontrar o cuidador perfeito de acordo com suas necessidades.",
+    },
+    {
+      titulo: "Avaliações Reais",
+      texto:
+        "Leia experiências de outros contratantes antes de tomar sua decisão.",
+    },
+    {
+      titulo: "Agendamentos",
+      texto:
+        "Encontrou alguém perfeito? Verifique sua disponibilidade e agende um serviço.",
+    },
+    {
+      titulo: "Segurança em Primeiro Lugar",
+      texto:
+        "Todos as transações passam por verificação de segurança criteriosas.",
+    },
+  ];
+
   useEffect(() => {
-    // Garante que o Bootstrap JS só será carregado no client-side
     if (typeof window !== "undefined") {
-      import("bootstrap/dist/js/bootstrap.bundle.min.js");
+      import("bootstrap/dist/js/bootstrap.bundle.min.js").then(() => {
+        const carousel = document.getElementById("carouselSobre");
+        if (carousel) {
+          carousel.addEventListener("slide.bs.carousel", (e) => {
+            setActiveIndex(e.to);
+          });
+        }
+      });
     }
   }, []);
 
   return (
-    <div className="d-flex flex-column min-vh-100">
+    <div className="d-flex flex-column" style={{ minHeight: "100vh" }}>
       {/* Navbar */}
       <nav className="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
         <div className="container-fluid">
           <a className="navbar-brand fw-bold text-primary" href="/home">
-            <img src="/img/ICON1.png" alt="" width="50px" height="50px" />
+            <img src="/img/ICONVIT.png" alt="" width="40px" height="50px" />
           </a>
           <button
             className="navbar-toggler"
@@ -46,29 +82,42 @@ export default function Home() {
       </nav>
 
       {/* Conteúdo principal */}
-      <main className="flex-fill d-flex flex-column">
+      <main className="flex-grow-1 d-flex flex-column bg-light">
         {/* Hero Section */}
-        <section className="bg-light text-center py-5">
+        <section className="bg-light text-center py-3 mb-4">
           <div className="container">
-            <h1 className="display-4 text-primary fw-bold">
+            <h1 className="h3 text-primary fw-bold">
               Conectando cuidadores com quem precisa
             </h1>
-            <p className="lead mt-3 mb-4 text-secondary">
-              A Zello facilita o encontro entre cuidadores qualificados e quem
-              precisa de apoio. Segurança, carinho e confiança.
+            <p className="mt-2 mb-3 text-secondary small">
+              O app da Zello facilita o encontro entre cuidadores qualificados e
+              quem precisa de apoio. Segurança, carinho e confiança.
             </p>
-            <a href="/cadastro" className="btn btn-primary btn-lg">
+            <a href="/cadastro" className="btn btn-primary btn-sm">
               Comece Agora
             </a>
           </div>
         </section>
 
-        {/* Carrossel */}
-        <div className="flex-grow-1 d-flex">
-          <section className="bg-light text-center flex-fill d-flex align-items-center">
+        {/* Seção dividida */}
+        <section className="d-flex flex-column flex-lg-row w-100 mt-3">
+          {/* Texto dinâmico com animação */}
+          <div className="w-100 w-lg-50 d-flex align-items-center justify-content-center bg-light p-4 text-center">
+            <div key={activeIndex} className="fade-in">
+              <h2 className="text-primary fw-bold fs-3">
+                {textos[activeIndex].titulo}
+              </h2>
+              <p className="text-primary mb-0 fs-5">
+                {textos[activeIndex].texto}
+              </p>
+            </div>
+          </div>
+
+          {/* Carrossel */}
+          <div className="w-100 w-lg-50">
             <div
               id="carouselSobre"
-              className="carousel slide w-100"
+              className="carousel slide"
               data-bs-ride="carousel"
               data-bs-interval="10000"
             >
@@ -76,55 +125,16 @@ export default function Home() {
                 {[1, 2, 3, 4, 5].map((num, index) => (
                   <div
                     key={num}
-                    className={`carousel-item ${index === 0 ? "active" : ""}`}
+                    className={`carousel-item position-relative ${
+                      index === 0 ? "active" : ""
+                    }`}
                   >
-                    <div className="position-relative w-100">
-                      {/* Imagem */}
-                      <img
-                        src={`/img/CR${num}.png`}
-                        alt={`Slide ${num}`}
-                        className="img-fluid w-100"
-                        style={{
-                          maxHeight: "57vh",
-                          objectFit: "contain",
-                        }}
-                      />
-
-                      {/* Camada escura sobre a imagem */}
-                      <div
-                        className="position-absolute top-0 start-0 w-100 h-100"
-                        style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-                      ></div>
-
-                      {/* Conteúdo do slide */}
-                      <div className="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center text-white px-3 text-center">
-                        {/* Exemplo de conteúdo comentado, reative se quiser */}
-                        {/* <div>
-            <h5 className="display-6 fw-bold">
-              {
-                [
-                  "1. Cadastre-se",
-                  "2. Encontre ou Ofereça",
-                  "3. Conecte-se com segurança",
-                  "4. Agende facilmente",
-                  "5. Receba pagamentos",
-                ][index]
-              }
-            </h5>
-            <p className="lead">
-              {
-                [
-                  "Crie sua conta como cuidador ou contratante com poucos cliques.",
-                  "Cuidadores divulgam serviços. Contratantes buscam por perfis.",
-                  "Avaliações e verificação garantem confiança para todos.",
-                  "Escolha data e hora conforme sua disponibilidade.",
-                  "Transações seguras e simples direto pelo app.",
-                ][index]
-              }
-            </p>
-          </div> */}
-                      </div>
-                    </div>
+                    <img
+                      src={`/img/CR${num}.png`}
+                      alt={`Slide ${num}`}
+                      className="d-block w-100"
+                      style={{ objectFit: "cover" }}
+                    />
                   </div>
                 ))}
               </div>
@@ -138,7 +148,7 @@ export default function Home() {
                 <span
                   className="carousel-control-prev-icon"
                   aria-hidden="true"
-                ></span>
+                />
                 <span className="visually-hidden">Anterior</span>
               </button>
               <button
@@ -150,19 +160,19 @@ export default function Home() {
                 <span
                   className="carousel-control-next-icon"
                   aria-hidden="true"
-                ></span>
+                />
                 <span className="visually-hidden">Próximo</span>
               </button>
             </div>
-          </section>
-        </div>
+          </div>
+        </section>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-primary text-white text-center py-3">
+      {/* Footer padrão com espaço automático */}
+      <footer className="bg-primary text-white text-center py-3 mt-auto">
         <div className="container">
-          <p className="mb-0">
-            &copy; 2025 ZelloApp. Todos os direitos reservados.
+          <p className="mb-0 small">
+            &copy; 2025 Zello. Todos os direitos reservados.
           </p>
         </div>
       </footer>

@@ -80,11 +80,18 @@ const SidebarContratante = ({ children }) => {
           <div className="d-flex justify-content-between align-items-center p-3 border-bottom">
             <span className="fw-bold fs-5">Menu - Zello</span>
             <button
-              className="btn btn-light btn-sm"
+              className="btn btn-outline-light btn-sm"
+              style={{
+                width: "40px",
+                height: "40px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
               onClick={() => setMobileOpen(false)}
               aria-label="Fechar menu"
             >
-              <FaTimes />
+              <FaTimes size={20} />
             </button>
           </div>
 

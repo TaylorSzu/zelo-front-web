@@ -95,9 +95,9 @@ export default function Cadastro() {
         >
           <img
             src="img/ICON1.png"
-            alt="Cuidado de idosos"
+            alt="Cadastro"
             className="img-fluid rounded mb-3"
-            style={{ maxWidth: "80%", height: "auto" }}
+            style={{ maxWidth: "80%", height: "100px" }}
           />
           <h4>Cuidando com carinho e dedicação</h4>
           <p>

@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "nodemailer": "^6.9.4",
     "@fullcalendar/bootstrap5": "^6.1.17",
     "@fullcalendar/core": "^6.1.17",
     "@fullcalendar/daygrid": "^6.1.17",
@@ -20,6 +19,7 @@
     "@hookform/resolvers": "^4.0.0",
     "@popperjs/core": "^2.11.8",
     "@react-buddy/ide-toolbox": "^2.4.0",
+    "animate.css": "^4.1.1",
     "axios": "^1.7.9",
     "bootstrap": "^5.3.6",
     "bootstrap-icons": "^1.11.3",
@@ -27,6 +27,7 @@
     "inputmask": "^5.0.9",
     "js-cookie": "^3.0.5",
     "mysql2": "^3.14.1",
+    "nodemailer": "^6.9.4",
     "react": "^18.2.0",
     "react-big-calendar": "^1.19.2",
     "react-bootstrap": "^2.10.9",

@@ -62,7 +62,7 @@ export default function RecuperarSenha() {
             src="img/ICON1.png"
             alt="Recuperar Senha"
             className="img-fluid rounded mb-3 shadow-sm"
-            style={{ maxWidth: "80%", height: "auto" }}
+            style={{ maxWidth: "80%", height: "100px" }}
           />
           <h4 className="fw-bold">Esqueceu sua senha?</h4>
           <p className="px-2">Informe seu e-mail para redefinir a senha.</p>
