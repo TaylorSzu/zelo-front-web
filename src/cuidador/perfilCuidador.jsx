@@ -4,11 +4,14 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import Cookies from "js-cookie";
 import SidebarCuidador from "../utils/sidebarCuidador.jsx";
-import Mascara, { removerMascara, removerMascaraDinheiro } from "../utils/mascaras.jsx";
+import Mascara, {
+  removerMascara,
+  removerMascaraDinheiro,
+} from "../utils/mascaras.jsx";
 import ConfirmarSenha from "../utils/confirmarSenha.jsx";
 import CadastrarCuidador from "../cuidador/cadastrarCuidador.jsx";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function PerfilCuidador() {
   const [id, setId] = useState(null);
@@ -68,7 +71,10 @@ export default function PerfilCuidador() {
           setStatus(userData.status || "Ativo");
           setDisponibilidade(userData.Cuidadores[0]?.disponibilidade || "");
           const valorDoBanco = parseFloat(userData.Cuidadores[0]?.valorHora);
-          const valorFormatado = valorDoBanco.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+          const valorFormatado = valorDoBanco.toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL",
+          });
           setValorHora(valorFormatado);
           setEspecialidade(userData.Cuidadores[0]?.especialidade || "");
           setStatusVerificacao(userData.statusVerificacao || false);
@@ -119,10 +125,10 @@ export default function PerfilCuidador() {
       const cuidador = {
         id: idCuidador,
         disponibilidade,
-        valorHora: parseFloat(removerMascaraDinheiro(valorHora, 'dinheiro')),
+        valorHora: parseFloat(removerMascaraDinheiro(valorHora, "dinheiro")),
         especialidade,
         statusVerificacao,
-      }
+      };
 
       const response = await axios.put(
         "http://localhost:5171/usuario/alterar",
@@ -142,13 +148,15 @@ export default function PerfilCuidador() {
         await new Promise((r) => setTimeout(r, 500));
         await handleLoad();
       } else {
-        toast.error("Erro ao atualizar perfil. Verifique os dados e tente novamente.");
+        toast.error(
+          "Erro ao atualizar perfil. Verifique os dados e tente novamente."
+        );
       }
     } catch (error) {
       console.error("Erro ao atualizar perfil:", error);
       toast.error(
         error.response?.data?.mensagem ||
-        "Erro ao atualizar perfil. Tente novamente."
+          "Erro ao atualizar perfil. Tente novamente."
       );
     } finally {
       setLoading(false);
@@ -176,7 +184,7 @@ export default function PerfilCuidador() {
       console.error("Erro ao deletar conta:", error);
       alert(
         error.response?.data?.mensagem ||
-        "Erro ao deletar conta. Verifique a senha e tente novamente."
+          "Erro ao deletar conta. Verifique a senha e tente novamente."
       );
     } finally {
       fecharConfirmacao();
@@ -209,7 +217,7 @@ export default function PerfilCuidador() {
   return (
     <SidebarCuidador>
       <div className="container py-5 d-flex justify-content-center ">
-        <div className="card" style={{ width: '100%', maxWidth: '7680px' }}>
+        <div className="card" style={{ width: "100%", maxWidth: "7680px" }}>
           <div className="card-header bg-primary text-white text-center ">
             <h3>Perfil do Cuidador</h3>
           </div>
@@ -218,31 +226,38 @@ export default function PerfilCuidador() {
             {error && <p className="text-danger">{error}</p>}
             {!loading && !error && (
               <>
-                <div className="mb-4 text-center position-relative" style={{ width: '150px', height: '150px', margin: '0 auto' }}>
+                <div
+                  className="mb-4 text-center position-relative"
+                  style={{ width: "150px", height: "150px", margin: "0 auto" }}
+                >
                   <div
                     className="rounded-circle overflow-hidden border border-3 border-primary"
-                    style={{ width: '150px', height: '150px', position: 'relative' }}
+                    style={{
+                      width: "150px",
+                      height: "150px",
+                      position: "relative",
+                    }}
                   >
                     <img
                       src={foto || "../src/assets/perfil.png"}
                       alt="Foto de perfil"
                       className="w-100 h-100"
-                      style={{ objectFit: 'cover' }}
+                      style={{ objectFit: "cover" }}
                     />
                     <label
                       htmlFor="fileInput"
                       className="d-flex align-items-center justify-content-center text-white fw-bold"
                       style={{
-                        position: 'absolute',
+                        position: "absolute",
                         top: 0,
                         left: 0,
-                        width: '100%',
-                        height: '100%',
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                        borderRadius: '50%',
+                        width: "100%",
+                        height: "100%",
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        borderRadius: "50%",
                         opacity: 0,
-                        cursor: 'pointer',
-                        transition: 'opacity 0.3s',
+                        cursor: "pointer",
+                        transition: "opacity 0.3s",
                       }}
                       onMouseEnter={(e) => (e.currentTarget.style.opacity = 1)}
                       onMouseLeave={(e) => (e.currentTarget.style.opacity = 0)}
@@ -252,17 +267,18 @@ export default function PerfilCuidador() {
                         type="file"
                         id="fileInput"
                         onChange={handleFileChange}
-                        style={{ display: 'none' }}
+                        style={{ display: "none" }}
                       />
                     </label>
                   </div>
                 </div>
-                
 
                 {/* Campos de texto */}
                 <div className="row">
                   <div className="col-md-6 mb-3">
-                    <label><strong>Nome:</strong></label>
+                    <label>
+                      <strong>Nome:</strong>
+                    </label>
                     <input
                       type="text"
                       value={nome}
@@ -271,7 +287,9 @@ export default function PerfilCuidador() {
                     />
                   </div>
                   <div className="col-md-6 mb-3">
-                    <label><strong>CPF:</strong></label>
+                    <label>
+                      <strong>CPF:</strong>
+                    </label>
                     <Mascara
                       type="cpf"
                       value={cpf}
@@ -281,7 +299,9 @@ export default function PerfilCuidador() {
                     />
                   </div>
                   <div className="col-md-6 mb-3">
-                    <label><strong>Endereço:</strong></label>
+                    <label>
+                      <strong>Endereço:</strong>
+                    </label>
                     <input
                       type="text"
                       value={endereco}
@@ -290,7 +310,9 @@ export default function PerfilCuidador() {
                     />
                   </div>
                   <div className="col-md-6 mb-3">
-                    <label><strong>Telefone:</strong></label>
+                    <label>
+                      <strong>Telefone:</strong>
+                    </label>
                     <Mascara
                       type="telefone"
                       value={telefone}
@@ -300,7 +322,9 @@ export default function PerfilCuidador() {
                     />
                   </div>
                   <div className="col-md-6 mb-3">
-                    <label><strong>Email:</strong></label>
+                    <label>
+                      <strong>Email:</strong>
+                    </label>
                     <input
                       type="email"
                       value={email}
@@ -310,7 +334,9 @@ export default function PerfilCuidador() {
                     />
                   </div>
                   <div className="col-md-6 mb-3">
-                    <label><strong>Disponibilidade:</strong></label>
+                    <label>
+                      <strong>Disponibilidade:</strong>
+                    </label>
                     <input
                       type="text"
                       value={disponibilidade}
@@ -319,17 +345,21 @@ export default function PerfilCuidador() {
                     />
                   </div>
                   <div className="col-md-6 mb-3">
-                    <label><strong>Valor Diaria:</strong></label>
+                    <label>
+                      <strong>Valor Diaria:</strong>
+                    </label>
                     <Mascara
                       type="dinheiro"
                       value={valorHora}
-                      onChange={(e) => setValorHora((e.target.value))}
+                      onChange={(e) => setValorHora(e.target.value)}
                       placeholder="Infome o seu valor por diaria"
                       className="form-control"
                     />
                   </div>
                   <div className="col-md-6 mb-3">
-                    <label><strong>Especialidade:</strong></label>
+                    <label>
+                      <strong>Especialidade:</strong>
+                    </label>
                     <input
                       type="text"
                       value={especialidade}
@@ -344,11 +374,15 @@ export default function PerfilCuidador() {
                   <input type="hidden" value={statusVerificacao} />
                 </div>
                 <div className="d-flex justify-content-between">
-                  <button className="btn btn-danger" onClick={abrirConfirmacao}>
-                     <i className="bi bi-trash-fill me-1"></i>Deletar Conta
+                  <button
+                    className="btn btn-danger me-3"
+                    onClick={abrirConfirmacao}
+                  >
+                    <i className="bi bi-trash-fill me-1"></i>Deletar Conta
                   </button>
                   <button className="btn btn-success" onClick={handleUpdate}>
-                    <i className="bi bi-check-circle-fill me-1"></i>Salvar Alterações
+                    <i className="bi bi-check-circle-fill me-1"></i>Salvar
+                    Alterações
                   </button>
                 </div>
 

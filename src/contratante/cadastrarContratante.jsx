@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
 export default function CadastroContratante({ onConfirmar, onCancelar }) {
   const [idade, setIdade] = useState("");
@@ -21,10 +21,8 @@ export default function CadastroContratante({ onConfirmar, onCancelar }) {
       const contratante = {
         idade: parseInt(idade),
         dataNascimento: dataNascimento,
-        obeservacoesMedicas: observacoesMedicas
-      }
-
-      console.log("Contratante a ser cadastrado:", contratante);
+        observacoesMedicas: observacoesMedicas,
+      };
 
       await axios.post(
         "http://localhost:5171/contratante/registrar",
@@ -43,7 +41,7 @@ export default function CadastroContratante({ onConfirmar, onCancelar }) {
       setObservacoesMedicas("");
 
       setTimeout(() => {
-        window.location.reload(); // 🔄 Dá tempo da notificação aparecer antes de recarregar
+        window.location.reload();
       }, 1500);
     } catch (error) {
       console.error("Erro ao cadastrar contratante:", error);
@@ -56,7 +54,7 @@ export default function CadastroContratante({ onConfirmar, onCancelar }) {
       <ToastContainer position="top-center" autoClose={1500} />
 
       <div
-        className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+        className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center p-2"
         style={{
           backdropFilter: "blur(6px)",
           backgroundColor: "rgba(0, 0, 0, 0.3)",
@@ -64,8 +62,12 @@ export default function CadastroContratante({ onConfirmar, onCancelar }) {
         }}
       >
         <div
-          className="card p-4 shadow-lg"
-          style={{ width: "100%", maxWidth: "400px", borderRadius: "1rem" }}
+          className="card p-4 shadow-lg w-100"
+          style={{
+            maxWidth: "400px",
+            width: "90vw",
+            borderRadius: "1rem",
+          }}
         >
           <h4 className="text-center mb-4">Cadastro de Contratante</h4>
 
@@ -101,16 +103,16 @@ export default function CadastroContratante({ onConfirmar, onCancelar }) {
             />
           </div>
 
-          <div className="d-flex justify-content-between">
-            <button
+          <div className="d-flex gap-2">
+            {/* <button
               onClick={onCancelar}
-              className="btn btn-outline-secondary w-45"
+              className="btn btn-outline-secondary flex-grow-1"
             >
               Cancelar
-            </button>
+            </button> */}
             <button
               onClick={handleConfirmar}
-              className="btn btn-primary w-45"
+              className="btn btn-primary flex-grow-1"
             >
               Confirmar
             </button>

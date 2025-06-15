@@ -7,7 +7,7 @@ import {
 import Home from "../usuario/home.jsx";
 import Cadastro from "../usuario/cadastro.jsx";
 import Login from "../usuario/login.jsx";
-import Logout from "../usuario/logout.jsx";
+import Logout from "../utils/logout.jsx";
 import RecuperarSenha from "../usuario/recuperarSenha.jsx";
 import RegistrarNovaSenha from "../usuario/registrarNovaSenha.jsx";
 import PacienteDashboard from "../contratante/dashboardContratante.jsx";
@@ -21,6 +21,7 @@ import PerfilContratante from "../contratante/perfilContratante.jsx";
 import GerenciarIdosos from "../idoso/gerenciarIdosos.jsx";
 import SuporteContratante from "../suporte/suporteContratante.jsx";
 import SuporteCuidador from "../suporte/suporteCuidador.jsx";
+import Acessibilidade from "../usuario/acessibilidadeContratante";
 
 export default function AppRoutes() {
   return (
@@ -33,23 +34,28 @@ export default function AppRoutes() {
         <Route path="/recuperarSenha" element={<RecuperarSenha />} />
         <Route path="/registrarNovaSenha" element={<RegistrarNovaSenha />} />
         <Route path="/cadastro" element={<Cadastro />} />
-        <Route path="/paciente" element={<PacienteDashboard />} />
+        <Route path="/acessibilidade" element={<Acessibilidade />} />
+
+        {/* CUIDADOR */}
         <Route path="/cuidador" element={<PainelCuidador />} />
         <Route path="/cuidador/perfil" element={<PerfilCuidador />} />
-        <Route path="/paciente/perfil" element={<PerfilContratante />} />
-        <Route path="/idoso" element={<GerenciarIdosos />} />
-        <Route path="/agendamentos" element={<Agendamentos />} />
-        <Route
-          path="/agendamentos/cuidador"
-          element={<AgendamentosCuidador />}
-        />
-        <Route path="/agendamentos/marcar" element={<MarcaAgendamento />} />
+        <Route path="/cuidador/suporte" element={<SuporteCuidador />} />
         <Route
           path="/agendamentos/cuidador/pendentes"
           element={<AgendamentosPendentesCuidador />}
         />
+        <Route
+          path="/agendamentos/cuidador"
+          element={<AgendamentosCuidador />}
+        />
+
+        {/* PACIENTE */}
+        <Route path="/paciente" element={<PacienteDashboard />} />
+        <Route path="/paciente/perfil" element={<PerfilContratante />} />
         <Route path="/paciente/suporte" element={<SuporteContratante />} />
-        <Route path="/cuidador/suporte" element={<SuporteCuidador />} />
+        <Route path="/idoso" element={<GerenciarIdosos />} />
+        <Route path="/agendamentos/marcar" element={<MarcaAgendamento />} />
+        <Route path="/agendamentos" element={<Agendamentos />} />
       </Routes>
     </Router>
   );

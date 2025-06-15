@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import SidebarContratante from "../utils/sidebarContratante.jsx";
-
+import DataRestrita from "../utils/limitarData.jsx";
 axios.defaults.withCredentials = true;
 
 export default function Dashboard() {
@@ -61,11 +61,22 @@ export default function Dashboard() {
     const contratanteId = sessionStorage.getItem("contratanteId");
 
     const inicio = new Date(`${date}T${dataHoraInicio}:00`);
-    const fim = new Date(inicio);
-    fim.setHours(fim.getHours() + 12); // diária de 12 horas
+    const fim = new Date(`${date}T${dataHoraFim}:00`);
+    const diffMs = fim - inicio;
+    const diffHoras = diffMs / (1000 * 60 * 60);
+
+    if (diffHoras > 8) {
+      setMensagem("A jornada de trabalho não pode exceder 8 horas.");
+      return;
+    }
+    if (diffHoras <= 0) {
+      setMensagem("O horário de fim deve ser após o horário de início.");
+      return;
+    }
 
     const agendamento = {
-      contratanteId: tipoServico === "contratante" ? parseInt(contratanteId) : null,
+      contratanteId:
+        tipoServico === "contratante" ? parseInt(contratanteId) : null,
       cuidadorId: parseInt(cuidadorId),
       idosoId: tipoServico === "idoso" ? parseInt(idosoSelecionado) : null,
       dataHoraInicio: inicio.toISOString(),
@@ -94,8 +105,9 @@ export default function Dashboard() {
 
         {mensagem && (
           <div
-            className={`alert ${mensagem.includes("sucesso") ? "alert-success" : "alert-danger"
-              }`}
+            className={`alert ${
+              mensagem.includes("sucesso") ? "alert-success" : "alert-danger"
+            }`}
           >
             {mensagem}
           </div>
@@ -161,17 +173,16 @@ export default function Dashboard() {
           <div className="row g-3">
             <div className="col-md-4">
               <label className="form-label fw-semibold">Data</label>
-              <input
-                type="date"
-                className="form-control"
+              <DataRestrita
                 value={date}
-                onChange={(e) => setDate(e.target.value)}
-                required
+                onChange={(novaData) => setDate(novaData)}
               />
             </div>
 
             <div className="col-md-4">
-              <label className="form-label fw-semibold">Início do Serviço</label>
+              <label className="form-label fw-semibold">
+                Início do Serviço
+              </label>
               <input
                 type="time"
                 className="form-control"
@@ -193,7 +204,9 @@ export default function Dashboard() {
             </div>
 
             <div className="col-md-12">
-              <label className="form-label fw-semibold">Para quem é o serviço?</label>
+              <label className="form-label fw-semibold">
+                Para quem é o serviço?
+              </label>
               <select
                 className="form-select"
                 value={tipoServico}
@@ -214,10 +227,11 @@ export default function Dashboard() {
                 <option value="idoso">Para um Idoso</option>
               </select>
             </div>
-
             {tipoServico === "idoso" && temIdosos && (
               <div className="col-md-12">
-                <label className="form-label fw-semibold">Selecione o Idoso</label>
+                <label className="form-label fw-semibold">
+                  Selecione o Idoso
+                </label>
                 <select
                   className="form-select"
                   value={idosoSelecionado}
@@ -241,7 +255,7 @@ export default function Dashboard() {
             </button>
             <button
               type="button"
-              className="btn btn-outline-danger ms-2"
+              className="btn btn-danger ms-2"
               onClick={() => {
                 setDate("");
                 setDataHoraInicio("");
@@ -255,7 +269,6 @@ export default function Dashboard() {
           </div>
         </form>
       </div>
-
     </SidebarContratante>
   );
 }

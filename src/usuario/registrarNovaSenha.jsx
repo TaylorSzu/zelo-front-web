@@ -1,6 +1,7 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import Cookies from "js-cookie"; // lembre de instalar com npm install js-cookie
 import {
   Container,
   Col,
@@ -19,8 +20,9 @@ function useQuery() {
 
 export default function RedefinirSenha() {
   const query = useQuery();
-  const token = query.get("token");
+  const navigate = useNavigate();
 
+  const [token, setToken] = useState("");
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
   const [mostrarSenha, setMostrarSenha] = useState(false);
@@ -28,7 +30,15 @@ export default function RedefinirSenha() {
   const [mensagem, setMensagem] = useState("");
   const [erro, setErro] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+
+  // Captura o token da URL e salva no cookie assim que o componente carrega
+  useEffect(() => {
+    const tokenUrl = query.get("token");
+    if (tokenUrl) {
+      setToken(tokenUrl);
+      Cookies.set("token", tokenUrl, { expires: 0.01, sameSite: "Strict" });
+    }
+  }, [query]);
 
   const handleRedefinir = async (e) => {
     e.preventDefault();
@@ -48,10 +58,12 @@ export default function RedefinirSenha() {
     setMensagem("");
 
     try {
-      await axios.post("http://localhost:5171/usuario/registrarNovaSenha", {
-        token,
-        novaSenha: senha,
-      });
+      // Envia só a nova senha, token vai pelo cookie
+      await axios.post(
+        "http://localhost:5171/usuario/registrarNovaSenha",
+        { novaSenha: senha },
+        { withCredentials: true } // Importante para enviar cookie
+      );
 
       setMensagem("Senha redefinida com sucesso! Redirecionando...");
       setTimeout(() => navigate("/login"), 3000);
@@ -67,6 +79,7 @@ export default function RedefinirSenha() {
 
   return (
     <Container fluid>
+      {/* Seu layout permanece igual */}
       <Row className="g-0 flex-column flex-md-row min-vh-100">
         <Col
           xs={12}

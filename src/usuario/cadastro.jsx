@@ -13,6 +13,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Mascara from "../utils/mascaras.jsx";
 import { removerMascara } from "../utils/mascaras.jsx";
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // ÍCONES
 
 export default function Cadastro() {
   const [nome, setNome] = useState("");
@@ -25,6 +26,7 @@ export default function Cadastro() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // CONTROLE DO OLHINHO
 
   const navigate = useNavigate();
 
@@ -61,9 +63,6 @@ export default function Cadastro() {
 
       setError("");
       setSuccess(true);
-      console.log("Cadastro realizado com sucesso!", response);
-
-      // Limpar os campos
       setNome("");
       setCpf("");
       setEndereco("");
@@ -73,7 +72,6 @@ export default function Cadastro() {
       setTipoUsuario("");
       setLoading(true);
 
-      // Redireciona após 5 segundos
       setTimeout(() => {
         setLoading(false);
         navigate("/login");
@@ -87,7 +85,6 @@ export default function Cadastro() {
   return (
     <Container fluid>
       <Row className="g-0 flex-column flex-md-row min-vh-100">
-        {/* Coluna da imagem - aparece em cima em telas pequenas */}
         <Col
           xs={12}
           md={6}
@@ -105,7 +102,6 @@ export default function Cadastro() {
           </p>
         </Col>
 
-        {/* Coluna do formulário */}
         <Col
           xs={12}
           md={6}
@@ -183,12 +179,27 @@ export default function Cadastro() {
 
                 <Form.Group className="mb-3">
                   <Form.Label>Senha</Form.Label>
-                  <Form.Control
-                    type="password"
-                    value={senha}
-                    onChange={(e) => setSenha(e.target.value)}
-                    placeholder="Digite sua senha"
-                  />
+                  <div className="position-relative">
+                    <Form.Control
+                      type={showPassword ? "text" : "password"}
+                      value={senha}
+                      onChange={(e) => setSenha(e.target.value)}
+                      placeholder="Digite sua senha"
+                    />
+                    <span
+                      onClick={() => setShowPassword(!showPassword)}
+                      style={{
+                        position: "absolute",
+                        top: "50%",
+                        right: "10px",
+                        transform: "translateY(-50%)",
+                        cursor: "pointer",
+                        color: "#6c757d",
+                      }}
+                    >
+                      {showPassword ? <FaEyeSlash /> : <FaEye />}
+                    </span>
+                  </div>
                 </Form.Group>
 
                 <Form.Group className="mb-3">

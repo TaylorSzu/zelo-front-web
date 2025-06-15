@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
-import Mascara, { removerMascara, removerMascaraDinheiro } from "../utils/mascaras.jsx";
+import "react-toastify/dist/ReactToastify.css";
+import Mascara, { removerMascaraDinheiro } from "../utils/mascaras.jsx";
 
 export default function CadastroCuidador({ onConfirmar, onCancelar }) {
   const [disponibilidade, setDisponibilidade] = useState("");
@@ -18,9 +18,10 @@ export default function CadastroCuidador({ onConfirmar, onCancelar }) {
 
     try {
       const token = Cookies.get("token");
-      console.log("disponibilidade: ", disponibilidade, "valor periodo:", valorHora, "especialidade: ", especialidade);
+      const valorDiaria = parseFloat(
+        removerMascaraDinheiro(valorHora, "dinheiro")
+      );
 
-      const valorDiaria = parseFloat(removerMascaraDinheiro(valorHora, 'dinheiro'));
       await axios.post(
         "http://localhost:5171/cuidador/registrar",
         {
@@ -52,7 +53,7 @@ export default function CadastroCuidador({ onConfirmar, onCancelar }) {
       <ToastContainer position="top-center" autoClose={1500} />
 
       <div
-        className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+        className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center p-2"
         style={{
           backdropFilter: "blur(6px)",
           backgroundColor: "rgba(0, 0, 0, 0.3)",
@@ -60,8 +61,12 @@ export default function CadastroCuidador({ onConfirmar, onCancelar }) {
         }}
       >
         <div
-          className="card p-4 shadow-lg"
-          style={{ width: "100%", maxWidth: "500px", borderRadius: "1rem" }}
+          className="card p-4 shadow-lg w-100"
+          style={{
+            maxWidth: "500px",
+            width: "90vw",
+            borderRadius: "1rem",
+          }}
         >
           <h4 className="text-center mb-4">Cadastro de Cuidador</h4>
 
@@ -77,12 +82,12 @@ export default function CadastroCuidador({ onConfirmar, onCancelar }) {
           </div>
 
           <div className="mb-3">
-            <label className="form-label">Valor por Diaria (R$)</label>
+            <label className="form-label">Valor por Diária (R$)</label>
             <Mascara
               type="dinheiro"
               value={valorHora}
               onChange={(e) => setValorHora(e.target.value)}
-              placeholder="Infome o seu valor por diaria"
+              placeholder="Informe seu valor por diária"
               className="form-control"
             />
           </div>
@@ -98,16 +103,16 @@ export default function CadastroCuidador({ onConfirmar, onCancelar }) {
             />
           </div>
 
-          <div className="d-flex justify-content-between">
+          <div className="d-flex gap-2">
             <button
               onClick={onCancelar}
-              className="btn btn-outline-secondary w-45"
+              className="btn btn-outline-secondary flex-grow-1"
             >
               Cancelar
             </button>
             <button
               onClick={handleConfirmar}
-              className="btn btn-primary w-45"
+              className="btn btn-primary flex-grow-1"
             >
               Confirmar
             </button>

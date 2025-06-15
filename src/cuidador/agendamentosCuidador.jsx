@@ -18,36 +18,35 @@ const AgendamentosDashboard = () => {
   const [eventoSelecionado, setEventoSelecionado] = useState(null);
 
   useEffect(() => {
-  async function buscarAgendamentos() {
-    try {
-      const cuidadorId = sessionStorage.getItem("cuidadorId");
-      const resposta = await axios.get(
-        `http://localhost:5171/agendamento/listar/cuidador/${cuidadorId}`,
-        { withCredentials: true }
-      );
-      const dados = resposta.data;
+    async function buscarAgendamentos() {
+      try {
+        const cuidadorId = sessionStorage.getItem("cuidadorId");
+        const resposta = await axios.get(
+          `http://localhost:5171/agendamento/listar/cuidador/${cuidadorId}`,
+          { withCredentials: true }
+        );
+        const dados = resposta.data;
 
-      const eventosFormatados = dados.map((agendamento) => ({
-        id: agendamento.id,
-        title: agendamento.nome,
-        start: new Date(agendamento.dataHoraInicio),
-        end: new Date(agendamento.dataHoraFim),
-        status: agendamento.status,
-        especialidade: agendamento.especialidade,
-        telefone: agendamento.telefone,
-        valorHora: agendamento.valorHora,
-      }));
+        const eventosFormatados = dados.map((agendamento) => ({
+          id: agendamento.id,
+          title: agendamento.nome,
+          start: new Date(agendamento.dataHoraInicio),
+          end: new Date(agendamento.dataHoraFim),
+          status: agendamento.status,
+          especialidade: agendamento.especialidade,
+          telefone: agendamento.telefone,
+          valorHora: agendamento.valorHora,
+        }));
 
-      setEventos(eventosFormatados);
-    } catch (erro) {
-      console.error("Erro ao buscar agendamentos:", erro);
-      toast.error("Erro ao buscar agendamentos.");
+        setEventos(eventosFormatados);
+      } catch (erro) {
+        console.error("Erro ao buscar agendamentos:", erro);
+        toast.error("Erro ao buscar agendamentos.");
+      }
     }
-  }
 
-  buscarAgendamentos();
-}, []);
-
+    buscarAgendamentos();
+  }, []);
 
   const cancelar = async (id) => {
     try {
@@ -57,7 +56,6 @@ const AgendamentosDashboard = () => {
         { withCredentials: true }
       );
       toast.success("Agendamento cancelado!");
-      // Atualiza lista após cancelar
       setEventos((prev) =>
         prev.map((evento) =>
           evento.id === id ? { ...evento, status: "cancelado" } : evento
@@ -73,18 +71,20 @@ const AgendamentosDashboard = () => {
   };
 
   return (
-      <SidebarCuidador>
-
-      <div className="container py-4" style={{ minHeight: "100vh", maxWidth: "7680px" }}>
+    <SidebarCuidador>
+      <div
+        className="container py-4"
+        style={{ minHeight: "100vh", maxWidth: "7680px" }}
+      >
         <h2 className="mb-5 mt-3 text-center text-primary fw-bold">
           Meus Agendamentos
         </h2>
 
-        <div className="d-flex justify-content-center align-items-start gap-4 flex-wrap">
+        <div className="row justify-content-center g-4">
           {/* Calendário */}
           <div
-            className="bg-white shadow rounded-4 p-5"
-            style={{ flex: "1 1 700px", minWidth: "700px", maxWidth: "1080px" }}
+            className="col-12 col-md-8 bg-white shadow rounded-4 p-4"
+            style={{ minHeight: "600px" }}
           >
             <Calendar
               localizer={localizer}
@@ -106,10 +106,12 @@ const AgendamentosDashboard = () => {
                 });
               }}
               eventPropGetter={(event) => {
-                let backgroundColor = "#6c757d";
+                let backgroundColor = "#005eff";
                 if (event.status === "confirmado") backgroundColor = "#198754";
-                else if (event.status === "pendente") backgroundColor = "#ffc107";
-                else if (event.status === "cancelado") backgroundColor = "#DC3545";
+                else if (event.status === "pendente")
+                  backgroundColor = "#ffc107";
+                else if (event.status === "cancelado")
+                  backgroundColor = "#DC3545";
                 return {
                   style: {
                     backgroundColor,
@@ -134,14 +136,84 @@ const AgendamentosDashboard = () => {
                 noEventsInRange: "Não há eventos neste período.",
                 showMore: (total) => `+ Ver mais (${total})`,
               }}
+              formats={{
+                weekdayFormat: (date) =>
+                  ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"][
+                    date.getDay()
+                  ],
+                dayFormat: (date, culture, localizer) =>
+                  localizer.format(date, "D", culture),
+                timeGutterFormat: (date, culture, localizer) =>
+                  localizer.format(date, "HH:mm", culture),
+                dayRangeHeaderFormat: ({ start, end }) => {
+                  const meses = [
+                    "Janeiro",
+                    "Fevereiro",
+                    "Março",
+                    "Abril",
+                    "Maio",
+                    "Junho",
+                    "Julho",
+                    "Agosto",
+                    "Setembro",
+                    "Outubro",
+                    "Novembro",
+                    "Dezembro",
+                  ];
+                  const diaInicio = start.getDate();
+                  const diaFim = end.getDate();
+                  const mesInicio = meses[start.getMonth()];
+                  const mesFim = meses[end.getMonth()];
+                  const anoInicio = start.getFullYear();
+                  const anoFim = end.getFullYear();
+
+                  if (anoInicio !== anoFim) {
+                    return `${diaInicio} de ${mesInicio} de ${anoInicio} - ${diaFim} de ${mesFim} de ${anoFim}`;
+                  } else if (mesInicio !== mesFim) {
+                    return `${diaInicio} de ${mesInicio} - ${diaFim} de ${mesFim} de ${anoInicio}`;
+                  } else {
+                    return `${diaInicio} - ${diaFim} de ${mesInicio} de ${anoInicio}`;
+                  }
+                },
+                monthHeaderFormat: (date) => {
+                  const meses = [
+                    "Janeiro",
+                    "Fevereiro",
+                    "Março",
+                    "Abril",
+                    "Maio",
+                    "Junho",
+                    "Julho",
+                    "Agosto",
+                    "Setembro",
+                    "Outubro",
+                    "Novembro",
+                    "Dezembro",
+                  ];
+                  return `${meses[date.getMonth()]} de ${date.getFullYear()}`;
+                },
+                dayHeaderFormat: (date) => {
+                  const diasSemana = [
+                    "Domingo",
+                    "Segunda-feira",
+                    "Terça-feira",
+                    "Quarta-feira",
+                    "Quinta-feira",
+                    "Sexta-feira",
+                    "Sábado",
+                  ];
+                  const dia = date.getDate().toString().padStart(2, "0");
+                  const mes = (date.getMonth() + 1).toString().padStart(2, "0");
+                  return `${diasSemana[date.getDay()]} - ${dia}/${mes}`;
+                },
+              }}
             />
           </div>
 
           {/* Detalhes */}
           <div
-            className="bg-white shadow rounded-4 p-4"
+            className="col-12 col-md-4 bg-white shadow rounded-4 p-4"
             style={{
-              width: "400px",
               minHeight: "600px",
               display: "flex",
               flexDirection: "column",
@@ -166,7 +238,8 @@ const AgendamentosDashboard = () => {
                       className="bi bi-heart-pulse-fill text-danger"
                       style={{ fontSize: "1.2rem" }}
                     ></i>
-                    <strong>Especialidade:</strong> {eventoSelecionado.especialidade}
+                    <strong>Especialidade:</strong>{" "}
+                    {eventoSelecionado.especialidade}
                   </li>
                   <li className="list-group-item d-flex align-items-center gap-2">
                     <i
@@ -181,7 +254,8 @@ const AgendamentosDashboard = () => {
                       className="bi bi-currency-dollar text-warning"
                       style={{ fontSize: "1.2rem" }}
                     ></i>
-                    <strong>Valor Hora:</strong> R$ {eventoSelecionado.valorHora}
+                    <strong>Valor Hora:</strong> R${" "}
+                    {eventoSelecionado.valorHora}
                   </li>
                   <li className="list-group-item d-flex align-items-center gap-2">
                     <i
@@ -218,9 +292,7 @@ const AgendamentosDashboard = () => {
                     ></i>
                     <strong>Início:</strong> {eventoSelecionado.inicio}
                   </li>
-                  <li
-                    className="list-group-item d-flex align-items-center gap-2 mb-5"
-                  >
+                  <li className="list-group-item d-flex align-items-center gap-2 mb-5">
                     <i
                       className="bi bi-calendar-x-fill text-secondary"
                       style={{ fontSize: "1.2rem" }}
@@ -229,7 +301,6 @@ const AgendamentosDashboard = () => {
                   </li>
                 </ul>
 
-                {/* Botão Cancelar */}
                 {eventoSelecionado.status !== "cancelado" && (
                   <button
                     className="btn btn-danger mt-5"
@@ -255,7 +326,7 @@ const AgendamentosDashboard = () => {
       </div>
 
       <ToastContainer position="top-right" autoClose={3000} />
-      </SidebarCuidador>
+    </SidebarCuidador>
   );
 };
 
