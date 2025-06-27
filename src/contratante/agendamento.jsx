@@ -8,7 +8,8 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { formatarTelefone } from "../utils/mascaras.jsx";
-import SidebarContratante from "../utils/sidebarContratante.jsx"; // alterar para seu sidebar
+import ModalAvaliacao from "../utils/modalAvaliacao.jsx";
+import "../styles/agenda.css";
 
 moment.locale("pt-br");
 const localizer = momentLocalizer(moment);
@@ -16,11 +17,18 @@ const localizer = momentLocalizer(moment);
 const AgendamentosDashboard = () => {
   const [eventos, setEventos] = useState([]);
   const [eventoSelecionado, setEventoSelecionado] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [avaliadoIds, setAvaliadoIds] = useState([]);
 
   useEffect(() => {
     async function buscarAgendamentos() {
       try {
         const contratanteId = sessionStorage.getItem("contratanteId");
+        if (!contratanteId) {
+          toast.error("Contratante não encontrado na sessão.");
+          return;
+        }
+
         const resposta = await axios.get(
           `http://localhost:5171/agendamento/listar/contratante/${contratanteId}`,
           { withCredentials: true }
@@ -29,13 +37,14 @@ const AgendamentosDashboard = () => {
 
         const eventosFormatados = dados.map((agendamento) => ({
           id: agendamento.id,
-          title: agendamento.nomeCuidador, // nome do cuidador para contratante
+          title: agendamento.nome,
           start: new Date(agendamento.dataHoraInicio),
           end: new Date(agendamento.dataHoraFim),
           status: agendamento.status,
           especialidade: agendamento.especialidade,
-          telefone: agendamento.telefoneCuidador,
+          telefone: agendamento.telefone,
           valorHora: agendamento.valorHora,
+          cuidadorId: agendamento.cuidadorId,
         }));
 
         setEventos(eventosFormatados);
@@ -49,13 +58,26 @@ const AgendamentosDashboard = () => {
   }, []);
 
   const cancelar = async (id) => {
+    if (!id) {
+      toast.error(
+        "ID do agendamento inválido. Verifique o evento selecionado."
+      );
+      return;
+    }
+
     try {
+      const contratanteId = sessionStorage.getItem("contratanteId");
+
       await axios.put(
         "http://localhost:5171/agendamento/cancelar",
-        { id },
+        {
+          id: Number(id),
+          contratanteId: Number(contratanteId),
+        },
         { withCredentials: true }
       );
-      toast.success("Agendamento cancelado!");
+
+      toast.success("✅ Agendamento cancelado!");
       setEventos((prev) =>
         prev.map((evento) =>
           evento.id === id ? { ...evento, status: "cancelado" } : evento
@@ -65,33 +87,29 @@ const AgendamentosDashboard = () => {
         setEventoSelecionado((prev) => ({ ...prev, status: "cancelado" }));
       }
     } catch (err) {
-      toast.error("Erro ao cancelar o agendamento.");
-      console.error(err);
+      console.error("❌ Erro ao cancelar o agendamento:", err);
+      toast.error(err.response?.data?.msg || "Erro ao cancelar o agendamento.");
     }
   };
 
   return (
-    <SidebarContratante>
-      <div
-        className="container py-4"
-        style={{ minHeight: "100vh", maxWidth: "7680px" }}
-      >
-        <h2 className="mb-5 mt-3 text-center text-primary fw-bold">
-          Meus Agendamentos
-        </h2>
+    <div className="container-fluid p-2 p-md-4" style={{ minHeight: "100vh" }}>
+      <div className="card shadow-lg rounded-4 border-0">
+        <div className="card-header bg-primary text-white rounded-top-4 text-center">
+          <h3 className="m-0">Meus Agendamentos</h3>
+        </div>
 
-        <div className="row justify-content-center g-4">
-          {/* Calendário */}
+        <div className="row justify-content-center g-3 g-md-4 p-2 p-md-4">
           <div
-            className="col-12 col-md-8 bg-white shadow rounded-4 p-4"
-            style={{ minHeight: "600px" }}
+            className="col-12 col-md-8 bg-white shadow rounded-4 p-3 p-md-4"
+            style={{ minHeight: "400px", height: "60vh", maxHeight: "700px" }}
           >
             <Calendar
               localizer={localizer}
               events={eventos}
               startAccessor="start"
               endAccessor="end"
-              style={{ height: 600 }}
+              style={{ height: "100%" }}
               culture="pt-BR"
               onSelectEvent={(event) => {
                 setEventoSelecionado({
@@ -103,7 +121,15 @@ const AgendamentosDashboard = () => {
                   status: event.status,
                   inicio: format(event.start, "HH:mm"),
                   fim: format(event.end, "HH:mm"),
+                  cuidadorId: event.cuidadorId,
                 });
+
+                if (
+                  event.status === "concluido" &&
+                  !avaliadoIds.includes(event.id)
+                ) {
+                  setShowModal(true);
+                }
               }}
               eventPropGetter={(event) => {
                 let backgroundColor = "#005eff";
@@ -112,6 +138,8 @@ const AgendamentosDashboard = () => {
                   backgroundColor = "#ffc107";
                 else if (event.status === "cancelado")
                   backgroundColor = "#DC3545";
+                else if (event.status === "concluido")
+                  backgroundColor = "#0dcaf0";
                 return {
                   style: {
                     backgroundColor,
@@ -210,17 +238,16 @@ const AgendamentosDashboard = () => {
             />
           </div>
 
-          {/* Detalhes */}
           <div
-            className="col-12 col-md-4 bg-white shadow rounded-4 p-4"
+            className="col-12 col-md-4 bg-white shadow rounded-4 p-3 p-md-4 d-flex flex-column"
             style={{
-              minHeight: "600px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "start",
+              minHeight: "400px",
+              height: "60vh",
+              maxHeight: "700px",
+              overflowY: "auto",
             }}
           >
-            <h5 className="mb-4 text-primary fw-semibold">
+            <h5 className="mb-3 mb-md-4 text-primary fw-semibold">
               Detalhes do Agendamento
             </h5>
             {eventoSelecionado ? (
@@ -235,7 +262,7 @@ const AgendamentosDashboard = () => {
                   </li>
                   <li className="list-group-item d-flex align-items-center gap-2">
                     <i
-                      className="bi bi-heart-pulse-fill text-danger"
+                      className="bi bi-briefcase-fill text-secondary"
                       style={{ fontSize: "1.2rem" }}
                     ></i>
                     <strong>Especialidade:</strong>{" "}
@@ -292,7 +319,7 @@ const AgendamentosDashboard = () => {
                     ></i>
                     <strong>Início:</strong> {eventoSelecionado.inicio}
                   </li>
-                  <li className="list-group-item d-flex align-items-center gap-2 mb-5">
+                  <li className="list-group-item d-flex align-items-center gap-2">
                     <i
                       className="bi bi-calendar-x-fill text-secondary"
                       style={{ fontSize: "1.2rem" }}
@@ -303,7 +330,7 @@ const AgendamentosDashboard = () => {
 
                 {eventoSelecionado.status !== "cancelado" && (
                   <button
-                    className="btn btn-danger mt-5"
+                    className="btn btn-danger mt-auto"
                     onClick={() => cancelar(eventoSelecionado.id)}
                   >
                     <i className="bi bi-x-circle me-2"></i>Cancelar Agendamento
@@ -311,12 +338,12 @@ const AgendamentosDashboard = () => {
                 )}
               </>
             ) : (
-              <div className="text-center text-muted mt-5">
+              <div className="text-center text-muted mt-4 mt-md-5 flex-grow-1 d-flex flex-column justify-content-center align-items-center">
                 <i
                   className="bi bi-calendar-event"
-                  style={{ fontSize: "2rem" }}
+                  style={{ fontSize: "2.5rem" }}
                 ></i>
-                <p className="mt-3">
+                <p className="mt-3 px-3">
                   Clique em um agendamento no calendário para ver detalhes.
                 </p>
               </div>
@@ -325,8 +352,19 @@ const AgendamentosDashboard = () => {
         </div>
       </div>
 
+      <ModalAvaliacao
+        show={showModal}
+        evento={eventoSelecionado}
+        onClose={(avaliou) => {
+          setShowModal(false);
+          if (avaliou) {
+            setAvaliadoIds((prev) => [...prev, eventoSelecionado.id]);
+          }
+        }}
+      />
+
       <ToastContainer position="top-right" autoClose={3000} />
-    </SidebarContratante>
+    </div>
   );
 };
 

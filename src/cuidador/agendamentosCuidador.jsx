@@ -8,7 +8,7 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { formatarTelefone } from "../utils/mascaras.jsx";
-import SidebarCuidador from "../utils/sidebarCuidador.jsx";
+import "../styles/agenda.css";
 
 moment.locale("pt-br");
 const localizer = momentLocalizer(moment);
@@ -21,6 +21,11 @@ const AgendamentosDashboard = () => {
     async function buscarAgendamentos() {
       try {
         const cuidadorId = sessionStorage.getItem("cuidadorId");
+        if (!cuidadorId) {
+          toast.error("Cuidador não encontrado na sessão.");
+          return;
+        }
+
         const resposta = await axios.get(
           `http://localhost:5171/agendamento/listar/cuidador/${cuidadorId}`,
           { withCredentials: true }
@@ -33,7 +38,7 @@ const AgendamentosDashboard = () => {
           start: new Date(agendamento.dataHoraInicio),
           end: new Date(agendamento.dataHoraFim),
           status: agendamento.status,
-          especialidade: agendamento.especialidade,
+          observacoesMedicas: agendamento.observacoesMedicas,
           telefone: agendamento.telefone,
           valorHora: agendamento.valorHora,
         }));
@@ -50,12 +55,17 @@ const AgendamentosDashboard = () => {
 
   const cancelar = async (id) => {
     try {
+      const cuidadorId = sessionStorage.getItem("cuidadorId");
       await axios.put(
         "http://localhost:5171/agendamento/cancelar",
-        { id },
+        {
+          id: Number(id),
+          cuidadorId: Number(cuidadorId),
+        },
         { withCredentials: true }
       );
-      toast.success("Agendamento cancelado!");
+
+      toast.success("✅ Agendamento cancelado!");
       setEventos((prev) =>
         prev.map((evento) =>
           evento.id === id ? { ...evento, status: "cancelado" } : evento
@@ -66,38 +76,63 @@ const AgendamentosDashboard = () => {
       }
     } catch (err) {
       toast.error("Erro ao cancelar o agendamento.");
-      console.error(err);
+    }
+  };
+
+  const concluir = async (id) => {
+    try {
+      const cuidadorId = sessionStorage.getItem("cuidadorId");
+      await axios.put(
+        "http://localhost:5171/agendamento/concluido",
+        {
+          id: Number(id),
+          cuidadorId: Number(cuidadorId),
+        },
+        { withCredentials: true }
+      );
+
+      toast.success("✅ Agendamento marcado como concluído!");
+      setEventos((prev) =>
+        prev.map((evento) =>
+          evento.id === id ? { ...evento, status: "concluído" } : evento
+        )
+      );
+      if (eventoSelecionado?.id === id) {
+        setEventoSelecionado((prev) => ({
+          ...prev,
+          status: "concluído",
+        }));
+      }
+    } catch (err) {
+      toast.error("Erro ao concluir o agendamento.");
     }
   };
 
   return (
-    <SidebarCuidador>
-      <div
-        className="container py-4"
-        style={{ minHeight: "100vh", maxWidth: "7680px" }}
-      >
-        <h2 className="mb-5 mt-3 text-center text-primary fw-bold">
-          Meus Agendamentos
-        </h2>
+    <div className="container-fluid p-2 p-md-4" style={{ minHeight: "100vh" }}>
+      <div className="card shadow-lg rounded-4 border-0">
+        <div className="card-header bg-primary text-white rounded-top-4 text-center">
+          <h3 className="m-0">Meus Agendamentos</h3>
+        </div>
 
-        <div className="row justify-content-center g-4">
+        <div className="row justify-content-center g-3 g-md-4 p-2 p-md-4">
           {/* Calendário */}
           <div
-            className="col-12 col-md-8 bg-white shadow rounded-4 p-4"
-            style={{ minHeight: "600px" }}
+            className="col-12 col-md-8 bg-white shadow rounded-4 p-3 p-md-4"
+            style={{ minHeight: "400px", height: "60vh", maxHeight: "700px" }}
           >
             <Calendar
               localizer={localizer}
               events={eventos}
               startAccessor="start"
               endAccessor="end"
-              style={{ height: 600 }}
+              style={{ height: "100%" }}
               culture="pt-BR"
               onSelectEvent={(event) => {
                 setEventoSelecionado({
                   id: event.id,
                   nome: event.title,
-                  especialidade: event.especialidade,
+                  observacoesMedicas: event.observacoesMedicas,
                   telefone: event.telefone,
                   valorHora: event.valorHora,
                   status: event.status,
@@ -210,17 +245,17 @@ const AgendamentosDashboard = () => {
             />
           </div>
 
-          {/* Detalhes */}
+          {/* Detalhes com ícones */}
           <div
-            className="col-12 col-md-4 bg-white shadow rounded-4 p-4"
+            className="col-12 col-md-4 bg-white shadow rounded-4 p-3 p-md-4 d-flex flex-column"
             style={{
-              minHeight: "600px",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "start",
+              minHeight: "400px",
+              height: "60vh",
+              maxHeight: "700px",
+              overflowY: "auto",
             }}
           >
-            <h5 className="mb-4 text-primary fw-semibold">
+            <h5 className="mb-3 mb-md-4 text-primary fw-semibold">
               Detalhes do Agendamento
             </h5>
             {eventoSelecionado ? (
@@ -231,15 +266,15 @@ const AgendamentosDashboard = () => {
                       className="bi bi-person-fill text-primary"
                       style={{ fontSize: "1.2rem" }}
                     ></i>
-                    <strong>Nome:</strong> {eventoSelecionado.nome}
+                    <strong>Cliente:</strong> {eventoSelecionado.nome}
                   </li>
                   <li className="list-group-item d-flex align-items-center gap-2">
                     <i
-                      className="bi bi-heart-pulse-fill text-danger"
+                      className="bi bi-file-earmark-medical-fill text-danger"
                       style={{ fontSize: "1.2rem" }}
                     ></i>
-                    <strong>Especialidade:</strong>{" "}
-                    {eventoSelecionado.especialidade}
+                    <strong>Necessidade:</strong>{" "}
+                    {eventoSelecionado.observacoesMedicas}
                   </li>
                   <li className="list-group-item d-flex align-items-center gap-2">
                     <i
@@ -270,7 +305,7 @@ const AgendamentosDashboard = () => {
                       }`}
                       style={{ fontSize: "1.2rem" }}
                     ></i>
-                    <strong>Status:</strong>{" "}
+                    <strong>Status:</strong>
                     <span
                       className={`badge ${
                         eventoSelecionado.status === "confirmado"
@@ -292,7 +327,7 @@ const AgendamentosDashboard = () => {
                     ></i>
                     <strong>Início:</strong> {eventoSelecionado.inicio}
                   </li>
-                  <li className="list-group-item d-flex align-items-center gap-2 mb-5">
+                  <li className="list-group-item d-flex align-items-center gap-2">
                     <i
                       className="bi bi-calendar-x-fill text-secondary"
                       style={{ fontSize: "1.2rem" }}
@@ -301,22 +336,39 @@ const AgendamentosDashboard = () => {
                   </li>
                 </ul>
 
-                {eventoSelecionado.status !== "cancelado" && (
-                  <button
-                    className="btn btn-danger mt-5"
-                    onClick={() => cancelar(eventoSelecionado.id)}
-                  >
-                    <i className="bi bi-x-circle me-2"></i>Cancelar Agendamento
-                  </button>
+                {eventoSelecionado.status === "confirmado" && (
+                  <div className="d-flex flex-column gap-2 mt-auto">
+                    <button
+                      className="btn btn-success"
+                      onClick={() => concluir(eventoSelecionado.id)}
+                    >
+                      <i className="bi bi-check-circle me-2"></i>Concluir
+                      Agendamento
+                    </button>
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => cancelar(eventoSelecionado.id)}
+                    >
+                      <i className="bi bi-x-circle me-2"></i>Cancelar
+                      Agendamento
+                    </button>
+                  </div>
+                )}
+
+                {eventoSelecionado.status === "concluído" && (
+                  <div className="alert alert-success text-center fw-semibold mt-3">
+                    <i className="bi bi-check-circle-fill me-2"></i>
+                    Serviço já foi concluído
+                  </div>
                 )}
               </>
             ) : (
-              <div className="text-center text-muted mt-5">
+              <div className="text-center text-muted mt-4 mt-md-5 flex-grow-1 d-flex flex-column justify-content-center align-items-center">
                 <i
                   className="bi bi-calendar-event"
-                  style={{ fontSize: "2rem" }}
+                  style={{ fontSize: "2.5rem" }}
                 ></i>
-                <p className="mt-3">
+                <p className="mt-3 px-3">
                   Clique em um agendamento no calendário para ver detalhes.
                 </p>
               </div>
@@ -326,7 +378,7 @@ const AgendamentosDashboard = () => {
       </div>
 
       <ToastContainer position="top-right" autoClose={3000} />
-    </SidebarCuidador>
+    </div>
   );
 };
 

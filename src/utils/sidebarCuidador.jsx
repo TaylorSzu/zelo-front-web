@@ -10,8 +10,11 @@ import {
   FaHeadset,
   FaBell,
   FaTimes,
+  FaHome,
+  FaTasks,
 } from "react-icons/fa";
 import LogoutModal from "../utils/logout";
+import ModalAcessibilidade from "../utils/modalAcessibilidade";
 
 const SidebarCuidador = ({ children }) => {
   const navigate = useNavigate();
@@ -19,19 +22,14 @@ const SidebarCuidador = ({ children }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [loadingLogout, setLoadingLogout] = useState(false);
+  const [showAcessibilidadeModal, setShowAcessibilidadeModal] = useState(false);
 
-  const handleNavigation = (path) => {
-    setMobileOpen(false);
-    navigate(path);
-  };
-
-  // Função para fazer logout no backend e depois navegar para login
   const confirmLogout = async () => {
     setLoadingLogout(true);
     try {
       const response = await fetch("http://localhost:5171/usuario/logout", {
         method: "POST",
-        credentials: "include", // Envia cookies
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -65,7 +63,6 @@ const SidebarCuidador = ({ children }) => {
 
   return (
     <>
-      {/* Modal de logout */}
       <LogoutModal
         show={showLogoutModal}
         onClose={() => setShowLogoutModal(false)}
@@ -73,7 +70,12 @@ const SidebarCuidador = ({ children }) => {
         loading={loadingLogout}
       />
 
-      {/* Botão hamburger mobile */}
+      {showAcessibilidadeModal && (
+        <ModalAcessibilidade
+          onClose={() => setShowAcessibilidadeModal(false)}
+        />
+      )}
+
       {!mobileOpen && (
         <button
           className="btn btn-primary d-md-none position-fixed top-0 start-0 m-3"
@@ -92,7 +94,7 @@ const SidebarCuidador = ({ children }) => {
           style={{ zIndex: 1050 }}
         >
           <div className="d-flex justify-content-between align-items-center p-3 border-bottom">
-            <span className="fw-bold fs-5 mg-5">Menu - Zello</span>
+            <span className="fw-bold fs-5">Menu - Zello</span>
             <button
               className="btn btn-outline-light btn-sm"
               style={{
@@ -112,6 +114,16 @@ const SidebarCuidador = ({ children }) => {
           <ul className="nav flex-column p-3">
             <li className="nav-item">
               <Link
+                to="/cuidador"
+                className="nav-link text-white"
+                onClick={() => setMobileOpen(false)}
+              >
+                <FaHome />
+                {!collapsed && <span className="ms-2">Início</span>}
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link
                 to="/cuidador/perfil"
                 className="nav-link text-white"
                 onClick={() => setMobileOpen(false)}
@@ -122,7 +134,7 @@ const SidebarCuidador = ({ children }) => {
             </li>
             <li>
               <Link
-                to="/agendamentos/cuidador"
+                to="/cuidador/agendamentos"
                 className="nav-link text-white"
                 onClick={() => setMobileOpen(false)}
               >
@@ -132,7 +144,7 @@ const SidebarCuidador = ({ children }) => {
             </li>
             <li>
               <Link
-                to="/agendamentos/cuidador/pendentes"
+                to="/cuidador/agendamentos/pendentes"
                 className="nav-link text-white"
                 onClick={() => setMobileOpen(false)}
               >
@@ -144,7 +156,19 @@ const SidebarCuidador = ({ children }) => {
             </li>
             <li>
               <Link
-                to="/pagamentos"
+                to="/cuidador/historico"
+                className="nav-link text-white"
+                onClick={() => setMobileOpen(false)}
+              >
+                <FaTasks />
+                {!collapsed && (
+                  <span className="ms-2">Histórico de Serviços</span>
+                )}
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/cuidador/pagamentos"
                 className="nav-link text-white"
                 onClick={() => setMobileOpen(false)}
               >
@@ -153,14 +177,16 @@ const SidebarCuidador = ({ children }) => {
               </Link>
             </li>
             <li>
-              <Link
-                to="/acessibilidadeContratante"
-                className="nav-link text-white"
-                onClick={() => setMobileOpen(false)}
+              <button
+                className="nav-link text-white bg-transparent border-0 text-start w-100"
+                onClick={() => {
+                  setShowAcessibilidadeModal(true);
+                  setMobileOpen(false);
+                }}
               >
                 <FaCog />
                 {!collapsed && <span className="ms-2">Acessibilidade</span>}
-              </Link>
+              </button>
             </li>
             <li>
               <Link
@@ -211,6 +237,12 @@ const SidebarCuidador = ({ children }) => {
 
             <ul className="nav nav-pills flex-column px-2 mt-3">
               <li className="nav-item">
+                <Link to="/cuidador" className="nav-link text-white">
+                  <FaHome />
+                  {!collapsed && <span className="ms-2">Início</span>}
+                </Link>
+              </li>
+              <li className="nav-item">
                 <Link to="/cuidador/perfil" className="nav-link text-white">
                   <FaUser />
                   {!collapsed && <span className="ms-2">Perfil</span>}
@@ -218,7 +250,7 @@ const SidebarCuidador = ({ children }) => {
               </li>
               <li>
                 <Link
-                  to="/agendamentos/cuidador"
+                  to="/cuidador/agendamentos"
                   className="nav-link text-white"
                 >
                   <FaCalendarAlt />
@@ -227,7 +259,7 @@ const SidebarCuidador = ({ children }) => {
               </li>
               <li>
                 <Link
-                  to="/agendamentos/cuidador/pendentes"
+                  to="/cuidador/agendamentos/pendentes"
                   className="nav-link text-white"
                 >
                   <FaBell />
@@ -237,19 +269,27 @@ const SidebarCuidador = ({ children }) => {
                 </Link>
               </li>
               <li>
-                <Link to="/pagamentos" className="nav-link text-white">
+                <Link to="/cuidador/historico" className="nav-link text-white">
+                  <FaTasks />
+                  {!collapsed && (
+                    <span className="ms-2">Histórico de Serviços</span>
+                  )}
+                </Link>
+              </li>
+              <li>
+                <Link to="/cuidador/pagamentos" className="nav-link text-white">
                   <FaMoneyBillWave />
                   {!collapsed && <span className="ms-2">Pagamentos</span>}
                 </Link>
               </li>
               <li>
-                <Link
-                  to="/acessibilidadeContratante"
-                  className="nav-link text-white"
+                <button
+                  className="nav-link text-white bg-transparent border-0 text-start w-100"
+                  onClick={() => setShowAcessibilidadeModal(true)}
                 >
                   <FaCog />
                   {!collapsed && <span className="ms-2">Acessibilidade</span>}
-                </Link>
+                </button>
               </li>
               <li>
                 <Link to="/cuidador/suporte" className="nav-link text-white">
@@ -270,7 +310,6 @@ const SidebarCuidador = ({ children }) => {
             </ul>
           </div>
 
-          {/* Conteúdo principal */}
           <div className="col p-4">{children}</div>
         </div>
       </div>

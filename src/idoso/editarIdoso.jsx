@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
 export default function EditarIdoso({ id, onConfirmar, onCancelar }) {
   const [contratanteId, setContratanteId] = useState("");
@@ -41,7 +41,12 @@ export default function EditarIdoso({ id, onConfirmar, onCancelar }) {
   };
 
   const handleConfirmar = async () => {
-    if (!nome.trim() || !idade || !dataNascimento || !observacoesMedicas.trim()) {
+    if (
+      !nome.trim() ||
+      !idade ||
+      !dataNascimento ||
+      !observacoesMedicas.trim()
+    ) {
       toast.warning("Por favor, preencha todos os campos.");
       return;
     }
@@ -72,7 +77,6 @@ export default function EditarIdoso({ id, onConfirmar, onCancelar }) {
         if (onConfirmar) onConfirmar();
         window.location.reload();
       }, 2000);
-
     } catch (error) {
       console.error("Erro ao atualizar idoso:", error);
       toast.error("Erro ao atualizar idoso. Tente novamente.");
@@ -98,11 +102,11 @@ export default function EditarIdoso({ id, onConfirmar, onCancelar }) {
         >
           <h4 className="text-center mb-4">Editar Idoso</h4>
 
-          <input 
-            type="hidden"  
+          <input
+            type="hidden"
             value={contratanteId}
             className="form-control"
-            onChange={(e) => setContratanteId(e.target.value)} 
+            onChange={(e) => setContratanteId(e.target.value)}
           />
 
           <div className="mb-3">

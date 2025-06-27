@@ -4,14 +4,17 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Mascara, { removerMascaraDinheiro } from "../utils/mascaras.jsx";
+import ModalDisponibilidade from "../utils/disponibilidade.jsx";
 
 export default function CadastroCuidador({ onConfirmar, onCancelar }) {
   const [disponibilidade, setDisponibilidade] = useState("");
   const [valorHora, setValorHora] = useState("");
   const [especialidade, setEspecialidade] = useState("");
+  const [showModalDisponibilidade, setShowModalDisponibilidade] =
+    useState(false);
 
   const handleConfirmar = async () => {
-    if (!disponibilidade.trim() || !valorHora || !especialidade.trim()) {
+    if (!disponibilidade || !valorHora || !especialidade.trim()) {
       toast.warning("Por favor, preencha todos os campos.");
       return;
     }
@@ -36,12 +39,8 @@ export default function CadastroCuidador({ onConfirmar, onCancelar }) {
       );
 
       toast.success("Cadastro realizado com sucesso!");
-
       if (onConfirmar) onConfirmar();
-
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
+      setTimeout(() => window.location.reload(), 1500);
     } catch (error) {
       console.error("Erro ao cadastrar cuidador:", error);
       toast.error("Erro ao cadastrar cuidador. Tente novamente.");
@@ -52,73 +51,90 @@ export default function CadastroCuidador({ onConfirmar, onCancelar }) {
     <>
       <ToastContainer position="top-center" autoClose={1500} />
 
+      {/* Modal backdrop */}
+      <div className="modal-backdrop fade show" style={{ zIndex: 1040 }}></div>
+
+      {/* Modal */}
       <div
-        className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center p-2"
-        style={{
-          backdropFilter: "blur(6px)",
-          backgroundColor: "rgba(0, 0, 0, 0.3)",
-          zIndex: 1050,
-        }}
+        className="modal fade show d-block"
+        tabIndex="-1"
+        role="dialog"
+        style={{ zIndex: 1050 }}
       >
-        <div
-          className="card p-4 shadow-lg w-100"
-          style={{
-            maxWidth: "500px",
-            width: "90vw",
-            borderRadius: "1rem",
-          }}
-        >
-          <h4 className="text-center mb-4">Cadastro de Cuidador</h4>
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content shadow">
+            {/* Header */}
+            <div className="modal-header bg-primary text-white justify-content-center">
+              <h5 className="modal-title">Cadastro de Cuidador</h5>
+            </div>
 
-          <div className="mb-3">
-            <label className="form-label">Disponibilidade</label>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Ex: Segunda a Sexta, 08:00 - 18:00"
-              value={disponibilidade}
-              onChange={(e) => setDisponibilidade(e.target.value)}
-            />
-          </div>
+            {/* Body */}
+            <div className="modal-body">
+              <div className="mb-3">
+                <label className="form-label">Disponibilidade</label>
+                <div className="d-flex gap-2">
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={disponibilidade}
+                    placeholder="Clique para definir"
+                    disabled
+                  />
+                  <button
+                    className="btn btn-outline-success"
+                    onClick={() => setShowModalDisponibilidade(true)}
+                  >
+                    Editar
+                  </button>
+                </div>
+              </div>
 
-          <div className="mb-3">
-            <label className="form-label">Valor por Diária (R$)</label>
-            <Mascara
-              type="dinheiro"
-              value={valorHora}
-              onChange={(e) => setValorHora(e.target.value)}
-              placeholder="Informe seu valor por diária"
-              className="form-control"
-            />
-          </div>
+              <div className="mb-3">
+                <label className="form-label">Valor por Diária (R$)</label>
+                <Mascara
+                  type="dinheiro"
+                  value={valorHora}
+                  onChange={(e) => setValorHora(e.target.value)}
+                  placeholder="Informe seu valor por diária"
+                  className="form-control"
+                />
+              </div>
 
-          <div className="mb-3">
-            <label className="form-label">Especialidade</label>
-            <textarea
-              className="form-control"
-              rows="3"
-              placeholder="Ex: Cuidados paliativos, Alzheimer, Pós-operatório"
-              value={especialidade}
-              onChange={(e) => setEspecialidade(e.target.value)}
-            />
-          </div>
+              <div className="mb-3">
+                <label className="form-label">Especialidade</label>
+                <textarea
+                  className="form-control"
+                  rows="3"
+                  placeholder="Ex: Cuidados paliativos, Alzheimer, Pós-operatório"
+                  value={especialidade}
+                  onChange={(e) => setEspecialidade(e.target.value)}
+                />
+              </div>
+            </div>
 
-          <div className="d-flex gap-2">
-            <button
-              onClick={onCancelar}
-              className="btn btn-outline-secondary flex-grow-1"
-            >
-              Cancelar
-            </button>
-            <button
-              onClick={handleConfirmar}
-              className="btn btn-primary flex-grow-1"
-            >
-              Confirmar
-            </button>
+            {/* Footer */}
+            <div className="modal-footer d-flex justify-content-center">
+              <button className="btn btn-danger me-2" onClick={onCancelar}>
+                Cancelar
+              </button>
+              <button className="btn btn-primary" onClick={handleConfirmar}>
+                Confirmar
+              </button>
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Modal de disponibilidade */}
+      {showModalDisponibilidade && (
+        <ModalDisponibilidade
+          onConfirmar={({ disponibilidade }) => {
+            setDisponibilidade(disponibilidade);
+            setShowModalDisponibilidade(false);
+          }}
+          onCancelar={() => setShowModalDisponibilidade(false)}
+        />
+      )}
     </>
   );
 }

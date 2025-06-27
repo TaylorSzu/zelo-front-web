@@ -48,7 +48,7 @@ export default function Home() {
   return (
     <div className="d-flex flex-column" style={{ minHeight: "100vh" }}>
       {/* Navbar */}
-      <nav className="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+      <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div className="container-fluid">
           <a className="navbar-brand fw-bold text-primary" href="/home">
             <img src="/img/ICONVIT.png" alt="" width="40px" height="50px" />

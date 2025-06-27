@@ -154,3 +154,30 @@ body.modo-escuro {
   background-color: #121212;
   color: #ffffff;
 }
+
+/* Estilo Modal Acessibilidade */
+
+/* Personalização do slider */
+.slider-custom::-webkit-slider-thumb {
+  background-color: #0d6efd; /* Azul padrão do Bootstrap */
+  border: 2px solid #0d6efd;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.slider-custom::-moz-range-thumb {
+  background-color: #0d6efd;
+  border: 2px solid #0d6efd;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.slider-custom {
+  accent-color: #0d6efd; /* Para navegadores que suportam accent-color */
+}
+
+

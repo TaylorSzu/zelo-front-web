@@ -1,156 +1,155 @@
-import { useState, useEffect } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap-icons/font/bootstrap-icons.css";
+import React, { useEffect, useState } from "react";
+import {
+  FaUserFriends,
+  FaCalendarAlt,
+  FaHourglassHalf,
+  FaMoneyBillWave,
+  FaUser,
+} from "react-icons/fa";
 import axios from "axios";
-import SidebarContratante from "../utils/sidebarContratante";
+import { useNavigate } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+import Cookies from "js-cookie";
 
-export default function Dashboard() {
-  const [cuidadores, setCuidadores] = useState([]);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+export default function DashboardContratante() {
+  const [dados, setDados] = useState({
+    idosos: 0,
+    agendamentoConfirmados: 0,
+    agendamentoPendentes: 0,
+    pagamentoPendentes: 0,
+  });
+
+  const [usuario, setUsuario] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetchCuidadores();
-  }, []);
+    const contratanteId = sessionStorage.getItem("contratanteId");
+    const token = Cookies.get("token");
 
-  const fetchCuidadores = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get("https://127.0.0.1/cuidador/listar", {
-        withCredentials: true,
-      });
-      if (response.status === 200) {
-        setCuidadores(response.data);
-      } else {
-        setError("Erro ao buscar cuidadores");
-      }
-    } catch (error) {
-      setError("Erro ao carregar dados. Tente novamente.");
-      console.error("Erro na requisição:", error);
-    } finally {
-      setLoading(false);
+    if (!contratanteId || !token) {
+      sessionStorage.clear();
+      navigate("/login");
+      return;
     }
-  };
+
+    // busca dashboard e dados do usuário
+    Promise.all([
+      axios.post(
+        "http://localhost:5171/usuario/dashboard/contratante",
+        { contratanteId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      ),
+      axios.get("http://localhost:5171/usuario/encontrar", {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+    ])
+      .then(([dashboardRes, usuarioRes]) => {
+        setDados(dashboardRes.data || {});
+        setUsuario(usuarioRes.data);
+      })
+      .catch((err) => {
+        console.error("Erro ao carregar o dashboard:", err);
+        if (err.response?.status === 401) {
+          sessionStorage.clear();
+          navigate("/login");
+        }
+      });
+  }, [navigate]);
 
   return (
-    <div className="container-fluid">
-      <div className="row">
-        {/* Sidebar */}
-        <div className="col-auto p-0">
-          <SidebarContratante />
+    <div
+      className="container px-2 px-sm-3 px-md-4 px-lg-5"
+      style={{ minHeight: "100vh", paddingTop: "40px", paddingBottom: "40px" }}
+    >
+      <div className="card shadow-lg rounded-4 border-0">
+        <div className="card-header bg-primary text-white rounded-top-4 text-center">
+          <h3 className="m-0">Dashboard do Contratante</h3>
         </div>
 
-        {/* Conteúdo principal */}
-        <div className="col p-4">
-          <div className="container" style={{ padding: "20px" }}>
-            <h2 className="mb-4">Dashboard - Cuidadores</h2>
+        <div className="card-body">
+          {/* Mensagem de boas-vindas */}
+          <div className="text-center mt-2 mb-4">
+            <h5 className="text-dark d-flex justify-content-center align-items-center gap-2">
+              <FaUser className="text-primary" />
+              Bem-vindo(a),{" "}
+              <span className="fw-bold">{usuario?.nome || "Contratante"}</span>!
+            </h5>
+          </div>
 
-            {/* Exibir erro, se houver */}
-            {error && <div className="alert alert-danger">{error}</div>}
-
-            {/* Loading Spinner */}
-            {loading ? (
-              <div
-                className="d-flex justify-content-center align-items-center"
-                style={{ minHeight: "300px" }}
-              >
-                <div
-                  className="spinner-border text-primary"
-                  role="status"
-                  style={{ width: "3rem", height: "3rem" }}
-                >
-                  <span className="visually-hidden">Carregando...</span>
+          {/* Cards informativos */}
+          <div className="row g-3 justify-content-center">
+            <div className="col-md-6 col-lg-4 col-xl-3">
+              <div className="card text-center shadow rounded-4">
+                <div className="card-body">
+                  <FaUserFriends size={40} className="text-primary mb-2" />
+                  <h5 className="card-title">Idosos Cadastrados</h5>
+                  <p className="card-text fs-4">{dados.idosos}</p>
+                  <p className="text-muted mb-2">Gerenciar idosos</p>
+                  <button
+                    className="btn btn-outline-primary w-100"
+                    onClick={() => navigate("/paciente/idoso")}
+                  >
+                    Ver idosos
+                  </button>
                 </div>
               </div>
-            ) : (
-              <div className="row justify-content-start">
-                {cuidadores.length > 0 ? (
-                  cuidadores.map((cuidador) => (
-                    <div className="col-md-6 col-lg-4 mb-4" key={cuidador.id}>
-                      <div
-                        className="card shadow-lg p-4 border-0 h-100"
-                        style={{ borderRadius: "30px" }}
-                      >
-                        <div className="card-body d-flex flex-column justify-content-between align-items-center">
-                          {/* Foto do cuidador */}
-                          <img
-                            src={
-                              cuidador.User?.fotoPerfil ||
-                              "../src/assets/perfil.png"
-                            }
-                            alt="Foto do Cuidador"
-                            className="rounded-circle mb-3"
-                            style={{
-                              width: "120px",
-                              height: "120px",
-                              objectFit: "cover",
-                            }}
-                          />
+            </div>
 
-                          <div className="text-center">
-                            <h4 className="card-title text-primary fw-bold">
-                              {cuidador.User?.nome}
-                            </h4>
-                            <p className="text-muted">
-                              <strong>Endereço:</strong>{" "}
-                              {cuidador.User?.endereco}
-                            </p>
-                          </div>
-
-                          <hr className="w-100" />
-
-                          {/* Estrelas de avaliação */}
-                          <div className="mb-2">
-                            {/* Exibe 5 estrelas fixas (apenas visual) */}
-                            <i className="bi bi-star-fill text-warning"></i>
-                            <i className="bi bi-star-fill text-warning"></i>
-                            <i className="bi bi-star-fill text-warning"></i>
-                            <i className="bi bi-star-fill text-warning"></i>
-                            <i className="bi bi-star text-warning"></i>
-                          </div>
-
-                          {/* Informações */}
-                          <div className="">
-                            <p>
-                              <strong>Especialidade:</strong>{" "}
-                              {cuidador.especialidade}
-                            </p>
-                            <p>
-                              <strong>Disponibilidade:</strong>{" "}
-                              {cuidador.disponibilidade}
-                            </p>
-                            <p>
-                              <strong>Valor Diária:</strong>{" "}
-                              <span className="badge bg-success">
-                                R$ {cuidador.valorHora}
-                              </span>
-                            </p>
-                          </div>
-
-                          {/* Botões */}
-                          <div className="mt-3 d-flex justify-content-center gap-2">
-                            <a
-                              role="button"
-                              className="btn btn-primary"
-                              href={`/agendamentos/marcar`}
-                              onClick={() =>
-                                localStorage.setItem("cuidadorId", cuidador.id)
-                              }
-                            >
-                              <i className="bi bi-calendar-check me-2"></i>{" "}
-                              Agendar
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <p>Nenhum cuidador encontrado.</p>
-                )}
+            <div className="col-md-6 col-lg-4 col-xl-3">
+              <div className="card text-center shadow rounded-4">
+                <div className="card-body">
+                  <FaCalendarAlt size={40} className="text-success mb-2" />
+                  <h5 className="card-title">Agendamentos Confirmados</h5>
+                  <p className="card-text fs-4">
+                    {dados.agendamentoConfirmados}
+                  </p>
+                  <p className="text-muted mb-2">Confirmados</p>
+                  <button
+                    className="btn btn-outline-success w-100"
+                    onClick={() => navigate("/paciente/agendamentos")}
+                  >
+                    Ver agendamentos
+                  </button>
+                </div>
               </div>
-            )}
+            </div>
+
+            <div className="col-md-6 col-lg-4 col-xl-3">
+              <div className="card text-center shadow rounded-4">
+                <div className="card-body">
+                  <FaHourglassHalf size={40} className="text-warning mb-2" />
+                  <h5 className="card-title">Agendamentos Pendentes</h5>
+                  <p className="card-text fs-4">{dados.agendamentoPendentes}</p>
+                  <p className="text-muted mb-2">Pendentes</p>
+                  <button
+                    className="btn btn-outline-warning w-100"
+                    onClick={() => navigate("/paciente/agendamentos")}
+                  >
+                    Acompanhar
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-md-6 col-lg-4 col-xl-3">
+              <div className="card text-center shadow rounded-4">
+                <div className="card-body">
+                  <FaMoneyBillWave size={40} className="text-info mb-2" />
+                  <h5 className="card-title">Pagamentos Pendentes</h5>
+                  <p className="card-text fs-4">{dados.pagamentoPendentes}</p>
+                  <p className="text-muted mb-2">Aguardando pagamento</p>
+                  <button
+                    className="btn btn-outline-info w-100"
+                    onClick={() => navigate("/paciente/pagamentos")}
+                  >
+                    Ver pagamentos
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
+
+          {/* Espaço para recursos futuros */}
         </div>
       </div>
     </div>

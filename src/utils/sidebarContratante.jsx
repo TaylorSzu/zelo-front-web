@@ -11,8 +11,10 @@ import {
   FaSignOutAlt,
   FaTimes,
   FaHeadset,
+  FaHome,
 } from "react-icons/fa";
 import LogoutModal from "../utils/logout";
+import ModalAcessibilidade from "../utils/modalAcessibilidade";
 
 const SidebarContratante = ({ children }) => {
   const navigate = useNavigate();
@@ -20,6 +22,7 @@ const SidebarContratante = ({ children }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [loadingLogout, setLoadingLogout] = useState(false);
+  const [showAcessibilidadeModal, setShowAcessibilidadeModal] = useState(false); // NOVO ESTADO
 
   const handleNavigation = (path) => {
     setMobileOpen(false);
@@ -47,13 +50,12 @@ const SidebarContratante = ({ children }) => {
     };
   }, [mobileOpen]);
 
-  // Função para fazer logout no backend e depois navegar para login
   const confirmLogout = async () => {
     setLoadingLogout(true);
     try {
       const response = await fetch("http://localhost:5171/usuario/logout", {
-        method: "POST", // Ajuste conforme seu backend
-        credentials: "include", // Envia cookies
+        method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -84,6 +86,13 @@ const SidebarContratante = ({ children }) => {
         onConfirm={confirmLogout}
         loading={loadingLogout}
       />
+
+      {/* Modal de acessibilidade */}
+      {showAcessibilidadeModal && (
+        <ModalAcessibilidade
+          onClose={() => setShowAcessibilidadeModal(false)}
+        />
+      )}
 
       {!mobileOpen && (
         <button
@@ -136,11 +145,21 @@ const SidebarContratante = ({ children }) => {
             <li className="nav-item">
               <button
                 className="nav-link text-white bg-transparent border-0 text-start"
-                onClick={() => handleNavigation("/paciente")}
+                onClick={() => handleNavigation("/paciente/encontrar")}
               >
-                <FaSearch /> <span className="ms-2">Procurar Cuidador</span>
+                <FaSearch /> <span className="ms-2">Encontrar Cuidador</span>
               </button>
             </li>
+            <li className="nav-item">
+              <button
+                className="nav-link text-white bg-transparent border-0 text-start"
+                onClick={() => handleNavigation("/paciente")}
+              >
+                <FaHome />
+                {!collapsed && <span className="ms-2">Início</span>}
+              </button>
+            </li>
+
             <li className="nav-item">
               <button
                 className="nav-link text-white bg-transparent border-0 text-start"
@@ -152,7 +171,7 @@ const SidebarContratante = ({ children }) => {
             <li className="nav-item">
               <button
                 className="nav-link text-white bg-transparent border-0 text-start"
-                onClick={() => handleNavigation("/agendamentos")}
+                onClick={() => handleNavigation("/paciente/agendamentos")}
               >
                 <FaCalendarAlt /> <span className="ms-2">Agendamentos</span>
               </button>
@@ -160,7 +179,7 @@ const SidebarContratante = ({ children }) => {
             <li className="nav-item">
               <button
                 className="nav-link text-white bg-transparent border-0 text-start"
-                onClick={() => handleNavigation("/idoso")}
+                onClick={() => handleNavigation("/paciente/idoso")}
               >
                 <FaUserFriends /> <span className="ms-2">Meus Idosos</span>
               </button>
@@ -168,15 +187,19 @@ const SidebarContratante = ({ children }) => {
             <li className="nav-item">
               <button
                 className="nav-link text-white bg-transparent border-0 text-start"
-                onClick={() => handleNavigation("/pagamentos")}
+                onClick={() => handleNavigation("/paciente/pagamentos")}
               >
                 <FaMoneyBillWave /> <span className="ms-2">Pagamentos</span>
               </button>
             </li>
+            {/* Aqui chama modal acessibilidade */}
             <li className="nav-item">
               <button
                 className="nav-link text-white bg-transparent border-0 text-start"
-                onClick={() => handleNavigation("/acessibilidadeContratante")}
+                onClick={() => {
+                  setShowAcessibilidadeModal(true);
+                  setMobileOpen(false);
+                }}
               >
                 <FaCog /> <span className="ms-2">Acessibilidade</span>
               </button>
@@ -229,11 +252,17 @@ const SidebarContratante = ({ children }) => {
 
             <ul className="nav nav-pills flex-column px-2 mt-3">
               <li>
-                <Link to="/paciente" className="nav-link text-white">
+                <Link to="/paciente/encontrar" className="nav-link text-white">
                   <FaSearch />
                   {!collapsed && (
-                    <span className="ms-2">Procurar cuidador</span>
+                    <span className="ms-2">Encontrar cuidador</span>
                   )}
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/paciente" className="nav-link text-white">
+                  <FaHome />
+                  {!collapsed && <span className="ms-2">Início</span>}
                 </Link>
               </li>
               <li>
@@ -243,31 +272,35 @@ const SidebarContratante = ({ children }) => {
                 </Link>
               </li>
               <li>
-                <Link to="/agendamentos" className="nav-link text-white">
+                <Link
+                  to="/paciente/agendamentos"
+                  className="nav-link text-white"
+                >
                   <FaCalendarAlt />
                   {!collapsed && <span className="ms-2">Agendamentos</span>}
                 </Link>
               </li>
               <li>
-                <Link to="/idoso" className="nav-link text-white">
+                <Link to="/paciente/idoso" className="nav-link text-white">
                   <FaUserFriends />
                   {!collapsed && <span className="ms-2">Meus Idosos</span>}
                 </Link>
               </li>
               <li>
-                <Link to="/pagamentos" className="nav-link text-white">
+                <Link to="/paciente/pagamentos" className="nav-link text-white">
                   <FaMoneyBillWave />
                   {!collapsed && <span className="ms-2">Pagamentos</span>}
                 </Link>
               </li>
+              {/* Aqui chama modal acessibilidade */}
               <li>
-                <Link
-                  to="/acessibilidadeContratante"
-                  className="nav-link text-white"
+                <button
+                  className="nav-link text-white bg-transparent border-0 text-start w-100"
+                  onClick={() => setShowAcessibilidadeModal(true)}
                 >
                   <FaCog />
                   {!collapsed && <span className="ms-2">Acessibilidade</span>}
-                </Link>
+                </button>
               </li>
               <li>
                 <Link to="/paciente/suporte" className="nav-link text-white">

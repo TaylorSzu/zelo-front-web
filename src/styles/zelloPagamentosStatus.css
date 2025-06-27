@@ -1,0 +1,96 @@
+.pagamentos-container {
+    display: flex;
+    gap: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .status-coluna {
+    flex: 1;
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 8px;
+  }
+  
+  .status-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    padding: 10px;
+    color: #fff;
+    border-radius: 6px 6px 0 0;
+  }
+  
+  .pendentes-header {
+    background: linear-gradient(45deg, #ff9800, #f57c00);
+  }
+  
+  .cancelados-header {
+    background: linear-gradient(45deg, #f44336, #d32f2f);
+  }
+  
+  .pagos-header {
+    background: linear-gradient(45deg, #4caf50, #388e3c);
+  }
+  
+  .pagamento-card {
+    background: #fff;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  
+  .pagamento-titulo {
+    font-weight: bold;
+  }
+  
+  .pagamento-nome {
+    color: #666;
+    margin-bottom: 5px;
+  }
+  
+  .pagamento-info {
+    font-size: 12px;
+    color: #777;
+    margin-bottom: 5px;
+  }
+  
+  .pagamento-valor {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .btn-acao {
+    width: 100%;
+    padding: 6px;
+    background: #1976d2;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .btn-acao:hover {
+    background: #1565c0;
+  }
+  
+  .btn-desativado {
+    width: 100%;
+    padding: 6px;
+    background: #ddd;
+    color: #777;
+    border: none;
+    border-radius: 4px;
+    cursor: not-allowed;
+  }
+  
+  .btn-acao-desativado {
+    width: 100%;
+    padding: 6px;
+    background: #eee;
+    color: #444;
+    border: none;
+    border-radius: 4px;
+    cursor: default;
+  }
+  

@@ -38,6 +38,7 @@
     "react-imask": "^7.6.1",
     "react-router-dom": "^7.1.5",
     "react-toastify": "^11.0.5",
+    "selenium-webdriver": "^4.33.0",
     "sequelize": "^6.37.7",
     "yup": "^1.6.1",
     "zelo-front-web": "file:"

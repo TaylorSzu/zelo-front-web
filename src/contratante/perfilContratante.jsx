@@ -4,7 +4,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 axios.defaults.withCredentials = true;
 import Cookies from "js-cookie";
-import SidebarContratante from "../utils/sidebarContratante.jsx";
 import Mascara, { removerMascara } from "../utils/mascaras.jsx";
 import CadastrarContratante from "./cadastrarContratante.jsx";
 import ConfirmarSenha from "../utils/confirmarSenha.jsx";
@@ -206,182 +205,180 @@ export default function PerfilPaciente() {
   }
 
   return (
-    <SidebarContratante>
-      <div className="container py-5 d-flex justify-content-center">
-        <div
-          className="card rounded-4"
-          style={{ width: "100%", maxWidth: "7680px" }}
-        >
-          <div className="card-header bg-primary text-white text-center rounded-top-4">
-            <h3>Perfil do Paciente</h3>
-          </div>
-          <div className="card-body">
-            {loading && <p>Carregando...</p>}
-            {error && <p className="text-danger">{error}</p>}
-            {!loading && !error && (
-              <>
-                <div
-                  className="mb-4 text-center position-relative"
-                  style={{ width: "150px", height: "150px", margin: "0 auto" }}
-                >
-                  <div
-                    className="rounded-circle overflow-hidden border border-3 border-primary"
-                    style={{
-                      width: "150px",
-                      height: "150px",
-                      position: "relative",
-                    }}
-                  >
-                    <img
-                      src={foto || "../src/assets/perfil.png"}
-                      alt="Foto de perfil"
-                      className="w-100 h-100"
-                      style={{ objectFit: "cover" }}
-                    />
-                    <label
-                      htmlFor="fileInput"
-                      className="d-flex align-items-center justify-content-center text-white fw-bold"
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        height: "100%",
-                        backgroundColor: "rgba(0, 0, 0, 0.5)",
-                        borderRadius: "50%",
-                        opacity: 0,
-                        cursor: "pointer",
-                        transition: "opacity 0.3s",
-                      }}
-                      onMouseEnter={(e) => (e.currentTarget.style.opacity = 1)}
-                      onMouseLeave={(e) => (e.currentTarget.style.opacity = 0)}
-                    >
-                      Alterar
-                      <input
-                        type="file"
-                        id="fileInput"
-                        onChange={handleFileChange}
-                        style={{ display: "none" }}
-                      />
-                    </label>
-                  </div>
-                </div>
-
-                <div className="row">
-                  <div className="col-md-6 mb-3">
-                    <label>
-                      <strong>Nome:</strong>
-                    </label>
-                    <input
-                      type="text"
-                      value={nome}
-                      onChange={(e) => setNome(e.target.value)}
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="col-md-6 mb-3">
-                    <label>
-                      <strong>CPF:</strong>
-                    </label>
-                    <Mascara
-                      type="cpf"
-                      value={cpf}
-                      onChange={(e) => setCpf(e.target.value)}
-                      placeholder="Digite seu CPF"
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="col-md-6 mb-3">
-                    <label>
-                      <strong>Endereço:</strong>
-                    </label>
-                    <input
-                      type="text"
-                      value={endereco}
-                      onChange={(e) => setEndereco(e.target.value)}
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="col-md-6 mb-3">
-                    <label>
-                      <strong>Telefone:</strong>
-                    </label>
-                    <Mascara
-                      type="telefone"
-                      value={telefone}
-                      onChange={(e) => setTelefone(e.target.value)}
-                      placeholder="Digite seu telefone"
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="col-md-6 mb-3">
-                    <label>
-                      <strong>Email:</strong>
-                    </label>
-                    <input
-                      type="email"
-                      value={email}
-                      disabled
-                      className="form-control"
-                      style={{ backgroundColor: "white" }}
-                    />
-                  </div>
-                  <div className="col-md-3 mb-3">
-                    <label>
-                      <strong>Idade:</strong>
-                    </label>
-                    <input
-                      type="number"
-                      value={idade}
-                      onChange={(e) => setIdade(e.target.value)}
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="col-md-3 mb-3">
-                    <label>
-                      <strong>Data de Nascimento:</strong>
-                    </label>
-                    <input
-                      type="date"
-                      value={dataNascimento}
-                      onChange={(e) => setDataNascimento(e.target.value)}
-                      className="form-control"
-                    />
-                  </div>
-                  <div className="col-12 mb-3">
-                    <label>
-                      <strong>Observações Médicas:</strong>
-                    </label>
-                    <textarea
-                      value={observacoesMedicas}
-                      onChange={(e) => setObservacoesMedicas(e.target.value)}
-                      className="form-control"
-                      rows={3}
-                    />
-                  </div>
-                </div>
-
-                <div className="d-flex justify-content-between">
-                  <button className="btn btn-danger" onClick={abrirConfirmacao}>
-                    <i className="bi bi-trash-fill me-1"></i>Deletar Conta
-                  </button>
-                  <button className="btn btn-success" onClick={handleUpdate}>
-                    <i className="bi bi-check-circle-fill me-1"></i>Salvar
-                    Alterações
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
+    <div className="container py-5 d-flex justify-content-center">
+      <div
+        className="card rounded-4"
+        style={{ width: "100%", maxWidth: "7680px" }}
+      >
+        <div className="card-header bg-primary text-white text-center rounded-top-4">
+          <h3>Perfil do Paciente</h3>
         </div>
-        {mostrarConfirmacao && (
-          <ConfirmarSenha
-            onConfirm={confirmarSenha}
-            onClose={fecharConfirmacao}
-          />
-        )}
-        <ToastContainer />
+        <div className="card-body">
+          {loading && <p>Carregando...</p>}
+          {error && <p className="text-danger">{error}</p>}
+          {!loading && !error && (
+            <>
+              <div
+                className="mb-4 text-center position-relative"
+                style={{ width: "150px", height: "150px", margin: "0 auto" }}
+              >
+                <div
+                  className="rounded-circle overflow-hidden border border-3 border-primary"
+                  style={{
+                    width: "150px",
+                    height: "150px",
+                    position: "relative",
+                  }}
+                >
+                  <img
+                    src={foto || "../src/assets/perfil.png"}
+                    alt="Foto de perfil"
+                    className="w-100 h-100"
+                    style={{ objectFit: "cover" }}
+                  />
+                  <label
+                    htmlFor="fileInput"
+                    className="d-flex align-items-center justify-content-center text-white fw-bold"
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "100%",
+                      backgroundColor: "rgba(0, 0, 0, 0.5)",
+                      borderRadius: "50%",
+                      opacity: 0,
+                      cursor: "pointer",
+                      transition: "opacity 0.3s",
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.opacity = 1)}
+                    onMouseLeave={(e) => (e.currentTarget.style.opacity = 0)}
+                  >
+                    Alterar
+                    <input
+                      type="file"
+                      id="fileInput"
+                      onChange={handleFileChange}
+                      style={{ display: "none" }}
+                    />
+                  </label>
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col-md-6 mb-3">
+                  <label>
+                    <strong>Nome:</strong>
+                  </label>
+                  <input
+                    type="text"
+                    value={nome}
+                    onChange={(e) => setNome(e.target.value)}
+                    className="form-control"
+                  />
+                </div>
+                <div className="col-md-6 mb-3">
+                  <label>
+                    <strong>CPF:</strong>
+                  </label>
+                  <Mascara
+                    type="cpf"
+                    value={cpf}
+                    onChange={(e) => setCpf(e.target.value)}
+                    placeholder="Digite seu CPF"
+                    className="form-control"
+                  />
+                </div>
+                <div className="col-md-6 mb-3">
+                  <label>
+                    <strong>Endereço:</strong>
+                  </label>
+                  <input
+                    type="text"
+                    value={endereco}
+                    onChange={(e) => setEndereco(e.target.value)}
+                    className="form-control"
+                  />
+                </div>
+                <div className="col-md-6 mb-3">
+                  <label>
+                    <strong>Telefone:</strong>
+                  </label>
+                  <Mascara
+                    type="telefone"
+                    value={telefone}
+                    onChange={(e) => setTelefone(e.target.value)}
+                    placeholder="Digite seu telefone"
+                    className="form-control"
+                  />
+                </div>
+                <div className="col-md-6 mb-3">
+                  <label>
+                    <strong>Email:</strong>
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    disabled
+                    className="form-control"
+                    style={{ backgroundColor: "white" }}
+                  />
+                </div>
+                <div className="col-md-3 mb-3">
+                  <label>
+                    <strong>Idade:</strong>
+                  </label>
+                  <input
+                    type="number"
+                    value={idade}
+                    onChange={(e) => setIdade(e.target.value)}
+                    className="form-control"
+                  />
+                </div>
+                <div className="col-md-3 mb-3">
+                  <label>
+                    <strong>Data de Nascimento:</strong>
+                  </label>
+                  <input
+                    type="date"
+                    value={dataNascimento}
+                    onChange={(e) => setDataNascimento(e.target.value)}
+                    className="form-control"
+                  />
+                </div>
+                <div className="col-12 mb-3">
+                  <label>
+                    <strong>Observações Médicas:</strong>
+                  </label>
+                  <textarea
+                    value={observacoesMedicas}
+                    onChange={(e) => setObservacoesMedicas(e.target.value)}
+                    className="form-control"
+                    rows={3}
+                  />
+                </div>
+              </div>
+
+              <div className="d-flex justify-content-between">
+                <button className="btn btn-danger" onClick={abrirConfirmacao}>
+                  <i className="bi bi-trash-fill me-1"></i>Deletar Conta
+                </button>
+                <button className="btn btn-success" onClick={handleUpdate}>
+                  <i className="bi bi-check-circle-fill me-1"></i>Salvar
+                  Alterações
+                </button>
+              </div>
+            </>
+          )}
+        </div>
       </div>
-    </SidebarContratante>
+      {mostrarConfirmacao && (
+        <ConfirmarSenha
+          onConfirmar={confirmarSenha}
+          onCancelar={fecharConfirmacao}
+        />
+      )}
+      <ToastContainer />
+    </div>
   );
 }

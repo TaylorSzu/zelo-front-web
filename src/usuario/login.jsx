@@ -61,17 +61,32 @@ export default function Login() {
       const usuarioEncontrado = response2.data;
 
       if (usuario.tipoUsuario.toLowerCase() === "cuidador") {
-        if (usuarioEncontrado.Cuidadores?.length > 0) {
-          const cuidadorId = usuarioEncontrado.Cuidadores[0].id;
-          sessionStorage.setItem("cuidadorId", cuidadorId);
+        if (usuarioEncontrado) {
+          const cuidadorId = usuarioEncontrado.Cuidadores[0];
+          if (cuidadorId?.id) {
+            sessionStorage.setItem("cuidadorId", cuidadorId.id);
+            sessionStorage.removeItem("cadastroObrigatorio");
+            navigate("/cuidador");
+          } else {
+            sessionStorage.removeItem("cuidadorId");
+            sessionStorage.setItem("cadastroObrigatorio", "true");
+            navigate("/cuidador/perfil");
+          }
         }
-        navigate("/cuidador");
       } else if (usuario.tipoUsuario.toLowerCase() === "paciente") {
-        if (usuarioEncontrado.Contratantes?.length > 0) {
-          const contratanteId = usuarioEncontrado.Contratantes[0].id;
+        if (usuarioEncontrado) {
+          const contratanteId = usuarioEncontrado.Contratantes[0];
           sessionStorage.setItem("contratanteId", contratanteId);
+          if (contratanteId?.id) {
+            sessionStorage.setItem("contratanteId", contratanteId.id);
+            navigate("/paciente");
+          } else {
+            sessionStorage.removeItem("contratanteId");
+            sessionStorage.setItem("cadastroObrigatorio", "true");
+            navigate("/paciente/perfil");
+          }
         }
-        navigate("/paciente");
+
       } else {
         setError("Tipo de usuário não reconhecido.");
       }

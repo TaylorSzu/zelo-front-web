@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import Cookies from "js-cookie";
-import SidebarCuidador from "../utils/sidebarCuidador.jsx";
 import Mascara, {
   removerMascara,
   removerMascaraDinheiro,
@@ -11,6 +10,7 @@ import Mascara, {
 import ConfirmarSenha from "../utils/confirmarSenha.jsx";
 import CadastrarCuidador from "../cuidador/cadastrarCuidador.jsx";
 import { ToastContainer, toast } from "react-toastify";
+import DisponibilidadeModal from "../utils/disponibilidade.jsx";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function PerfilCuidador() {
@@ -32,6 +32,8 @@ export default function PerfilCuidador() {
   const [error, setError] = useState("");
   const [mostrarConfirmacao, setMostrarConfirmacao] = useState(false);
   const [precisaCadastrar, setPrecisaCadastrar] = useState(false);
+  const [modalDisponibilidadeAberto, setModalDisponibilidadeAberto] =
+    useState(false);
 
   const navigate = useNavigate();
 
@@ -207,15 +209,11 @@ export default function PerfilCuidador() {
   };
 
   if (precisaCadastrar) {
-    return (
-      <SidebarCuidador>
-        <CadastrarCuidador onCadastroSucesso={handleLoad} />
-      </SidebarCuidador>
-    );
+    return <CadastrarCuidador onCadastroSucesso={handleLoad} />;
   }
 
   return (
-    <SidebarCuidador>
+    <>
       <div className="container py-5 d-flex justify-content-center ">
         <div className="card" style={{ width: "100%", maxWidth: "7680px" }}>
           <div className="card-header bg-primary text-white text-center ">
@@ -333,17 +331,23 @@ export default function PerfilCuidador() {
                       style={{ backgroundColor: "white" }}
                     />
                   </div>
-                  <div className="col-md-6 mb-3">
-                    <label>
-                      <strong>Disponibilidade:</strong>
-                    </label>
-                    <input
-                      type="text"
-                      value={disponibilidade}
-                      onChange={(e) => setDisponibilidade(e.target.value)}
-                      className="form-control"
-                    />
+
+                  <div className="col-md-6 mb-3 d-flex align-items-end">
+                    <button
+                      type="button"
+                      className="btn btn-outline-primary w-100"
+                      onClick={() =>
+                        setModalDisponibilidadeAberto(
+                          !modalDisponibilidadeAberto
+                        )
+                      }
+                    >
+                      {modalDisponibilidadeAberto
+                        ? "Fechar Disponibilidade"
+                        : "Abrir Disponibilidade"}
+                    </button>
                   </div>
+
                   <div className="col-md-6 mb-3">
                     <label>
                       <strong>Valor Diaria:</strong>
@@ -374,10 +378,7 @@ export default function PerfilCuidador() {
                   <input type="hidden" value={statusVerificacao} />
                 </div>
                 <div className="d-flex justify-content-between">
-                  <button
-                    className="btn btn-danger me-3"
-                    onClick={abrirConfirmacao}
-                  >
+                  <button className="btn btn-danger" onClick={abrirConfirmacao}>
                     <i className="bi bi-trash-fill me-1"></i>Deletar Conta
                   </button>
                   <button className="btn btn-success" onClick={handleUpdate}>
@@ -410,6 +411,19 @@ export default function PerfilCuidador() {
         pauseOnHover
         theme="colored"
       />
-    </SidebarCuidador>
+
+      {modalDisponibilidadeAberto && (
+        <DisponibilidadeModal
+          disponibilidadeModal
+          onConfirmar={(dados) => {
+            setDisponibilidade(dados.disponibilidade);
+            setModalDisponibilidadeAberto(false);
+          }}
+          onCancelar={() => setModalDisponibilidadeAberto(false)}
+          setDisponibilidade={setDisponibilidade}
+          disponibilidadeAtual={disponibilidade}
+        />
+      )}
+    </>
   );
 }
