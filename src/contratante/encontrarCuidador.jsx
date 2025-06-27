@@ -96,13 +96,18 @@ export default function EncontrarCuidador() {
   });
 
   return (
-    <div className="container-fluid">
-      <div className="p-3">
-        <div className="container px-2">
-          <h2 className="mb-4 text-center fw-bold">Encontre Cuidadores</h2>
+    <div
+      className="container px-3 px-md-4"
+      style={{ minHeight: "100vh", paddingTop: "40px", paddingBottom: "40px" }}
+    >
+      <div className="card shadow-lg rounded-4 border-0">
+        <div className="card-header bg-primary text-white text-center rounded-top-4 d-flex align-items-center justify-content-center gap-2">
+          <h3 className="m-0">Encontre Cuidadores</h3>
+        </div>
 
+        <div className="card-body">
           {/* Filtros */}
-          <div className="card p-3 shadow-sm mb-4">
+          <div className="card p-3 shadow-sm rounded-4 mb-4 border-0">
             <div className="row g-3 align-items-end">
               <div className="col-md-4">
                 <label className="form-label">
@@ -189,6 +194,7 @@ export default function EncontrarCuidador() {
 
               <div className="col-md-1 d-flex gap-2">
                 <button
+                  type="button"
                   className="btn btn-primary w-50"
                   title="Pesquisar"
                   onClick={() => setFiltrosAplicados(filtrosDigitados)}
@@ -196,6 +202,7 @@ export default function EncontrarCuidador() {
                   <i className="bi bi-search"></i>
                 </button>
                 <button
+                  type="button"
                   className="btn btn-outline-secondary w-50"
                   title="Limpar filtros"
                   onClick={() => {
@@ -216,7 +223,7 @@ export default function EncontrarCuidador() {
           </div>
 
           {/* Erro */}
-          {error && <div className="alert alert-danger">{error}</div>}
+          {error && <div className="alert alert-danger rounded-4">{error}</div>}
 
           {/* Loading */}
           {loading ? (
@@ -241,8 +248,8 @@ export default function EncontrarCuidador() {
                   return (
                     <div className="col-12 col-sm-6 col-lg-4" key={cuidador.id}>
                       <div
-                        className="card shadow-sm border-0 h-100 p-3"
-                        style={{ borderRadius: "1rem" }}
+                        className="card shadow-lg rounded-4 border-0 h-100 p-3"
+                        style={{ cursor: "default" }}
                       >
                         <div className="card-body d-flex flex-column align-items-center text-center">
                           <img
@@ -312,6 +319,7 @@ export default function EncontrarCuidador() {
                           </a>
 
                           <button
+                            type="button"
                             className="btn btn-outline-warning btn-sm w-100"
                             onClick={() =>
                               navigate(

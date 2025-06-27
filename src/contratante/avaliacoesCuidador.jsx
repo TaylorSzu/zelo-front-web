@@ -35,53 +35,64 @@ export default function AvaliacoesCuidador() {
   };
 
   return (
-    <div className="container mt-4">
-      <h2 className="fw-bold text-primary">Avaliações</h2>
-
-      {loading ? (
-        <p>Carregando...</p>
-      ) : (
-        <>
-          <div className="mb-4">
-            <h4 className="fw-semibold">
-              Média geral:{" "}
-              {media ? (
-                <>
-                  {parseFloat(media).toFixed(1)}{" "}
-                  <FaStar className="text-warning mb-1" />
-                </>
-              ) : (
-                <span className="text-muted">Sem avaliações</span>
-              )}
-            </h4>
-          </div>
-
-          {avaliacoes.length === 0 ? (
-            <p className="text-muted">Nenhuma avaliação disponível.</p>
+    <div className="container px-3 py-5">
+      <div className="card shadow rounded-4 border-0">
+        <div className="card-header bg-primary text-white rounded-top-4 text-center">
+          <h3 className="m-0">Avaliações do Cuidador</h3>
+        </div>
+        <div className="card-body">
+          {loading ? (
+            <p>Carregando...</p>
           ) : (
-            <div className="list-group">
-              {avaliacoes.map((av) => (
-                <div
-                  key={av.id}
-                  className="list-group-item mb-3 rounded-3 shadow-sm p-3"
-                >
-                  <div className="mb-2">
-                    {Array.from({ length: av.estrelas }).map((_, i) => (
-                      <FaStar key={i} className="text-warning me-1 fs-5" />
-                    ))}
-                  </div>
-                  {av.comentario && (
-                    <p className="mb-1">{av.comentario}</p>
+            <>
+              <div className="mb-4 text-center">
+                <h4 className="fw-bold text-dark">
+                  Média geral:{" "}
+                  {media ? (
+                    <span className="text-warning fs-3">
+                      {parseFloat(media).toFixed(1)} <FaStar />
+                    </span>
+                  ) : (
+                    <span className="text-muted fs-5">Sem avaliações</span>
                   )}
-                  <small className="text-muted">
-                    Avaliado em {new Date(av.createdAt).toLocaleDateString()}
-                  </small>
+                </h4>
+              </div>
+
+              {avaliacoes.length === 0 ? (
+                <p className="text-muted text-center">
+                  Nenhuma avaliação disponível.
+                </p>
+              ) : (
+                <div className="row justify-content-center g-3">
+                  {avaliacoes.map((av) => (
+                    <div key={av.id} className="col-md-6 col-lg-4">
+                      <div className="card rounded-4 shadow-sm h-100">
+                        <div className="card-body">
+                          <div className="mb-2">
+                            {Array.from({ length: av.estrelas }).map((_, i) => (
+                              <FaStar
+                                key={i}
+                                className="text-warning me-1 fs-5"
+                              />
+                            ))}
+                          </div>
+                          {av.comentario && (
+                            <p className="mb-2">{av.comentario}</p>
+                          )}
+                          <small className="text-muted">
+                            Avaliado em{" "}
+                            {new Date(av.createdAt).toLocaleDateString("pt-BR")}
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              )}
+            </>
           )}
-        </>
-      )}
+        </div>
+      </div>
     </div>
   );
 }

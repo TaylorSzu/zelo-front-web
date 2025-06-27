@@ -99,28 +99,19 @@ export default function PainelCuidador() {
               style={{ width: "150px", height: "150px", margin: "0 auto" }}
             >
               <div
-                className="rounded-circle overflow-hidden border border-3 border-primary shadow-sm"
+                className="rounded-circle overflow-hidden border border-3 border-primary"
                 style={{
                   width: "150px",
                   height: "150px",
                   position: "relative",
-                  cursor: "pointer",
                 }}
               >
-                {usuario?.foto ? (
-                  <img
-                    src={foto || "../src/assets/perfil.png"}
-                    alt="Foto de perfil"
-                    className="w-150 h-150"
-                    style={{ objectFit: "cover" }}
-                  />
-                ) : (
-                  <FaUserCircle
-                    size={150}
-                    className="text-secondary align=itens-center"
-                  />
-                )}
-
+                <img
+                  src={usuario?.foto || "../src/assets/perfil.png"}
+                  alt="Foto de perfil"
+                  className="w-100 h-100"
+                  style={{ objectFit: "cover" }}
+                />
                 <label
                   htmlFor="fileInputCuidador"
                   className="d-flex align-items-center justify-content-center text-white fw-bold"
@@ -133,6 +124,7 @@ export default function PainelCuidador() {
                     backgroundColor: "rgba(0, 0, 0, 0.5)",
                     borderRadius: "50%",
                     opacity: 0,
+                    cursor: "pointer",
                     transition: "opacity 0.3s",
                   }}
                   onMouseEnter={(e) => (e.currentTarget.style.opacity = 1)}
@@ -142,8 +134,16 @@ export default function PainelCuidador() {
                   <input
                     type="file"
                     id="fileInputCuidador"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        setUsuario((prev) => ({
+                          ...prev,
+                          foto: URL.createObjectURL(file),
+                        }));
+                      }
+                    }}
                     style={{ display: "none" }}
-                    // onChange={handleFileChange} // implementar função se quiser habilitar upload
                   />
                 </label>
               </div>
@@ -163,14 +163,14 @@ export default function PainelCuidador() {
               <div className="col-md-6 col-lg-4 col-xl-3">
                 <div className="card text-center shadow rounded-4">
                   <div className="card-body">
-                    <FaCalendarCheck size={40} className="text-success mb-2" />
+                    <FaCalendarCheck size={40} className="text-info mb-2" />
                     <h5 className="card-title">Agendamentos Confirmados</h5>
                     <p className="card-text fs-4">
                       {dashboardData.totalConfirmados}
                     </p>
                     <p className="text-muted mb-2">Confirmados</p>
                     <button
-                      className="btn btn-outline-success"
+                      className="btn btn-outline-info"
                       onClick={() => navigate("/cuidador/agendamentos")}
                     >
                       Ver agendamentos
@@ -182,7 +182,7 @@ export default function PainelCuidador() {
               <div className="col-md-6 col-lg-4 col-xl-3">
                 <div className="card text-center shadow rounded-4">
                   <div className="card-body">
-                    <FaMoneyBillWave size={40} className="text-info mb-2" />
+                    <FaMoneyBillWave size={40} className="text-success mb-2" />
                     <h5 className="card-title">Total Recebido</h5>
                     <p className="card-text fs-4">
                       {dashboardData.totalRecebido.toLocaleString("pt-BR", {
@@ -192,7 +192,7 @@ export default function PainelCuidador() {
                     </p>
                     <p className="text-muted mb-2">Valor recebido</p>
                     <button
-                      className="btn btn-outline-info"
+                      className="btn btn-outline-success"
                       onClick={() => navigate("/cuidador/pagamentos")}
                     >
                       Ver pagamentos
@@ -212,7 +212,9 @@ export default function PainelCuidador() {
                     <p className="text-muted mb-2">Agendamentos pendentes</p>
                     <button
                       className="btn btn-outline-warning"
-                      onClick={() => navigate("/cuidador/agendamentos")}
+                      onClick={() =>
+                        navigate("/cuidador/agendamentos/pendentes")
+                      }
                     >
                       Acompanhar
                     </button>
