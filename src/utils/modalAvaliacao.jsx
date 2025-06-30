@@ -7,27 +7,45 @@ const ModalAvaliacao = ({ show, onClose, evento }) => {
   const { modoEscuro, tamanhoFonte } = useContext(AcessibilidadeContext);
   const [estrelas, setEstrelas] = useState(0);
   const [comentario, setComentario] = useState("");
+  const [loading, setLoading] = useState(false);
 
   if (!show || !evento) return null;
 
+  const agendamentoId = evento.agendamentoId ?? evento.id;
+  const cuidadorId = evento.cuidadorId ?? evento.id;
+
   const enviarAvaliacao = async () => {
     try {
+      setLoading(true);
       const contratanteId = Number(sessionStorage.getItem("contratanteId"));
-      const cuidadorId = evento.cuidadorId ?? evento.id;
 
       await axios.post("http://localhost:5171/avaliacao/registrar", {
         contratanteId,
         cuidadorId,
+        agendamentoId,
         estrelas,
         comentario,
       });
 
       toast.success("Avaliação enviada com sucesso!");
+      resetarCampos();
       onClose(true);
     } catch (err) {
       console.error(err);
-      toast.error("Erro ao enviar avaliação.");
+      toast.error("Avaliação já registrada para este agendamento");
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const resetarCampos = () => {
+    setEstrelas(0);
+    setComentario("");
+  };
+
+  const fecharModal = () => {
+    resetarCampos();
+    onClose(false);
   };
 
   return (
@@ -96,15 +114,15 @@ const ModalAvaliacao = ({ show, onClose, evento }) => {
               </div>
             </div>
             <div className="modal-footer justify-content-center">
-              <button className="btn btn-danger" onClick={() => onClose(false)}>
+              <button className="btn btn-danger" onClick={fecharModal}>
                 Fechar
               </button>
               <button
                 className="btn btn-primary"
-                disabled={estrelas === 0}
+                disabled={estrelas === 0 || loading}
                 onClick={enviarAvaliacao}
               >
-                Enviar
+                {loading ? "Enviando..." : "Enviar"}
               </button>
             </div>
           </div>

@@ -45,6 +45,7 @@ const AgendamentosDashboard = () => {
           telefone: agendamento.telefone,
           valorHora: agendamento.valorHora,
           cuidadorId: agendamento.cuidadorId,
+          avaliado: agendamento.avaliado,
         }));
 
         setEventos(eventosFormatados);
@@ -122,6 +123,7 @@ const AgendamentosDashboard = () => {
                   inicio: format(event.start, "HH:mm"),
                   fim: format(event.end, "HH:mm"),
                   cuidadorId: event.cuidadorId,
+                  avaliado: event.avaliado,
                 });
 
                 if (
@@ -359,6 +361,12 @@ const AgendamentosDashboard = () => {
           setShowModal(false);
           if (avaliou) {
             setAvaliadoIds((prev) => [...prev, eventoSelecionado.id]);
+            setEventoSelecionado((prev) => ({ ...prev, avaliado: true }));
+            setEventos((prevEventos) =>
+              prevEventos.map((ev) =>
+                ev.id === eventoSelecionado.id ? { ...ev, avaliado: true } : ev
+              )
+            );
           }
         }}
       />
