@@ -7,24 +7,24 @@ import path from 'path';
 //DAVID NÃO MEXA NESTE ARQUIVO
 export default defineConfig({
     plugins: [react()],
-  //   server: {
-  //   allowedHosts: ['zelloapp.com.br'],
-  //   host: '0.0.0.0',
-  //   port: 5173,
-  //   https: {
-  //    cert: fs.readFileSync('/home/zelloapp/.ssl/fullchain.pem'),
-  //     key: fs.readFileSync('/home/zelloapp/.ssl/privkey.pem'),
-  //   },
-  //   proxy: {
-  //     '/usuario': {
-  //       target: 'http://localhost:5171/',
-  //       changeOrigin: true,
-  //     },
-  //   hmr: {
-  //     protocol: 'wss',
-  //     host: 'zelloapp.com.br',
-  //     port: 5173,
-  //   }
-  // }
-  // },
+    server: {
+    allowedHosts: ['zelloapp.com.br'],
+    host: '0.0.0.0',
+    port: 5173,
+    https: {
+     cert: fs.readFileSync('/home/zelloapp/.ssl/fullchain.pem'),
+      key: fs.readFileSync('/home/zelloapp/.ssl/privkey.pem'),
+    },
+    proxy: {
+      '/usuario': {
+        target: 'http://localhost:5171/',
+        changeOrigin: true,
+      },
+    hmr: {
+      protocol: 'wss',
+      host: 'zelloapp.com.br',
+      port: 5173,
+    }
+  }
+  },
 });

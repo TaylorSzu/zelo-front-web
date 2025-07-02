@@ -48,7 +48,7 @@ export default function Cadastro() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5171/usuario/registrar",
+        "https://127.0.0.1/usuario/registrar",
         {
           nome,
           cpf: removerMascara(cpf),
