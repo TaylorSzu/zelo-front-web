@@ -1,0 +1,183 @@
+/* ===== ESTRUTURA GERAL ===== */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  font-family: Arial, sans-serif;
+  transition: all 0.3s ease;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Layout espaçado */
+body.layout-espacado * {
+  margin-top: 1.2rem !important;
+  margin-bottom: 1.2rem !important;
+  padding: 0.5rem !important;
+  line-height: 1.8 !important;
+}
+
+/* ===== CARROSSEL ===== */
+.carousel-wrapper {
+  height: 50vh;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.carousel.slide {
+  flex-grow: 1;
+}
+
+.carousel-inner,
+.carousel-item {
+  height: 100%;
+}
+
+.carousel-item img {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+
+.carousel-img {
+  height: 100%;
+  max-height: 50vh;
+}
+
+/* ===== ANIMAÇÕES ===== */
+.fade-in {
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  font-size: clamp(14px, 1vw, 16px);
+  max-width: 220px;
+}
+
+/* ===== MODO ESCURO ===== */
+body.modo-escuro {
+  background-color: #121212;
+  color: #f0f0f0;
+}
+
+.modo-escuro .container-fluid {
+  background-color: #070707;
+}
+
+.modo-escuro .fc {
+  background-color: #121212;
+  color: white;
+}
+
+.modo-escuro .fc-daygrid-day {
+  background-color: #1a1a1a;
+  border-color: #333;
+}
+
+.modo-escuro .fc-event {
+  background-color: #ffb347;
+  border: none;
+  color: black;
+  font-weight: bold;
+}
+
+.modo-escuro .card {
+  background-color: #1c1c1c;
+  border: 1px solid #333;
+}
+
+.modo-escuro .card label,
+.modo-escuro .card p,
+.modo-escuro .card strong,
+.modo-escuro .card h4,
+.modo-escuro .card .card-title {
+  color: white;
+}
+
+.modo-escuro .badge {
+  background-color: #f0ad4e;
+  color: black;
+}
+
+.modo-escuro .btn-danger {
+  background-color: #d9534f;
+  border-color: #d43f3a;
+  color: white;
+}
+
+.modo-escuro .form-control,
+.modo-escuro .form-select,
+.modo-escuro #emailPerfil,
+.modo-escuro #agendamentoContratante,
+.modo-escuro #detalhesContratante {
+  background-color: #121212;
+  color: white;
+  border-color: #444;
+}
+
+.modo-escuro input::placeholder,
+.modo-escuro textarea::placeholder {
+  color: #ccc;
+  opacity: 1;
+}
+
+.modo-escuro #detalhesContratante .list-group-item {
+  background-color: #121212;
+  color: #f0f0f0;
+}
+
+.modo-escuro #detalhesContratante strong,
+.modo-escuro #detalhesContratante i {
+  color: #ffffff;
+}
+
+.modo-escuro .rbc-today,
+.modo-escuro .rbc-off-range-bg {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+/* Estilo Modal Acessibilidade */
+
+/* Personalização do slider */
+.slider-custom::-webkit-slider-thumb {
+  background-color: #0d6efd; /* Azul padrão do Bootstrap */
+  border: 2px solid #0d6efd;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.slider-custom::-moz-range-thumb {
+  background-color: #0d6efd;
+  border: 2px solid #0d6efd;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.slider-custom {
+  accent-color: #0d6efd; /* Para navegadores que suportam accent-color */
+}
+
+
