@@ -1,8 +1,42 @@
-# React + Vite
+# 🧓 zElo - Plataforma para Cuidadores e Idosos
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**zElo** é uma aplicação web que conecta **cuidadores de idosos** e **contratantes**, promovendo segurança, organização e praticidade. O projeto foi idealizado como TCC e continua em evolução constante, agregando novas funcionalidades.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📸 Capturas de Tela
+
+![image1](./screenshots/image(1).png)  
+![image2](./screenshots/image(2).png)  
+![image3](./screenshots/image(3).png)  
+![image4](./screenshots/image(4).png)  
+![image5](./screenshots/image(5).png)  
+![image6](./screenshots/image(6).png)  
+![image7](./screenshots/image(7).png)
+
+---
+
+## 🚀 Tecnologias
+
+- **React.js** + **Vite**
+- Estilização com **Bootstrap**
+- Integração com API via **Axios**
+- Gerenciamento de estado com **Context API**
+- Organização com **ESLint + Prettier**
+- Testes automatizados com **Selenium**
+
+---
+
+## 👨‍💻 Funcionalidades
+
+- Cadastro e login de cuidadores e contratantes
+- Visualização de agendamentos com calendário
+- Filtros por especialidade, dia e horário
+- Avaliação de cuidadores após atendimentos
+- Dashboard com informações úteis para cada tipo de usuário
+- Suporte e painel de pagamentos
+
+---
+
+## 📂 Estrutura do Projeto
+
